@@ -6,30 +6,30 @@ const UserCard = (props) => {
 
     return (
         <div className="text-[1.4rem] bg-white p-[16px] mb-5">
-            <p className="flex items-center justify-between mb-3">
-                <span className="font-bold">STT:</span>
-                <span>{props.id}</span>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">STT:</span>
+                <span className="flex-1 truncate">{props.id}</span>
             </p>
-            <p className="flex items-center justify-between mb-3">
-                <span className="font-bold">Họ và tên:</span>
-                <span>{props.fullName}</span>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Họ và tên:</span>
+                <span className="flex-1 truncate">{props.fullName}</span>
             </p>
-            <p className="flex items-center justify-between mb-3">
-                <span className="font-bold">Email:</span>
-                <span>{props.email}</span>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Email:</span>
+                <span className="flex-1 truncate">{props.email}</span>
             </p>
-            <p className="flex items-center justify-between mb-3">
-                <span className="font-bold">Số điện thoại:</span>
-                <span>{props.phone}</span>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Số điện thoại:</span>
+                <span className="flex-1 truncate">{props.phone}</span>
             </p>
-            <p className="flex items-center justify-between mb-3">
-                <span className="font-bold">Vai trò:</span>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Vai trò:</span>
                 <span>
                     <DropList options={roleOptions} />
                 </span>
             </p>
-            <p className="flex items-center justify-between mb-3">
-                <span className="font-bold">Trạng thái:</span>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Trạng thái:</span>
                 <SwitchButton />
             </p>
         </div>

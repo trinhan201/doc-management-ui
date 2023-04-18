@@ -6,6 +6,7 @@ module.exports = {
         extend: {
             boxShadow: {
                 right: '2px 0 2px 0 rgba(0,0,0,0.3)',
+                '4Way': '0 3px 10px rgba(0, 0, 0, 0.2)',
             },
             transitionProperty: {
                 height: 'max-height',
