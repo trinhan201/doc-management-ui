@@ -34,7 +34,7 @@ const DefaultLayout = ({ children }) => {
                     <Header setToggle={setToggleSidebar} />
                 </div>
                 <div className="flex flex-col pt-[64px] h-full">
-                    <div className="flex-1">{children}</div>
+                    <div className="flex-1 bg-[#ebedef] p-[16px]">{children}</div>
                     <Footer />
                 </div>
             </div>
