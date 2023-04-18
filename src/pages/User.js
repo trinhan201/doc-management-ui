@@ -1,9 +1,12 @@
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserCard from '~/components/Card/UserCard';
+import DropList from '~/components/DropList';
 import SwitchButton from '~/components/SwitchButton';
 
 const User = () => {
+    const roleOptions = ['Admin', 'Moderator', 'Member'];
+
     return (
         <>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0">
@@ -45,9 +48,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -55,9 +62,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -65,9 +76,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -75,9 +90,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -85,9 +104,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -95,9 +118,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -105,9 +132,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -115,9 +146,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -125,9 +160,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -135,9 +174,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -145,9 +188,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -155,9 +202,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -165,9 +216,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -175,9 +230,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b dark:border-neutral-500">
@@ -185,9 +244,13 @@ const User = () => {
                                         <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
                                         <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Admin</td>
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <SwitchButton />
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
