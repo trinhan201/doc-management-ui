@@ -23,6 +23,10 @@ const UserCard = (props) => {
                 <span className="flex-1 truncate">{props.phone}</span>
             </p>
             <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Phòng ban:</span>
+                <span className="flex-1 truncate">{props.department}</span>
+            </p>
+            <p className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Vai trò:</span>
                 <span>
                     <DropList options={roleOptions} />

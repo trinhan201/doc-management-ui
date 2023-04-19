@@ -27,7 +27,7 @@ const InputField = (props) => {
     return (
         <div className="relative rounded-md">
             <input
-                className="w-full focus-within outline-none px-[16px] py-[8px] border border-solid border-[#cccccc] rounded-md"
+                className="text-[1.4rem] md:text-[1.6rem] w-full focus-within outline-none px-[16px] py-[8px] border border-solid border-[#cccccc] rounded-md"
                 type={setTypes()}
                 value={props.value}
                 placeholder={props.placeholder}
