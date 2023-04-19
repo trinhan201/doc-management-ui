@@ -9,13 +9,13 @@ const User = () => {
 
     return (
         <>
-            <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0">
+            <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách người dùng</h1>
                 <button className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
             </div>
-            <div class="hidden md:flex flex-col bg-white">
+            <div class="hidden md:flex flex-col bg-white shadow-4Way">
                 <div class="overflow-x-auto">
                     <div class="inline-block min-w-full">
                         <div class="overflow-hidden">

@@ -3,7 +3,7 @@ import SwitchButton from '../SwitchButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
-const DepartmentCard = (props) => {
+const DocumentTypeCard = (props) => {
     const [showAction, setShowAction] = useState(false);
 
     const toggle = () => {
@@ -38,8 +38,12 @@ const DepartmentCard = (props) => {
                 <span className="flex-1 truncate">{props.id}</span>
             </p>
             <p className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Tên phòng ban:</span>
-                <span className="flex-1 truncate">{props.departmentName}</span>
+                <span className="font-bold w-[120px]">Loại văn bản:</span>
+                <span className="flex-1 truncate">{props.typeName}</span>
+            </p>
+            <p className="flex items-center mb-3">
+                <span className="font-bold w-[120px]">Mã loại:</span>
+                <span className="flex-1 truncate">{props.typeCode}</span>
             </p>
             <p className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>
@@ -53,4 +57,4 @@ const DepartmentCard = (props) => {
     );
 };
 
-export default DepartmentCard;
+export default DocumentTypeCard;

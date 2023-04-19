@@ -17,7 +17,7 @@ import SidebarItem from '~/components/SidebarItem';
 const Sidebar = () => {
     const [toggleSubMenu, setToggleSubMenu] = useState(false);
     return (
-        <div className="w-full h-full bg-[#3c4b64]">
+        <div className="w-full h-full bg-[#3c4b64] overflow-auto">
             <div className="flex h-[64px] bg-[#303c54] italic">
                 <h1 className="text-white text-[3.6rem] m-auto">
                     QLVB <span className="text-[1.6rem]">v1.0</span>

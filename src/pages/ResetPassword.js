@@ -3,7 +3,7 @@ import InputField from '~/components/InputField';
 const ResetPassword = () => {
     return (
         <div className="flex items-center justify-center w-screen h-screen bg-[#ebedef]">
-            <div className="w-[300px] md:w-[450px] h-fit bg-white p-[36px] rounded-md">
+            <div className="w-[330px] md:w-[450px] h-fit bg-white p-[36px] rounded-md shadow-4Way">
                 <h1 className="text-center italic text-[4.6rem] font-semibold">
                     QLVB <span className="text-[2.4rem]">v1.0</span>
                 </h1>

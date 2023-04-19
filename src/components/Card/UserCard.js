@@ -5,7 +5,7 @@ const UserCard = (props) => {
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
     return (
-        <div className="text-[1.4rem] bg-white p-[16px] mb-5">
+        <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <p className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">STT:</span>
                 <span className="flex-1 truncate">{props.id}</span>
