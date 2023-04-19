@@ -31,182 +31,182 @@ const User = () => {
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
             </div>
-            <div class="hidden md:flex flex-col bg-white shadow-4Way">
-                <div class="overflow-x-auto">
-                    <div class="inline-block min-w-full">
-                        <div class="overflow-hidden">
-                            <table class="min-w-full text-left text-[1.4rem] font-light">
-                                <thead class="border-b font-medium dark:border-neutral-500">
+            <div className="hidden md:flex flex-col bg-white shadow-4Way">
+                <div className="overflow-x-auto">
+                    <div className="inline-block min-w-full">
+                        <div className="overflow-hidden">
+                            <table className="min-w-full text-left text-[1.4rem] font-light">
+                                <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             STT
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Họ và tên
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Email
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Số điện thoại
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Phòng ban
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Vai trò
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-6 py-4">
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Trạng thái
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td class="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td class="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={roleOptions} />
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>

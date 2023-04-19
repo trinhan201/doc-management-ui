@@ -35,44 +35,46 @@ const DocumentType = () => {
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
             </div>
-            <div class="hidden md:flex flex-col bg-white shadow-4Way">
-                <div class="overflow-x-auto">
-                    <div class="inline-block min-w-full">
-                        <div class="overflow-hidden">
-                            <table class="min-w-full text-left text-[1.4rem] font-light">
-                                <thead class="border-b font-medium dark:border-neutral-500">
+            <div className="hidden md:flex flex-col bg-white shadow-4Way">
+                <div className="overflow-x-auto">
+                    <div className="inline-block min-w-full">
+                        <div className="overflow-hidden">
+                            <table className="min-w-full text-left text-[1.4rem] font-light">
+                                <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
-                                        <th scope="col" class="px-6 py-4">
+                                        <th scope="col" className="px-6 py-4">
                                             STT
                                         </th>
-                                        <th scope="col" class="px-6 py-4">
+                                        <th scope="col" className="px-6 py-4">
                                             Loại văn bản
                                         </th>
-                                        <th scope="col" class="px-6 py-4">
+                                        <th scope="col" className="px-6 py-4">
                                             Mã loại
                                         </th>
-                                        <th scope="col" class="px-6 py-4">
+                                        <th scope="col" className="px-6 py-4">
                                             Trạng thái
                                         </th>
-                                        <th scope="col" class="px-6 py-4">
+                                        <th scope="col" className="px-6 py-4">
                                             Ghi chú
                                         </th>
-                                        <th scope="col" class="px-6 py-4">
+                                        <th scope="col" className="px-6 py-4">
                                             Thao tác
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td class="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">Đây là ghi chú</td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
                                                 <div className="cursor-pointer hover:text-primary">
@@ -84,16 +86,18 @@ const DocumentType = () => {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td class="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">Đây là ghi chú</td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
                                                 <div className="cursor-pointer hover:text-primary">
@@ -105,16 +109,18 @@ const DocumentType = () => {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td class="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">Đây là ghi chú</td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
                                                 <div className="cursor-pointer hover:text-primary">
@@ -126,16 +132,18 @@ const DocumentType = () => {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td class="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">Đây là ghi chú</td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
                                                 <div className="cursor-pointer hover:text-primary">
@@ -147,16 +155,18 @@ const DocumentType = () => {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td class="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">Đây là ghi chú</td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
                                                 <div className="cursor-pointer hover:text-primary">
@@ -168,16 +178,18 @@ const DocumentType = () => {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="border-b dark:border-neutral-500">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td class="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td class="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td class="whitespace-nowrap px-6 py-4">
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">Đây là ghi chú</td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
                                                 <div className="cursor-pointer hover:text-primary">

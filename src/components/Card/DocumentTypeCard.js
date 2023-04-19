@@ -33,26 +33,26 @@ const DocumentTypeCard = (props) => {
                     </ul>
                 </div>
             </div>
-            <p className="flex items-center mb-3">
+            <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">STT:</span>
                 <span className="flex-1 truncate">{props.id}</span>
-            </p>
-            <p className="flex items-center mb-3">
+            </div>
+            <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Loại văn bản:</span>
                 <span className="flex-1 truncate">{props.typeName}</span>
-            </p>
-            <p className="flex items-center mb-3">
+            </div>
+            <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Mã loại:</span>
                 <span className="flex-1 truncate">{props.typeCode}</span>
-            </p>
-            <p className="flex items-center mb-3">
+            </div>
+            <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>
                 <SwitchButton />
-            </p>
-            <p className="flex items-center mb-3">
+            </div>
+            <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Ghi chú:</span>
                 <span className="flex-1 truncate">{props.note}</span>
-            </p>
+            </div>
         </div>
     );
 };
