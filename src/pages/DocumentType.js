@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import SwitchButton from '~/components/SwitchButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,6 +13,7 @@ import DocumentTypeCard from '~/components/Card/DocumentTypeCard';
 import InputField from '~/components/InputField';
 
 const DocumentType = () => {
+    const [searchValue, setSearchValue] = useState('');
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
@@ -19,7 +21,12 @@ const DocumentType = () => {
                 <form>
                     <div className="flex flex-col md:flex-row md:items-center gap-5">
                         <div className="flex-1">
-                            <InputField placeholder="Tên loại văn bản" />
+                            <InputField
+                                className="default"
+                                placeholder="Tên loại văn bản"
+                                value={searchValue}
+                                setValue={setSearchValue}
+                            />
                         </div>
                         <div className="flex-1">
                             <button className="w-full md:w-fit text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">

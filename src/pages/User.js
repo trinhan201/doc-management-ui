@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { faPlusCircle, faSearch, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserCard from '~/components/Card/UserCard';
@@ -7,6 +8,7 @@ import SwitchButton from '~/components/SwitchButton';
 
 const User = () => {
     const roleOptions = ['Admin', 'Moderator', 'Member'];
+    const [searchValue, setSearchValue] = useState('');
 
     return (
         <>
@@ -15,7 +17,12 @@ const User = () => {
                 <form>
                     <div className="flex flex-col md:flex-row md:items-center gap-5">
                         <div className="flex-1">
-                            <InputField placeholder="Tên / Email / Số Điện Thoại" />
+                            <InputField
+                                className="default"
+                                placeholder="Tên / Email / Số Điện Thoại"
+                                value={searchValue}
+                                setValue={setSearchValue}
+                            />
                         </div>
                         <div className="flex-1">
                             <button className="w-full md:w-fit text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
