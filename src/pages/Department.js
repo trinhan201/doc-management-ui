@@ -43,6 +43,11 @@ const Department = () => {
                                 <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
                                         <th scope="col" className="px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
                                             STT
                                         </th>
                                         <th scope="col" className="px-6 py-4">
@@ -61,6 +66,11 @@ const Department = () => {
                                 </thead>
                                 <tbody>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -83,6 +93,11 @@ const Department = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -105,6 +120,11 @@ const Department = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -127,6 +147,11 @@ const Department = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -149,6 +174,11 @@ const Department = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -171,6 +201,11 @@ const Department = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -208,6 +243,9 @@ const Department = () => {
                 </div>
             </div>
             <div className="md:hidden">
+                <div className="mb-3">
+                    <input type="checkbox" /> Chọn tất cả
+                </div>
                 <DepartmentCard id="1" departmentName="Phòng nhân sự" note="Đây là ghi chú" />
                 <DepartmentCard id="2" departmentName="Phòng tài chính" note="Đây là ghi chú" />
                 <DepartmentCard id="3" departmentName="Phòng Marketing" note="Đây là ghi chú" />

@@ -12,9 +12,16 @@ const DepartmentCard = (props) => {
 
     return (
         <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
-            <div className="relative text-right">
+            <div className="flex items-center justify-between relative text-right mb-3">
+                <div className="flex items-center">
+                    <input type="checkbox" />
+                </div>
                 <FontAwesomeIcon onClick={toggle} className="w-[16px] h-[16px] cursor-pointer" icon={faEllipsisH} />
-                <div className={!showAction ? 'hidden' : 'absolute right-0 w-[120px] h-fit bg-white shadow-4Way z-10'}>
+                <div
+                    className={
+                        !showAction ? 'hidden' : 'absolute top-[24px] right-0 w-[120px] h-fit bg-white shadow-4Way z-10'
+                    }
+                >
                     <ul>
                         <li
                             onClick={() => setShowAction(false)}

@@ -38,6 +38,11 @@ const User = () => {
                             <table className="min-w-full text-left text-[1.4rem] font-light">
                                 <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
+                                        <th scope="col" className="px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             STT
                                         </th>
@@ -63,6 +68,11 @@ const User = () => {
                                 </thead>
                                 <tbody>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -78,6 +88,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -93,6 +108,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -108,6 +128,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -123,6 +148,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -138,6 +168,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -153,6 +188,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -168,6 +208,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -183,6 +228,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -198,6 +248,11 @@ const User = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
                                         <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
@@ -228,6 +283,9 @@ const User = () => {
                 </div>
             </div>
             <div className="md:hidden">
+                <div className="mb-3">
+                    <input type="checkbox" /> Chọn tất cả
+                </div>
                 <UserCard
                     id="1"
                     fullName="Trinh Phieu An"

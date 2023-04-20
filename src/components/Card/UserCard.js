@@ -7,6 +7,9 @@ const UserCard = (props) => {
     return (
         <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center mb-3">
+                <input type="checkbox" />
+            </div>
+            <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">STT:</span>
                 <span className="flex-1 truncate">{props.id}</span>
             </div>

@@ -43,6 +43,11 @@ const DocumentType = () => {
                                 <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
                                         <th scope="col" className="px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
                                             STT
                                         </th>
                                         <th scope="col" className="px-6 py-4">
@@ -64,6 +69,11 @@ const DocumentType = () => {
                                 </thead>
                                 <tbody>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
                                         <td className="whitespace-nowrap px-6 py-4">HD</td>
@@ -87,6 +97,11 @@ const DocumentType = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
                                         <td className="whitespace-nowrap px-6 py-4">HD</td>
@@ -110,6 +125,11 @@ const DocumentType = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
                                         <td className="whitespace-nowrap px-6 py-4">HD</td>
@@ -133,6 +153,11 @@ const DocumentType = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
                                         <td className="whitespace-nowrap px-6 py-4">HD</td>
@@ -156,6 +181,11 @@ const DocumentType = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
                                         <td className="whitespace-nowrap px-6 py-4">HD</td>
@@ -179,6 +209,11 @@ const DocumentType = () => {
                                         </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
                                         <td className="whitespace-nowrap px-6 py-4">HD</td>
@@ -217,6 +252,9 @@ const DocumentType = () => {
                 </div>
             </div>
             <div className="md:hidden">
+                <div className="mb-3">
+                    <input type="checkbox" /> Chọn tất cả
+                </div>
                 <DocumentTypeCard id="1" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
                 <DocumentTypeCard id="2" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
                 <DocumentTypeCard id="3" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
