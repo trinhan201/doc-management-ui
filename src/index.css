@@ -13,3 +13,21 @@ body {
     line-height: 1.5;
     text-rendering: optimizeSpeed;
 }
+
+.default {
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    padding: 8px 16px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+}
+
+.invalid {
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    padding: 8px 16px;
+    border: 1px solid red;
+    border-radius: 8px;
+}

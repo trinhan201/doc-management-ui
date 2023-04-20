@@ -15,10 +15,6 @@ const InputField = (props) => {
             return !showPassword ? 'password' : 'text';
         } else if (inputName === 'email') {
             return 'email';
-        } else if (inputName === 'radio') {
-            return 'radio';
-        } else if (inputName === 'checkbox') {
-            return 'checkbox';
         } else {
             return 'text';
         }
@@ -27,13 +23,12 @@ const InputField = (props) => {
     return (
         <div className="relative rounded-md">
             <input
-                className="text-[1.4rem] md:text-[1.6rem] w-full focus-within outline-none px-[16px] py-[8px] border border-solid border-[#cccccc] rounded-md"
+                className={props.className}
                 type={setTypes()}
                 value={props.value}
                 placeholder={props.placeholder}
-                onChange={props.onChange}
-                minLength={props.name === 'password' ? '6' : '2'}
-                required
+                onChange={(e) => props.setValue(e.target.value)}
+                onBlur={props.onBlur}
             />
             <div
                 onClick={toggle}
