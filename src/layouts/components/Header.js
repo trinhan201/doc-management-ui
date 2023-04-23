@@ -3,6 +3,7 @@ import { faBell, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faKey, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ChangePasswordForm from '~/components/Form/ChangePasswordForm';
+import { NavLink } from 'react-router-dom';
 
 const Header = ({ setToggle }) => {
     const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -41,8 +42,10 @@ const Header = ({ setToggle }) => {
                         <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block">
                             <ul className="w-[180px]">
                                 <li className="p-[12px] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]">
-                                    <FontAwesomeIcon icon={faUser} />
-                                    <span className="ml-3">Thông tin cá nhân</span>
+                                    <NavLink className="py-[12px]" to="/profile">
+                                        <FontAwesomeIcon icon={faUser} />
+                                        <span className="ml-3">Thông tin cá nhân</span>
+                                    </NavLink>
                                 </li>
                                 <li
                                     onClick={() => setShowChangePassword(true)}

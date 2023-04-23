@@ -9,6 +9,7 @@ import DocumentIn from '~/pages/DocumentIn';
 import DocumentOut from '~/pages/DocumentOut';
 import Page404 from '~/pages/Page404';
 import DefaultLayout from '~/layouts/DefaultLayout';
+import Profile from '~/pages/Profile';
 
 const routes = [
     { path: '/signin', component: Signin, layout: null },
@@ -21,6 +22,7 @@ const routes = [
     { path: '/documents', component: Page404, layout: null },
     { path: '/documents/documents-out', component: DocumentOut, layout: DefaultLayout },
     { path: '/documents/documents-in', component: DocumentIn, layout: DefaultLayout },
+    { path: '/profile', component: Profile, layout: DefaultLayout },
     { path: '*', component: Page404, layout: null },
 ];
 

@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { faPlusCircle, faSearch, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faPlusCircle,
+    faSearch,
+    faAngleLeft,
+    faAngleRight,
+    faTrashCan,
+    faPenToSquare,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserCard from '~/components/Card/UserCard';
 import DropList from '~/components/DropList';
@@ -71,6 +78,9 @@ const User = () => {
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Trạng thái
                                         </th>
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
+                                            Thao tác
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,24 +103,14 @@ const User = () => {
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -133,24 +133,14 @@ const User = () => {
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -173,24 +163,14 @@ const User = () => {
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -213,24 +193,14 @@ const User = () => {
                                                 <SwitchButton />
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -253,6 +223,16 @@ const User = () => {
                                                 <SwitchButton />
                                             </div>
                                         </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center">
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr className="border-b dark:border-neutral-500">
                                         <td className="whitespace-nowrap px-6 py-4">
@@ -271,6 +251,136 @@ const User = () => {
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center">
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center">
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center">
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center">
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
+                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
+                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <DropList options={roleOptions} />
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center">
+                                                <div className="cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                                </div>
+                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
