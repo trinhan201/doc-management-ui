@@ -78,7 +78,7 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
     return (
         <div
             onClick={() => setShowChangePassword(false)}
-            className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center w-screen h-screen bg-[#000000]/[0.3]"
+            className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[0.3]"
         >
             <div
                 onClick={(e) => e.stopPropagation()}

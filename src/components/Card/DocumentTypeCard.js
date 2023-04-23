@@ -10,6 +10,12 @@ const DocumentTypeCard = (props) => {
         setShowAction(!showAction);
     };
 
+    const handleShowForm = () => {
+        setShowAction(false);
+        props.setShowForm(true);
+        props.setFormTitle('Chỉnh sửa loại văn bản');
+    };
+
     return (
         <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center justify-between relative text-right mb-3">
@@ -19,10 +25,7 @@ const DocumentTypeCard = (props) => {
                 <FontAwesomeIcon onClick={toggle} className="w-[16px] h-[16px] cursor-pointer" icon={faEllipsisH} />
                 <div className={!showAction ? 'hidden' : 'absolute right-0 w-[120px] h-fit bg-white shadow-4Way z-10'}>
                     <ul>
-                        <li
-                            onClick={() => setShowAction(false)}
-                            className="flex items-center p-[8px] hover:bg-[#dddddd]"
-                        >
+                        <li onClick={handleShowForm} className="flex items-center p-[8px] hover:bg-[#dddddd]">
                             <FontAwesomeIcon icon={faPenToSquare} />
                             <span className="ml-3">Sửa</span>
                         </li>

@@ -4,6 +4,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 const InputField = (props) => {
     const [showPassword, setShowPassword] = useState(false);
+    let Comp = 'input';
 
     const toggle = () => {
         setShowPassword(!showPassword);
@@ -20,15 +21,21 @@ const InputField = (props) => {
         }
     };
 
+    if (props.textarea) {
+        Comp = 'textarea';
+    }
+
     return (
         <div className="relative rounded-md">
-            <input
+            <Comp
                 className={props.className}
                 type={setTypes()}
                 value={props.value}
                 placeholder={props.placeholder}
                 onChange={(e) => props.setValue(e.target.value)}
                 onBlur={props.onBlur}
+                rows={props.rows}
+                cols={props.cols}
             />
             <div
                 onClick={toggle}
