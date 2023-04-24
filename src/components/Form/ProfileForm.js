@@ -2,8 +2,9 @@ import { useState } from 'react';
 import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import InputField from '../InputField';
+import DropList from '../DropList';
 
-const ProfileForm = ({ setShowForm }) => {
+const ProfileForm = ({ formTitle, setShowForm }) => {
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
     const [birth, setBirth] = useState('');
@@ -14,6 +15,8 @@ const ProfileForm = ({ setShowForm }) => {
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [haveFullNameErr, setHaveFullNameErr] = useState(false);
     const [haveEmailErr, setHaveEmailErr] = useState(false);
+
+    const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
 
     const fullNameValidator = () => {
         const msg = {};
@@ -63,9 +66,7 @@ const ProfileForm = ({ setShowForm }) => {
                 <h1 className="text-[#9fa9ae] text-center italic text-[4.6rem] font-semibold">
                     QLVB <span className="text-[2.4rem]">v1.0</span>
                 </h1>
-                <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">
-                    Chỉnh sửa thông tin cá nhân
-                </h1>
+                <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">{formTitle}</h1>
                 <form>
                     <InputField
                         className={haveFullNameErr ? 'invalid' : 'default'}
@@ -118,6 +119,9 @@ const ProfileForm = ({ setShowForm }) => {
                     <div className="mt-7">
                         <InputField className="default" placeholder="Số điện thoại" value={phone} setValue={setPhone} />
                     </div>
+                    <div className="mt-7">
+                        <DropList options={departmentOptions} />
+                    </div>
                     <div className="flex justify-center items-center gap-5">
                         <button
                             onClick={handleSubmit}
@@ -127,7 +131,7 @@ const ProfileForm = ({ setShowForm }) => {
                         </button>
                         <button
                             onClick={() => setShowForm(false)}
-                            className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                            className="w-full text-[white] bg-red-600 mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                         >
                             Hủy
                         </button>

@@ -21,8 +21,8 @@ const Profile = () => {
                         <div>
                             <h1 className="text-[2.2rem] font-bold mb-7">Tất cả nhiệm vụ</h1>
                             <h3 className="text-[1.4rem] font-semibold">Mức độ hoàn thành</h3>
-                            <div class="w-full bg-gray-200 rounded-full mt-3">
-                                <div class="w-[45%] bg-blue-600 text-[1.4rem] font-medium text-blue-100 text-center p-1.5 leading-none rounded-full">
+                            <div className="w-full bg-gray-200 rounded-full mt-3">
+                                <div className="w-[45%] bg-blue-600 text-[1.4rem] font-medium text-blue-100 text-center p-1.5 leading-none rounded-full">
                                     45%
                                 </div>
                             </div>
@@ -94,7 +94,9 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-            {showProfileForm && <ProfileForm setShowForm={setShowProfileForm} />}
+            {showProfileForm && (
+                <ProfileForm formTitle="Chỉnh sửa thông tin cá nhân" setShowForm={setShowProfileForm} />
+            )}
         </>
     );
 };

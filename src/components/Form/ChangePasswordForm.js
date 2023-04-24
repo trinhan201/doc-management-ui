@@ -129,7 +129,7 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
                         </button>
                         <button
                             onClick={() => setShowChangePassword(false)}
-                            className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                            className="w-full text-[white] bg-red-600 mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                         >
                             Hủy
                         </button>
