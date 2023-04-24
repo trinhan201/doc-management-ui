@@ -14,8 +14,8 @@ import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
 
 const User = () => {
-    const roleOptions = ['Admin', 'Moderator', 'Member'];
     const [searchValue, setSearchValue] = useState('');
+    const roleOptions = ['Admin', 'Moderator', 'Member'];
 
     return (
         <>

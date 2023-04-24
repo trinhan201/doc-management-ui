@@ -16,6 +16,10 @@ const InputField = (props) => {
             return !showPassword ? 'password' : 'text';
         } else if (inputName === 'email') {
             return 'email';
+        } else if (inputName === 'date') {
+            return 'date';
+        } else if (inputName === 'radio') {
+            return 'radio';
         } else {
             return 'text';
         }

@@ -120,12 +120,20 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
                         />
                         <p className="text-red-600 text-[1.3rem]">{confirmPasswordErrMsg.confirmPasswordValue}</p>
                     </div>
-                    <button
-                        onClick={handleSubmit}
-                        className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        Lưu
-                    </button>
+                    <div className="flex justify-center items-center gap-5">
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            Lưu
+                        </button>
+                        <button
+                            onClick={() => setShowChangePassword(false)}
+                            className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            Hủy
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
