@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
     faPlusCircle,
     faAngleLeft,
@@ -9,15 +10,24 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
+import DocumentForm from '~/components/Form/DocumentForm';
 
 const DocumentOut = () => {
+    const [showForm, setShowForm] = useState(false);
+    const [formTitle, setFormTitle] = useState('');
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
     return (
         <>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách văn bản đi</h1>
-                <button className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                <button
+                    onClick={() => {
+                        setShowForm(true);
+                        setFormTitle('Thêm văn bản đi mới');
+                    }}
+                    className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                >
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
             </div>
@@ -98,7 +108,13 @@ const DocumentOut = () => {
                                                 <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                <div
+                                                    onClick={() => {
+                                                        setShowForm(true);
+                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                    }}
+                                                    className="ml-2 cursor-pointer hover:text-primary"
+                                                >
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -141,7 +157,13 @@ const DocumentOut = () => {
                                                 <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                <div
+                                                    onClick={() => {
+                                                        setShowForm(true);
+                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                    }}
+                                                    className="ml-2 cursor-pointer hover:text-primary"
+                                                >
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -184,7 +206,13 @@ const DocumentOut = () => {
                                                 <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                <div
+                                                    onClick={() => {
+                                                        setShowForm(true);
+                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                    }}
+                                                    className="ml-2 cursor-pointer hover:text-primary"
+                                                >
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -227,7 +255,13 @@ const DocumentOut = () => {
                                                 <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                <div
+                                                    onClick={() => {
+                                                        setShowForm(true);
+                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                    }}
+                                                    className="ml-2 cursor-pointer hover:text-primary"
+                                                >
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -270,7 +304,13 @@ const DocumentOut = () => {
                                                 <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
+                                                <div
+                                                    onClick={() => {
+                                                        setShowForm(true);
+                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                    }}
+                                                    className="ml-2 cursor-pointer hover:text-primary"
+                                                >
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -305,6 +345,8 @@ const DocumentOut = () => {
                     docType="Hợp đồng"
                     level="Bình thường"
                     note="Đây là ghi chú"
+                    setShowForm={setShowForm}
+                    setFormTitle={setFormTitle}
                 />
                 <DocumentCard
                     id="1"
@@ -313,6 +355,8 @@ const DocumentOut = () => {
                     docType="Hợp đồng"
                     level="Bình thường"
                     note="Đây là ghi chú"
+                    setShowForm={setShowForm}
+                    setFormTitle={setFormTitle}
                 />
                 <DocumentCard
                     id="1"
@@ -321,6 +365,8 @@ const DocumentOut = () => {
                     docType="Hợp đồng"
                     level="Bình thường"
                     note="Đây là ghi chú"
+                    setShowForm={setShowForm}
+                    setFormTitle={setFormTitle}
                 />
                 <DocumentCard
                     id="1"
@@ -329,6 +375,8 @@ const DocumentOut = () => {
                     docType="Hợp đồng"
                     level="Bình thường"
                     note="Đây là ghi chú"
+                    setShowForm={setShowForm}
+                    setFormTitle={setFormTitle}
                 />
                 <DocumentCard
                     id="1"
@@ -337,6 +385,8 @@ const DocumentOut = () => {
                     docType="Hợp đồng"
                     level="Bình thường"
                     note="Đây là ghi chú"
+                    setShowForm={setShowForm}
+                    setFormTitle={setFormTitle}
                 />
                 <div className="flex items-center justify-center">
                     <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30">
@@ -347,6 +397,7 @@ const DocumentOut = () => {
                     </div>
                 </div>
             </div>
+            {showForm && <DocumentForm formTitle={formTitle} setShowForm={setShowForm} />}
         </>
     );
 };

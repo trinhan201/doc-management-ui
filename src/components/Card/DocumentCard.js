@@ -12,6 +12,12 @@ const DocumentCard = (props) => {
         setShowAction(!showAction);
     };
 
+    const handleShowForm = () => {
+        setShowAction(false);
+        props.setShowForm(true);
+        props.setFormTitle('Chỉnh sửa văn bản đi');
+    };
+
     return (
         <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center justify-between relative text-right mb-3">
@@ -33,7 +39,7 @@ const DocumentCard = (props) => {
                             <span className="ml-3">Chi tiết</span>
                         </li>
                         <li
-                            onClick={() => setShowAction(false)}
+                            onClick={handleShowForm}
                             className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faPenToSquare} />
