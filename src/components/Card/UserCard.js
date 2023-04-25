@@ -31,13 +31,16 @@ const UserCard = (props) => {
                     }
                 >
                     <ul>
-                        <li onClick={handleShowForm} className="flex items-center p-[8px] hover:bg-[#dddddd]">
+                        <li
+                            onClick={handleShowForm}
+                            className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
+                        >
                             <FontAwesomeIcon icon={faPenToSquare} />
                             <span className="ml-3">Sửa</span>
                         </li>
                         <li
                             onClick={() => setShowAction(false)}
-                            className="flex items-center p-[8px] hover:bg-[#dddddd]"
+                            className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faTrashCan} />
                             <span className="ml-3">Xóa</span>
