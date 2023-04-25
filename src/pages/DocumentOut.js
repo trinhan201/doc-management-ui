@@ -24,7 +24,7 @@ const DocumentOut = () => {
                 <button
                     onClick={() => {
                         setShowForm(true);
-                        setFormTitle('Thêm văn bản đi mới');
+                        setFormTitle('Thêm văn bản mới');
                     }}
                     className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                 >
@@ -111,7 +111,7 @@ const DocumentOut = () => {
                                                 <div
                                                     onClick={() => {
                                                         setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                        setFormTitle('Chỉnh sửa văn bản');
                                                     }}
                                                     className="ml-2 cursor-pointer hover:text-primary"
                                                 >
@@ -160,7 +160,7 @@ const DocumentOut = () => {
                                                 <div
                                                     onClick={() => {
                                                         setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                        setFormTitle('Chỉnh sửa văn bản');
                                                     }}
                                                     className="ml-2 cursor-pointer hover:text-primary"
                                                 >
@@ -209,7 +209,7 @@ const DocumentOut = () => {
                                                 <div
                                                     onClick={() => {
                                                         setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                        setFormTitle('Chỉnh sửa văn bản');
                                                     }}
                                                     className="ml-2 cursor-pointer hover:text-primary"
                                                 >
@@ -258,7 +258,7 @@ const DocumentOut = () => {
                                                 <div
                                                     onClick={() => {
                                                         setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                        setFormTitle('Chỉnh sửa văn bản');
                                                     }}
                                                     className="ml-2 cursor-pointer hover:text-primary"
                                                 >
@@ -307,7 +307,7 @@ const DocumentOut = () => {
                                                 <div
                                                     onClick={() => {
                                                         setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa văn bản đi');
+                                                        setFormTitle('Chỉnh sửa văn bản');
                                                     }}
                                                     className="ml-2 cursor-pointer hover:text-primary"
                                                 >

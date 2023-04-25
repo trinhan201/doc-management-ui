@@ -15,7 +15,7 @@ const DocumentCard = (props) => {
     const handleShowForm = () => {
         setShowAction(false);
         props.setShowForm(true);
-        props.setFormTitle('Chỉnh sửa văn bản đi');
+        props.setFormTitle('Chỉnh sửa văn bản');
     };
 
     return (
