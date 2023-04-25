@@ -6,19 +6,74 @@ import {
     faTrashCan,
     faPenToSquare,
     faEye,
+    faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
 import DocumentForm from '~/components/Form/DocumentForm';
+import InputField from '~/components/InputField';
 
 const DocumentIn = () => {
+    const [docName, setDocName] = useState('');
+    const [code, setCode] = useState('');
+    const [createDate, setCreateDate] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [formTitle, setFormTitle] = useState('');
+    const typeOptions = ['Hợp đồng', 'Thông báo', 'Khiếu nại'];
+    const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
     return (
         <>
+            <div className="bg-white p-[16px] mb-5 shadow-4Way">
+                <h1 className="text-[2rem] md:text-[2.4rem] font-bold">Tìm kiếm</h1>
+                <form>
+                    <div className="flex flex-col md:flex-row gap-5 mt-5">
+                        <div className="flex-1">
+                            <label className="text-[1.4rem]">Tên văn bản:</label>
+                            <InputField
+                                className="default"
+                                placeholder="Tên văn bản"
+                                value={docName}
+                                setValue={setDocName}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <label className="text-[1.4rem]">Mã văn bản:</label>
+                            <InputField className="default" placeholder="Mã văn bản" value={code} setValue={setCode} />
+                        </div>
+                        <div className="flex-1">
+                            <label className="text-[1.4rem]">Ngày tạo:</label>
+                            <InputField
+                                name="date"
+                                className="default leading-[1.3]"
+                                value={createDate}
+                                setValue={setCreateDate}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-5 mt-[12.5px]">
+                        <div className="flex-1">
+                            <label className="text-[1.4rem]">Loại văn bản:</label>
+                            <DropList options={typeOptions} />
+                        </div>
+                        <div className="flex-1">
+                            <label className="text-[1.4rem]">Trạng thái:</label>
+                            <DropList options={statusOptions} />
+                        </div>
+                        <div className="flex-1">
+                            <label className="text-[1.4rem]">Mức độ:</label>
+                            <DropList options={levelOptions} />
+                        </div>
+                    </div>
+                    <div className="flex justify-center">
+                        <button className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                            Tìm kiếm <FontAwesomeIcon icon={faSearch} />
+                        </button>
+                    </div>
+                </form>
+            </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách văn bản đến</h1>
                 <button

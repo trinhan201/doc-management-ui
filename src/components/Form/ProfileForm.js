@@ -99,7 +99,7 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
                     <div className="mt-7">
                         <InputField
                             name="date"
-                            className="default"
+                            className="default leading-[1.3]"
                             placeholder="Ngày sinh"
                             value={birth}
                             setValue={setBirth}
