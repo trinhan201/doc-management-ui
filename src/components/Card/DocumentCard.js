@@ -73,7 +73,9 @@ const DocumentCard = (props) => {
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Mức độ:</span>
-                <span className="text-white font-semibold text-center bg-[#cccccc] p-2 rounded-md">{props.level}</span>
+                <span className="text-white text-[1.3rem] font-semibold text-center bg-[#cccccc] p-1 rounded-lg">
+                    {props.level}
+                </span>
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>

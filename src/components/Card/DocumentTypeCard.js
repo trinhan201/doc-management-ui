@@ -12,8 +12,6 @@ const DocumentTypeCard = (props) => {
 
     const handleShowForm = () => {
         setShowAction(false);
-        props.setShowForm(true);
-        props.setFormTitle('Chỉnh sửa loại văn bản');
     };
 
     return (

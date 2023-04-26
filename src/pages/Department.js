@@ -11,12 +11,9 @@ import {
     faAngleRight,
 } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
-import DepartmentForm from '~/components/Form/DepartmentForm';
 
 const Department = () => {
     const [searchValue, setSearchValue] = useState('');
-    const [showForm, setShowForm] = useState(false);
-    const [formTitle, setFormTitle] = useState('');
 
     return (
         <>
@@ -42,13 +39,7 @@ const Department = () => {
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách phòng ban</h1>
-                <button
-                    onClick={() => {
-                        setShowForm(true);
-                        setFormTitle('Thêm phòng ban mới');
-                    }}
-                    className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                >
+                <button className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
             </div>
@@ -100,13 +91,7 @@ const Department = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa phòng ban');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -133,13 +118,7 @@ const Department = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa phòng ban');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -166,13 +145,7 @@ const Department = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa phòng ban');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -199,13 +172,7 @@ const Department = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa phòng ban');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -232,13 +199,7 @@ const Department = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa phòng ban');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -265,13 +226,7 @@ const Department = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa phòng ban');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -299,40 +254,14 @@ const Department = () => {
                 <div className="mb-3">
                     <input type="checkbox" /> Chọn tất cả
                 </div>
-                <DepartmentCard
-                    id="1"
-                    departmentName="Phòng nhân sự"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
-                <DepartmentCard
-                    id="2"
-                    departmentName="Phòng tài chính"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
-                <DepartmentCard
-                    id="3"
-                    departmentName="Phòng Marketing"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
-                <DepartmentCard
-                    id="3"
-                    departmentName="Phòng IT"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
+                <DepartmentCard id="1" departmentName="Phòng nhân sự" note="Đây là ghi chú" />
+                <DepartmentCard id="2" departmentName="Phòng tài chính" note="Đây là ghi chú" />
+                <DepartmentCard id="3" departmentName="Phòng Marketing" note="Đây là ghi chú" />
+                <DepartmentCard id="3" departmentName="Phòng IT" note="Đây là ghi chú" />
                 <DepartmentCard
                     id="3"
                     departmentName="Phòng Công đoàn"
                     note="Đây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
                 />
                 <div className="flex items-center justify-center">
                     <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30">
@@ -343,7 +272,6 @@ const Department = () => {
                     </div>
                 </div>
             </div>
-            {showForm && <DepartmentForm formTitle={formTitle} setShowForm={setShowForm} />}
         </>
     );
 };

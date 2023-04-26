@@ -11,12 +11,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import DocumentTypeCard from '~/components/Card/DocumentTypeCard';
 import InputField from '~/components/InputField';
-import DocumentTypeForm from '~/components/Form/DocumentTypeForm';
 
 const DocumentType = () => {
     const [searchValue, setSearchValue] = useState('');
-    const [showForm, setShowForm] = useState(false);
-    const [formTitle, setFormTitle] = useState('');
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
@@ -41,13 +38,7 @@ const DocumentType = () => {
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Các loại văn bản</h1>
-                <button
-                    onClick={() => {
-                        setShowForm(true);
-                        setFormTitle('Thêm loại văn bản mới');
-                    }}
-                    className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                >
+                <button className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
             </div>
@@ -103,13 +94,7 @@ const DocumentType = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa loại văn bản');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -137,13 +122,7 @@ const DocumentType = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa loại văn bản');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -171,13 +150,7 @@ const DocumentType = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa loại văn bản');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -205,13 +178,7 @@ const DocumentType = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa loại văn bản');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -239,13 +206,7 @@ const DocumentType = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa loại văn bản');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -273,13 +234,7 @@ const DocumentType = () => {
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
                                             <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowForm(true);
-                                                        setFormTitle('Chỉnh sửa loại văn bản');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
+                                                <div className="cursor-pointer hover:text-primary">
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </div>
                                                 <div className="ml-2 cursor-pointer hover:text-primary">
@@ -307,45 +262,15 @@ const DocumentType = () => {
                 <div className="mb-3">
                     <input type="checkbox" /> Chọn tất cả
                 </div>
-                <DocumentTypeCard
-                    id="1"
-                    typeName="Hợp đồng"
-                    typeCode="HD"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
-                <DocumentTypeCard
-                    id="2"
-                    typeName="Hợp đồng"
-                    typeCode="HD"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
-                <DocumentTypeCard
-                    id="3"
-                    typeName="Hợp đồng"
-                    typeCode="HD"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
-                <DocumentTypeCard
-                    id="3"
-                    typeName="Hợp đồng"
-                    typeCode="HD"
-                    note="Đây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
-                />
+                <DocumentTypeCard id="1" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
+                <DocumentTypeCard id="2" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
+                <DocumentTypeCard id="3" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
+                <DocumentTypeCard id="3" typeName="Hợp đồng" typeCode="HD" note="Đây là ghi chú" />
                 <DocumentTypeCard
                     id="3"
                     typeName="Hợp đồng"
                     typeCode="HD"
                     note="Đây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chúĐây là ghi chú"
-                    setShowForm={setShowForm}
-                    setFormTitle={setFormTitle}
                 />
                 <div className="flex items-center justify-center">
                     <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30">
@@ -356,7 +281,6 @@ const DocumentType = () => {
                     </div>
                 </div>
             </div>
-            {showForm && <DocumentTypeForm formTitle={formTitle} setShowForm={setShowForm} />}
         </>
     );
 };

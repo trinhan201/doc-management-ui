@@ -12,8 +12,6 @@ const DepartmentCard = (props) => {
 
     const handleShowForm = () => {
         setShowAction(false);
-        props.setShowForm(true);
-        props.setFormTitle('Chỉnh sửa phòng ban');
     };
 
     return (
