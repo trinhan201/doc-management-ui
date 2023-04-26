@@ -4,7 +4,7 @@ import ForgotPassword from '~/pages/Authentications/ForgotPassword';
 import ResetPassword from '~/pages/Authentications/ResetPassword';
 import Dashboard from '~/pages/Others/Dashboard';
 import Department from '~/pages/Departments/Department';
-import User from '~/pages/Others/User';
+import User from '~/pages/Users/User';
 import DocumentType from '~/pages/DocumentTypes/DocumentType';
 import DocumentIn from '~/pages/Documents/DocumentIn';
 import DocumentOut from '~/pages/Documents/DocumentOut';
@@ -13,6 +13,7 @@ import Profile from '~/pages/Others/Profile';
 import CreateDepartment from '~/pages/Departments/CreateDepartment';
 import CreateDocumentType from './pages/DocumentTypes/CreateDocumentType';
 import DefaultLayout from '~/layouts/DefaultLayout';
+import CreateUser from './pages/Users/CreateUser';
 
 const App = () => {
     return (
@@ -85,6 +86,22 @@ const App = () => {
                     element={
                         <DefaultLayout>
                             <User />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/users/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser title="Chỉnh sửa thành viên" />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/users/create"
+                    element={
+                        <DefaultLayout>
+                            <CreateUser title="Thêm thành viên mới" />
                         </DefaultLayout>
                     }
                 />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { NavLink } from 'react-router-dom';
 import SwitchButton from '~/components/SwitchButton';
 import DropList from '../DropList';
 
@@ -10,12 +11,6 @@ const UserCard = (props) => {
 
     const toggle = () => {
         setShowAction(!showAction);
-    };
-
-    const handleShowForm = () => {
-        setShowAction(false);
-        props.setShowForm(true);
-        props.setFormTitle('Chỉnh sửa thành viên');
     };
 
     return (
@@ -31,16 +26,15 @@ const UserCard = (props) => {
                     }
                 >
                     <ul>
-                        <li
-                            onClick={handleShowForm}
-                            className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
-                        >
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                            <span className="ml-3">Sửa</span>
+                        <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
+                            <NavLink className="block p-[8px] text-left" to="/users/123">
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                                <span className="ml-3">Sửa</span>
+                            </NavLink>
                         </li>
                         <li
                             onClick={() => setShowAction(false)}
-                            className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
+                            className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faTrashCan} />
                             <span className="ml-3">Xóa</span>

@@ -8,15 +8,13 @@ import {
     faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NavLink } from 'react-router-dom';
 import UserCard from '~/components/Card/UserCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
-import ProfileForm from '~/components/Form/ProfileForm';
 
 const User = () => {
-    const [showUserForm, setShowUserForm] = useState(false);
-    const [formTitle, setFormTitle] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
@@ -44,15 +42,12 @@ const User = () => {
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách người dùng</h1>
-                <button
-                    onClick={() => {
-                        setShowUserForm(true);
-                        setFormTitle('Thêm thành viên mới');
-                    }}
+                <NavLink
+                    to="/users/create"
                     className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                 >
-                    Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
-                </button>
+                    <FontAwesomeIcon icon={faPlusCircle} /> Thêm mới
+                </NavLink>
             </div>
             <div className="hidden md:flex flex-col bg-white shadow-4Way">
                 <div className="overflow-x-auto">
@@ -113,18 +108,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -149,18 +140,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -185,18 +172,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -221,18 +204,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -257,18 +236,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -293,18 +268,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -329,18 +300,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -365,18 +332,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -401,18 +364,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -437,18 +396,14 @@ const User = () => {
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div
-                                                    onClick={() => {
-                                                        setShowUserForm(true);
-                                                        setFormTitle('Chỉnh sửa thành viên');
-                                                    }}
-                                                    className="cursor-pointer hover:text-primary"
-                                                >
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/users/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -478,8 +433,6 @@ const User = () => {
                     email="trinhan201@gmail.com"
                     phone="0123456789"
                     department="Phòng nhân sự"
-                    setShowForm={setShowUserForm}
-                    setFormTitle={setFormTitle}
                 />
                 <UserCard
                     id="2"
@@ -487,8 +440,6 @@ const User = () => {
                     email="phucuong123@gmail.com"
                     phone="0829734968"
                     department="Phòng nhân sự"
-                    setShowForm={setShowUserForm}
-                    setFormTitle={setFormTitle}
                 />
                 <UserCard
                     id="3"
@@ -496,8 +447,6 @@ const User = () => {
                     email="anhminh123@gmail.com"
                     phone="0391606017"
                     department="Phòng nhân sự"
-                    setShowForm={setShowUserForm}
-                    setFormTitle={setFormTitle}
                 />
                 <UserCard
                     id="3"
@@ -505,8 +454,6 @@ const User = () => {
                     email="anhminh123@gmail.com"
                     phone="0391606017"
                     department="Phòng nhân sự"
-                    setShowForm={setShowUserForm}
-                    setFormTitle={setFormTitle}
                 />
                 <UserCard
                     id="3"
@@ -514,8 +461,6 @@ const User = () => {
                     email="anhminh123@gmail.com"
                     phone="0391606017"
                     department="Phòng nhân sự"
-                    setShowForm={setShowUserForm}
-                    setFormTitle={setFormTitle}
                 />
                 <div className="flex items-center justify-center">
                     <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30">
@@ -526,7 +471,6 @@ const User = () => {
                     </div>
                 </div>
             </div>
-            {showUserForm && <ProfileForm formTitle={formTitle} setShowForm={setShowUserForm} />}
         </>
     );
 };
