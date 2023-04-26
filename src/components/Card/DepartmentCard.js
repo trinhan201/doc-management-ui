@@ -2,16 +2,13 @@ import { useState } from 'react';
 import SwitchButton from '../SwitchButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { NavLink } from 'react-router-dom';
 
 const DepartmentCard = (props) => {
     const [showAction, setShowAction] = useState(false);
 
     const toggle = () => {
         setShowAction(!showAction);
-    };
-
-    const handleShowForm = () => {
-        setShowAction(false);
     };
 
     return (
@@ -27,16 +24,15 @@ const DepartmentCard = (props) => {
                     }
                 >
                     <ul>
-                        <li
-                            onClick={handleShowForm}
-                            className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
-                        >
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                            <span className="ml-3">Sửa</span>
+                        <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
+                            <NavLink className="block p-[8px] text-left" to="/departments/123">
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                                <span className="ml-3">Sửa</span>
+                            </NavLink>
                         </li>
                         <li
                             onClick={() => setShowAction(false)}
-                            className="flex items-center p-[8px] hover:bg-[#dddddd] cursor-pointer"
+                            className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faTrashCan} />
                             <span className="ml-3">Xóa</span>

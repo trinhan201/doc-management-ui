@@ -6,7 +6,7 @@ import {
     faArrowTurnUp,
     faFile,
     faFontAwesome,
-    faHouse,
+    faGauge,
     faLayerGroup,
     faListCheck,
     faUser,
@@ -24,7 +24,7 @@ const Sidebar = () => {
                 </h1>
             </div>
             <ul>
-                <SidebarItem path="/home" icon={faHouse} title="Trang chủ" />
+                <SidebarItem path="/dashboard" icon={faGauge} title="Bảng điều khiển" />
                 <SidebarItem path="/document-types" icon={faFontAwesome} title="Loại văn bản" />
                 <SidebarItem
                     onClick={() => setToggleSubMenu(!toggleSubMenu)}
