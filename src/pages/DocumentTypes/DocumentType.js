@@ -11,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import DocumentTypeCard from '~/components/Card/DocumentTypeCard';
 import InputField from '~/components/InputField';
+import { NavLink } from 'react-router-dom';
 
 const DocumentType = () => {
     const [searchValue, setSearchValue] = useState('');
@@ -38,9 +39,12 @@ const DocumentType = () => {
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem]">Các loại văn bản</h1>
-                <button className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                <NavLink
+                    to="/document-types/create"
+                    className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                >
                     Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
-                </button>
+                </NavLink>
             </div>
             <div className="hidden md:flex flex-col bg-white shadow-4Way">
                 <div className="overflow-x-auto">
@@ -93,40 +97,14 @@ const DocumentType = () => {
                                             Đây là ghi chú
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/document-types/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -149,40 +127,14 @@ const DocumentType = () => {
                                             Đây là ghi chú
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/document-types/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -205,12 +157,14 @@ const DocumentType = () => {
                                             Đây là ghi chú
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/document-types/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -233,12 +187,74 @@ const DocumentType = () => {
                                             Đây là ghi chú
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/document-types/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/document-types/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr className="border-b dark:border-neutral-500">
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input type="checkbox" />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
+                                        <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
+                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                            <div className="flex items-center">
+                                                <SwitchButton />
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                            Đây là ghi chú
+                                        </td>
+                                        <td className="px-2 py-1 md:px-6 md:py-4">
+                                            <div className="flex items-center text-white">
+                                                <NavLink to="/document-types/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>

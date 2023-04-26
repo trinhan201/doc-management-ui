@@ -11,6 +11,7 @@ import DocumentOut from '~/pages/Documents/DocumentOut';
 import Page404 from '~/pages/Others/Page404';
 import Profile from '~/pages/Others/Profile';
 import CreateDepartment from '~/pages/Departments/CreateDepartment';
+import CreateDocumentType from './pages/DocumentTypes/CreateDocumentType';
 import DefaultLayout from '~/layouts/DefaultLayout';
 
 const App = () => {
@@ -92,6 +93,22 @@ const App = () => {
                     element={
                         <DefaultLayout>
                             <DocumentType />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/document-types/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateDocumentType title="Chỉnh sửa loại văn bản" />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/document-types/create"
+                    element={
+                        <DefaultLayout>
+                            <CreateDocumentType title="Thêm loại văn bản mới" />
                         </DefaultLayout>
                     }
                 />
