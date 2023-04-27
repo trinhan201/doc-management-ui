@@ -19,7 +19,7 @@ const Department = () => {
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
-                <h1 className="text-[1.8rem] md:text-[2.4rem]">Tìm kiếm</h1>
+                <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Tìm kiếm</h1>
                 <form>
                     <div className="flex flex-col md:flex-row md:items-center gap-5">
                         <div className="flex-1">
@@ -39,7 +39,7 @@ const Department = () => {
                 </form>
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
-                <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách phòng ban</h1>
+                <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách phòng ban</h1>
                 <NavLink
                     to="/departments/create"
                     className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"

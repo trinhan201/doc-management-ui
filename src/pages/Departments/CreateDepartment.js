@@ -10,7 +10,7 @@ const CreateDepartment = ({ title }) => {
     const [status, setStatus] = useState('');
 
     return (
-        <div className="bg-white p-[16px] shadow-4Way">
+        <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
             <h1 className="text-[2rem] font-bold">{title}</h1>
             <form>
                 <div className="mt-8">
@@ -42,7 +42,15 @@ const CreateDepartment = ({ title }) => {
 
                 <div className="mt-7">
                     <label className="font-bold">Ghi chú:</label>
-                    <InputField textarea className="default" placeholder="Ghi chú" value={note} setValue={setNote} />
+                    <InputField
+                        textarea
+                        rows="6"
+                        cols="50"
+                        className="default"
+                        placeholder="Ghi chú"
+                        value={note}
+                        setValue={setNote}
+                    />
                 </div>
                 <div className="block md:flex items-center gap-5 mt-12">
                     <button className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">

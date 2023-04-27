@@ -18,7 +18,7 @@ const DocumentType = () => {
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
-                <h1 className="text-[1.8rem] md:text-[2.4rem]">Tìm kiếm</h1>
+                <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Tìm kiếm</h1>
                 <form>
                     <div className="flex flex-col md:flex-row md:items-center gap-5">
                         <div className="flex-1">
@@ -31,19 +31,19 @@ const DocumentType = () => {
                         </div>
                         <div className="flex-1">
                             <button className="w-full md:w-fit text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
-                                Tìm kiếm <FontAwesomeIcon icon={faSearch} />
+                                <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
-                <h1 className="text-[1.8rem] md:text-[2.4rem]">Các loại văn bản</h1>
+                <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Các loại văn bản</h1>
                 <NavLink
                     to="/document-types/create"
                     className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                 >
-                    Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
+                    <FontAwesomeIcon icon={faPlusCircle} /> Thêm mới
                 </NavLink>
             </div>
             <div className="hidden md:flex flex-col bg-white shadow-4Way">
@@ -65,9 +65,6 @@ const DocumentType = () => {
                                             Loại văn bản
                                         </th>
                                         <th scope="col" className="px-6 py-4">
-                                            Mã loại
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
                                             Trạng thái
                                         </th>
                                         <th scope="col" className="px-6 py-4">
@@ -87,7 +84,6 @@ const DocumentType = () => {
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
@@ -117,7 +113,6 @@ const DocumentType = () => {
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
@@ -147,7 +142,6 @@ const DocumentType = () => {
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
@@ -177,7 +171,6 @@ const DocumentType = () => {
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
@@ -207,7 +200,6 @@ const DocumentType = () => {
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />
@@ -237,7 +229,6 @@ const DocumentType = () => {
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                         <td className="whitespace-nowrap px-6 py-4">Hợp đồng</td>
-                                        <td className="whitespace-nowrap px-6 py-4">HD</td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <SwitchButton />

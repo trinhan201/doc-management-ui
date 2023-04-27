@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import InputField from '../InputField';
 import DropList from '../DropList';
 
@@ -127,13 +129,13 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
                             onClick={handleSubmit}
                             className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                         >
-                            Lưu
+                            <FontAwesomeIcon icon={faFloppyDisk} /> Lưu
                         </button>
                         <button
                             onClick={() => setShowForm(false)}
                             className="w-full text-[white] bg-red-600 mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                         >
-                            Hủy
+                            <FontAwesomeIcon icon={faXmark} /> Hủy
                         </button>
                     </div>
                 </form>

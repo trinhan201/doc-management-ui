@@ -14,37 +14,11 @@ import CreateDepartment from '~/pages/Departments/CreateDepartment';
 import CreateDocumentType from './pages/DocumentTypes/CreateDocumentType';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import CreateUser from './pages/Users/CreateUser';
+import CreateDocument from './pages/Documents/CreateDocument';
 
 const App = () => {
     return (
         <Router>
-            {/* <div className="App">
-                <Routes>
-                    {routes.map((route index) => {
-                        const Page = route.element;{}
-                        let Layout;
-
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
-
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-                    <Route path="/" element={<Navigate to="/signin" />} />
-                </Routes>
-            </div> */}
             <Routes>
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -139,10 +113,42 @@ const App = () => {
                     }
                 />
                 <Route
+                    path="/documents/documents-out/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateDocument title="Sửa văn bản đi" />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/documents/documents-out/create"
+                    element={
+                        <DefaultLayout>
+                            <CreateDocument title="Thêm văn bản đi mới" />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
                     path="/documents/documents-in"
                     element={
                         <DefaultLayout>
                             <DocumentIn />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/documents/documents-in/:id"
+                    element={
+                        <DefaultLayout>
+                            <CreateDocument title="Sửa văn bản đến" />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/documents/documents-in/create"
+                    element={
+                        <DefaultLayout>
+                            <CreateDocument title="Thêm văn bản đến mới" />
                         </DefaultLayout>
                     }
                 />

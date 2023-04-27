@@ -15,7 +15,7 @@ const CreateUser = ({ title }) => {
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
 
     return (
-        <div className="bg-white p-[16px] shadow-4Way">
+        <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
             <h1 className="text-[2rem] font-bold">{title}</h1>
             <form>
                 <div className="mt-8">
@@ -75,7 +75,7 @@ const CreateUser = ({ title }) => {
                         <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
                     </button>
                     <NavLink
-                        to="/departments"
+                        to="/users"
                         className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                     >
                         <FontAwesomeIcon icon={faXmark} /> Hủy bỏ

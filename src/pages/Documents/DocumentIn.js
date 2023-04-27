@@ -356,6 +356,7 @@ const DocumentIn = () => {
                     <input type="checkbox" /> Chọn tất cả
                 </div>
                 <DocumentCard
+                    path="documents-in"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -364,6 +365,7 @@ const DocumentIn = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="documents-in"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -372,6 +374,7 @@ const DocumentIn = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="documents-in"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -380,6 +383,7 @@ const DocumentIn = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="documents-in"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -388,6 +392,7 @@ const DocumentIn = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="documents-in"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"

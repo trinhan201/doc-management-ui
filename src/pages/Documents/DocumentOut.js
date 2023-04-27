@@ -9,6 +9,7 @@ import {
     faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NavLink } from 'react-router-dom';
 import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
 
@@ -39,11 +40,11 @@ const DocumentOut = () => {
                             />
                         </div>
                         <div className="flex-1">
-                            <label className="text-[1.4rem]">Mã văn bản:</label>
-                            <InputField className="default" placeholder="Mã văn bản" value={code} setValue={setCode} />
+                            <label className="text-[1.4rem]">Số ký hiệu:</label>
+                            <InputField className="default" placeholder="Số ký hiệu" value={code} setValue={setCode} />
                         </div>
                         <div className="flex-1">
-                            <label className="text-[1.4rem]">Ngày tạo:</label>
+                            <label className="text-[1.4rem]">Ngày ban hành:</label>
                             <InputField
                                 name="date"
                                 className="default leading-[1.3]"
@@ -68,16 +69,19 @@ const DocumentOut = () => {
                     </div>
                     <div className="flex justify-center">
                         <button className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
-                            Tìm kiếm <FontAwesomeIcon icon={faSearch} />
+                            <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
                         </button>
                     </div>
                 </form>
             </div>
             <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
-                <h1 className="text-[1.8rem] md:text-[2.4rem]">Danh sách văn bản đi</h1>
-                <button className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
-                    Thêm mới <FontAwesomeIcon icon={faPlusCircle} />
-                </button>
+                <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách văn bản đi</h1>
+                <NavLink
+                    to="/documents/documents-out/create"
+                    className="text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                >
+                    <FontAwesomeIcon icon={faPlusCircle} /> Thêm mới
+                </NavLink>
             </div>
             <div className="hidden md:flex flex-col bg-white shadow-4Way">
                 <div className="overflow-x-auto">
@@ -95,7 +99,7 @@ const DocumentOut = () => {
                                             STT
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Mã văn bản
+                                            Số ký hiệu
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Tên văn bản
@@ -109,9 +113,6 @@ const DocumentOut = () => {
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Trạng thái
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Ghi chú
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Vị trí hiện tại
@@ -143,24 +144,23 @@ const DocumentOut = () => {
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={statusOptions} />
                                         </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <DropList options={departmentOptions} />
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faEye} />
+                                            <div className="flex items-center text-white">
+                                                <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                <NavLink to="/documents/documents-out/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -186,24 +186,23 @@ const DocumentOut = () => {
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={statusOptions} />
                                         </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <DropList options={departmentOptions} />
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faEye} />
+                                            <div className="flex items-center text-white">
+                                                <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                <NavLink to="/documents/documents-out/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -229,24 +228,23 @@ const DocumentOut = () => {
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={statusOptions} />
                                         </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <DropList options={departmentOptions} />
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faEye} />
+                                            <div className="flex items-center text-white">
+                                                <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                <NavLink to="/documents/documents-out/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -272,24 +270,23 @@ const DocumentOut = () => {
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={statusOptions} />
                                         </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <DropList options={departmentOptions} />
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faEye} />
+                                            <div className="flex items-center text-white">
+                                                <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                <NavLink to="/documents/documents-out/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -315,24 +312,23 @@ const DocumentOut = () => {
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <DropList options={statusOptions} />
                                         </td>
-                                        <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                            Đây là ghi chú
-                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4">
                                             <div className="flex items-center">
                                                 <DropList options={departmentOptions} />
                                             </div>
                                         </td>
                                         <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center">
-                                                <div className="cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faEye} />
+                                            <div className="flex items-center text-white">
+                                                <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                 </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                </div>
-                                                <div className="ml-2 cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon icon={faTrashCan} />
+                                                <NavLink to="/documents/documents-out/123">
+                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                    </div>
+                                                </NavLink>
+                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                 </div>
                                             </div>
                                         </td>
@@ -357,6 +353,7 @@ const DocumentOut = () => {
                     <input type="checkbox" /> Chọn tất cả
                 </div>
                 <DocumentCard
+                    path="documents-out"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -365,6 +362,7 @@ const DocumentOut = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="docu"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -373,6 +371,7 @@ const DocumentOut = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="docu"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -381,6 +380,7 @@ const DocumentOut = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="docu"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
@@ -389,6 +389,7 @@ const DocumentOut = () => {
                     note="Đây là ghi chú"
                 />
                 <DocumentCard
+                    path="docu"
                     id="1"
                     code="HD00001"
                     docName="Hợp đồng mua cơ sở vật chất cho bệnh viện Nhà bè"
