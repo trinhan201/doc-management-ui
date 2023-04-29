@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import InputField from '~/components/InputField';
+import * as authServices from '~/services/authServices';
 
 const ForgotPassword = () => {
     const [emailValue, setEmailValue] = useState('');
@@ -25,11 +26,16 @@ const ForgotPassword = () => {
         return true;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isEmailValid = emailValidator();
 
         if (!isEmailValid) return;
+        const data = {
+            email: emailValue,
+        };
+        const res = await authServices.forgotPassword(data);
+        localStorage.setItem('resetToken', res.resetToken);
     };
 
     return (

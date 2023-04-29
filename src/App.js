@@ -1,20 +1,22 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Signin from '~/pages/Authentications/Signin';
-import ForgotPassword from '~/pages/Authentications/ForgotPassword';
-import ResetPassword from '~/pages/Authentications/ResetPassword';
-import Dashboard from '~/pages/Others/Dashboard';
-import Department from '~/pages/Departments/Department';
-import User from '~/pages/Users/User';
-import DocumentType from '~/pages/DocumentTypes/DocumentType';
-import DocumentIn from '~/pages/Documents/DocumentIn';
-import DocumentOut from '~/pages/Documents/DocumentOut';
-import Page404 from '~/pages/Others/Page404';
-import Profile from '~/pages/Others/Profile';
-import CreateDepartment from '~/pages/Departments/CreateDepartment';
-import CreateDocumentType from './pages/DocumentTypes/CreateDocumentType';
-import DefaultLayout from '~/layouts/DefaultLayout';
-import CreateUser from './pages/Users/CreateUser';
-import CreateDocument from './pages/Documents/CreateDocument';
+import {
+    Signin,
+    ForgotPassword,
+    ResetPassword,
+    Dashboard,
+    Department,
+    User,
+    DocumentType,
+    DocumentIn,
+    DocumentOut,
+    Page404,
+    Profile,
+    CreateDepartment,
+    CreateDocumentType,
+    DefaultLayout,
+    CreateUser,
+    CreateDocument,
+} from './pages';
 
 const App = () => {
     return (

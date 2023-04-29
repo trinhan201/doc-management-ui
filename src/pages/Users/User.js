@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     faPlusCircle,
     faSearch,
@@ -13,10 +13,19 @@ import UserCard from '~/components/Card/UserCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
+import { getCurrUser } from '~/services/authServices';
 
 const User = () => {
     const [searchValue, setSearchValue] = useState('');
     const roleOptions = ['Admin', 'Moderator', 'Member'];
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await getCurrUser();
+            console.log(res);
+        };
+        fetchApi();
+    }, []);
 
     return (
         <>

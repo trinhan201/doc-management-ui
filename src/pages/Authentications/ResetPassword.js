@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import isEmpty from 'validator/lib/isEmpty';
 import InputField from '~/components/InputField';
+import * as authServices from '~/services/authServices';
 
 const ResetPassword = () => {
     const [passwordValue, setPasswordValue] = useState('');
@@ -45,12 +46,19 @@ const ResetPassword = () => {
         return true;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isPasswordValid = passwordValidator();
         const isConfirmPasswordValid = confirmPasswordValidator();
 
         if (!isPasswordValid || !isConfirmPasswordValid) return;
+        const data = {
+            token: localStorage.getItem('resetToken'),
+            password: passwordValue,
+        };
+        const res = await authServices.resetPassword(data);
+        localStorage.removeItem('resetToken');
+        alert(res.message);
     };
 
     return (
