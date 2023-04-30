@@ -4,6 +4,7 @@ import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const Signin = () => {
     const [emailValue, setEmailValue] = useState('');
@@ -57,8 +58,13 @@ const Signin = () => {
         };
 
         const res = await authServices.signin(data);
-        localStorage.setItem('accessToken', res.accessToken);
-        localStorage.setItem('refreshToken', res.refreshToken);
+        if (res.code === 200) {
+            localStorage.setItem('accessToken', res.accessToken);
+            localStorage.setItem('refreshToken', res.refreshToken);
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
     };
 
     return (

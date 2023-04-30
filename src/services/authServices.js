@@ -7,7 +7,8 @@ export const signin = async (data = {}) => {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/signin`, data);
         return res.data;
     } catch (error) {
-        console.log(error);
+        console.log(error.response.data.message);
+        return error.response.data.message;
     }
 };
 
