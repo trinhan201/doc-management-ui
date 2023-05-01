@@ -2,6 +2,7 @@ import { useState } from 'react';
 import isEmpty from 'validator/lib/isEmpty';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const ResetPassword = () => {
     const [passwordValue, setPasswordValue] = useState('');
@@ -57,8 +58,12 @@ const ResetPassword = () => {
             password: passwordValue,
         };
         const res = await authServices.resetPassword(data);
-        localStorage.removeItem('resetToken');
-        alert(res.message);
+        if (res.code === 200) {
+            localStorage.removeItem('resetToken');
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
     };
 
     return (

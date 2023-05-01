@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import InputField from '~/components/InputField';
@@ -13,6 +13,7 @@ const Signin = () => {
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
     const [haveEmailErr, setHaveEmailErr] = useState(false);
     const [havePasswordErr, setHavePasswordErr] = useState(false);
+    const navigate = useNavigate();
 
     const emailValidator = () => {
         const msg = {};
@@ -62,6 +63,7 @@ const Signin = () => {
             localStorage.setItem('accessToken', res.accessToken);
             localStorage.setItem('refreshToken', res.refreshToken);
             successNotify(res.message);
+            navigate('/dashboard');
         } else {
             errorNotify(res);
         }

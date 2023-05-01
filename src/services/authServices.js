@@ -7,7 +7,7 @@ export const signin = async (data = {}) => {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/signin`, data);
         return res.data;
     } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error);
         return error.response.data.message;
     }
 };
@@ -18,6 +18,7 @@ export const forgotPassword = async (data = {}) => {
         return res.data;
     } catch (error) {
         console.log(error);
+        return error.response.data.message;
     }
 };
 
@@ -27,6 +28,7 @@ export const resetPassword = async (data = {}) => {
         return res.data;
     } catch (error) {
         console.log(error);
+        return error.response.data.message;
     }
 };
 

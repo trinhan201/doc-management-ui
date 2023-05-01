@@ -4,6 +4,7 @@ import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const ForgotPassword = () => {
     const [emailValue, setEmailValue] = useState('');
@@ -35,7 +36,12 @@ const ForgotPassword = () => {
             email: emailValue,
         };
         const res = await authServices.forgotPassword(data);
-        localStorage.setItem('resetToken', res.resetToken);
+        if (res.code === 200) {
+            localStorage.setItem('resetToken', res.resetToken);
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
     };
 
     return (
