@@ -6,16 +6,15 @@ const httpRequest = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
 });
 
-const accessToken = localStorage.getItem('accessToken');
-
 httpRequest.interceptors.request.use(
     async (config) => {
+        const accessToken = localStorage.getItem('accessToken');
         let currentDate = new Date();
         if (accessToken) {
             const decodedToken = jwt_decode(accessToken);
             if (decodedToken.exp * 1000 < currentDate.getTime()) {
                 const res = await refresh();
-                config.headers.authorization = `Bearer ${res.accessToken}`;
+                config.headers.Authorization = `Bearer ${res.accessToken}`;
             }
         }
         return config;

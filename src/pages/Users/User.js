@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     faPlusCircle,
     faSearch,
@@ -13,16 +13,17 @@ import UserCard from '~/components/Card/UserCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
-import { getCurrUser } from '~/services/authServices';
+import * as userServices from '~/services/userServices';
 
 const User = () => {
     const [searchValue, setSearchValue] = useState('');
+    const [userLists, setUserLists] = useState([]);
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await getCurrUser();
-            console.log(res);
+            const res = await userServices.getAllUser();
+            setUserLists(res.data);
         };
         fetchApi();
     }, []);
@@ -97,326 +98,45 @@ const User = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                    {userLists.map((ul, index) => {
+                                        return (
+                                            <tr key={index} className="border-b dark:border-neutral-500">
+                                                <td className="whitespace-nowrap px-6 py-4">
+                                                    <div className="flex items-center">
+                                                        <input type="checkbox" />
                                                     </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 font-medium">{index}</td>
+                                                <td className="whitespace-nowrap px-6 py-4">{ul?.fullName}</td>
+                                                <td className="whitespace-nowrap px-6 py-4">{ul?.email}</td>
+                                                <td className="whitespace-nowrap px-6 py-4">{ul?.phoneNumber}</td>
+                                                <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                                <td className="whitespace-nowrap px-6 py-4">
+                                                    <DropList options={roleOptions} />
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4">
+                                                    <div className="flex items-center">
+                                                        <SwitchButton />
                                                     </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                                                </td>
+                                                <td className="px-2 py-1 md:px-6 md:py-4">
+                                                    <div className="flex items-center text-white">
+                                                        <NavLink to="/users/123">
+                                                            <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                                <FontAwesomeIcon
+                                                                    className="m-auto"
+                                                                    icon={faPenToSquare}
+                                                                />
+                                                            </div>
+                                                        </NavLink>
+                                                        <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                            <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
+                                                        </div>
                                                     </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-neutral-500">
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <input type="checkbox" />
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Trịnh Phiêu An</td>
-                                        <td className="whitespace-nowrap px-6 py-4">trinhan201@gmail.com</td>
-                                        <td className="whitespace-nowrap px-6 py-4">0123456789</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <DropList options={roleOptions} />
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <div className="flex items-center">
-                                                <SwitchButton />
-                                            </div>
-                                        </td>
-                                        <td className="px-2 py-1 md:px-6 md:py-4">
-                                            <div className="flex items-center text-white">
-                                                <NavLink to="/users/123">
-                                                    <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                        <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
-                                                    </div>
-                                                </NavLink>
-                                                <div className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
-                                                    <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

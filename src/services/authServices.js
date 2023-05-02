@@ -32,8 +32,8 @@ export const resetPassword = async (data = {}) => {
     }
 };
 
-const refreshToken = localStorage.getItem('refreshToken');
 export const refresh = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
     const decodedToken = jwt_decode(refreshToken);
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/refresh/${decodedToken._id}`, {

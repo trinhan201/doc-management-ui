@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import jwt_decode from 'jwt-decode';
 import InputField from '../InputField';
 import DropList from '../DropList';
+import * as userServices from '~/services/userServices';
+import * as authServices from '~/services/authServices';
+import { successNotify, errorNotify } from '../ToastMessage';
 
 const ProfileForm = ({ formTitle, setShowForm }) => {
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
-    const [birth, setBirth] = useState('');
+    const [birth, setBirth] = useState();
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
 
@@ -19,7 +23,9 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
     const [haveEmailErr, setHaveEmailErr] = useState(false);
 
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
+    const genderList = ['Nam', 'Nữ'];
 
+    console.log(birth);
     const fullNameValidator = () => {
         const msg = {};
         if (isEmpty(fullName)) {
@@ -49,11 +55,38 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
         return true;
     };
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await authServices.getCurrUser();
+            setFullName(res.fullName);
+            setGender(res.gender);
+            setBirth(res.birthDate);
+            setEmail(res.email);
+            setPhone(res.phoneNumber);
+        };
+        fetchApi();
+    }, []);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isFullNameValid = fullNameValidator();
         const isEmailValid = emailValidator();
         if (!isFullNameValid || !isEmailValid) return;
+        const data = {
+            fullName: fullName,
+            gender: gender,
+            birthDate: birth,
+            email: email,
+            phoneNumber: phone,
+        };
+        const decodedToken = jwt_decode(localStorage.getItem('accessToken'));
+        const res = await userServices.updateUser(decodedToken._id, data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setShowForm(false);
+        } else {
+            errorNotify(res);
+        }
     };
 
     return (
@@ -79,24 +112,19 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
                     />
                     <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                     <div className="flex items-center mt-7">
-                        <div className="flex items-center">
-                            <InputField
-                                name="radio"
-                                className="flex w-[15px] h-[15px]"
-                                value={gender}
-                                setValue={setGender}
-                            />
-                            <label className="text-[1.5rem] ml-3">Nam</label>
-                        </div>
-                        <div className="flex items-center ml-5">
-                            <InputField
-                                name="radio"
-                                className="flex w-[15px] h-[15px]"
-                                value={gender}
-                                setValue={setGender}
-                            />
-                            <label className="text-[1.5rem] ml-3">Nữ</label>
-                        </div>
+                        {genderList.map((g, index) => {
+                            return (
+                                <div key={index} className="flex items-center mr-5">
+                                    <InputField
+                                        name="radio"
+                                        className="flex w-[15px] h-[15px]"
+                                        checked={gender === g}
+                                        setValue={() => setGender(g)}
+                                    />
+                                    <label className="text-[1.5rem] ml-3">{g}</label>
+                                </div>
+                            );
+                        })}
                     </div>
                     <div className="mt-7">
                         <InputField

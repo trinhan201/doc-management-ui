@@ -40,6 +40,7 @@ const InputField = (props) => {
                 onBlur={props.onBlur}
                 rows={props.rows}
                 cols={props.cols}
+                checked={props.checked}
             />
             <div
                 onClick={toggle}

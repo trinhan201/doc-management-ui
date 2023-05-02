@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProfileForm from '~/components/Form/ProfileForm';
+import * as authServices from '~/services/authServices';
 
 const Profile = () => {
     const [showProfileForm, setShowProfileForm] = useState(false);
+    const [currUser, setCurrUser] = useState({});
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await authServices.getCurrUser();
+            setCurrUser(res);
+        };
+        fetchApi();
+    }, []);
 
     return (
         <>
@@ -51,37 +61,37 @@ const Profile = () => {
                     <div className="px-10 bg-white h-fit shadow-4Way">
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Họ và tên:</span>{' '}
-                            <span className="flex-1">Trịnh Phiêu An</span>
+                            <span className="flex-1">{currUser?.fullName}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Giới tính:</span>{' '}
-                            <span className="flex-1">Nam</span>
+                            <span className="flex-1">{currUser?.gender}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Ngày sinh:</span>{' '}
-                            <span className="flex-1">20/01/2000</span>
+                            <span className="flex-1">{currUser?.birthDate}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Email:</span>{' '}
-                            <span className="flex-1">trinhan201@gmail.com</span>
+                            <span className="flex-1">{currUser?.email}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Số điện thoại:</span>{' '}
-                            <span className="flex-1">0123456789</span>
+                            <span className="flex-1">{currUser?.phoneNumber}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Phòng ban:</span>{' '}
-                            <span className="flex-1">Phòng nhân sự</span>
+                            <span className="flex-1">{currUser?.department}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Vai trò:</span>{' '}
-                            <span className="flex-1">Quản trị viên</span>
+                            <span className="flex-1">{currUser?.role}</span>
                         </p>
                     </div>
                     <div>
