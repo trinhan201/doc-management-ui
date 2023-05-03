@@ -18,6 +18,7 @@ import * as userServices from '~/services/userServices';
 const User = () => {
     const [searchValue, setSearchValue] = useState('');
     const [userLists, setUserLists] = useState([]);
+    // const [userRole, setUserRole] = useState('');
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
     useEffect(() => {
@@ -98,7 +99,7 @@ const User = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {userLists.map((ul, index) => {
+                                    {userLists?.map((ul, index) => {
                                         return (
                                             <tr key={index} className="border-b dark:border-neutral-500">
                                                 <td className="whitespace-nowrap px-6 py-4">
@@ -110,9 +111,13 @@ const User = () => {
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.fullName}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.email}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.phoneNumber}</td>
-                                                <td className="whitespace-nowrap px-6 py-4">Phòng nhân sự</td>
+                                                <td className="whitespace-nowrap px-6 py-4">{ul?.department}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <DropList options={roleOptions} />
+                                                    <DropList
+                                                        options={roleOptions}
+                                                        // setValue={() => setUserRole(ul?.role)}
+                                                        roleValue={ul?.role}
+                                                    />
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     <div className="flex items-center">

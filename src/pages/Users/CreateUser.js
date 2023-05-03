@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InputField from '~/components/InputField';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 import DropList from '~/components/DropList';
+import * as userServices from '~/services/userServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const CreateUser = ({ title }) => {
     const [fullName, setFullName] = useState('');
@@ -11,8 +13,32 @@ const CreateUser = ({ title }) => {
     const [gender, setGender] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [department, setDepartment] = useState('');
+    const navigate = useNavigate();
 
+    const genderList = ['Nam', 'Nữ'];
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const data = {
+            fullName: fullName,
+            gender: gender,
+            birthDate: date,
+            email: email,
+            phoneNumber: phone,
+            department: department,
+        };
+
+        const res = await userServices.createUser(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            navigate('/users');
+        } else {
+            errorNotify(res);
+        }
+    };
 
     return (
         <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
@@ -22,7 +48,7 @@ const CreateUser = ({ title }) => {
                     <label className="font-bold">Họ và tên:</label>
                     <InputField
                         className="default"
-                        placeholder="Tên loại văn bản"
+                        placeholder="Tên người dùng"
                         value={fullName}
                         setValue={setFullName}
                     />
@@ -30,22 +56,19 @@ const CreateUser = ({ title }) => {
                 <div className="flex flex-col md:flex-row md:items-center mt-7">
                     <label className="font-bold mr-7">Giới tính:</label>
                     <div className="flex items-center">
-                        <InputField
-                            name="radio"
-                            className="flex w-[16px] h-[16px]"
-                            value={gender}
-                            setValue={setGender}
-                        />
-                        <label className="font-bold ml-3">Nam</label>
-                    </div>
-                    <div className="flex items-center md:ml-5">
-                        <InputField
-                            name="radio"
-                            className="flex w-[16px] h-[16px]"
-                            value={gender}
-                            setValue={setGender}
-                        />
-                        <label className="font-bold ml-3">Nữ</label>
+                        {genderList.map((g, index) => {
+                            return (
+                                <div key={index} className="flex items-center mr-5">
+                                    <InputField
+                                        name="radio"
+                                        className="flex w-[15px] h-[15px]"
+                                        checked={gender === g}
+                                        setValue={() => setGender(g)}
+                                    />
+                                    <label className="text-[1.5rem] ml-3">{g}</label>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
                 <div className="mt-7">
@@ -68,10 +91,13 @@ const CreateUser = ({ title }) => {
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Phòng ban:</label>
-                    <DropList options={departmentOptions} />
+                    <DropList options={departmentOptions} setValue={setDepartment} />
                 </div>
                 <div className="block md:flex items-center gap-5 mt-12">
-                    <button className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                    <button
+                        onClick={handleSubmit}
+                        className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                    >
                         <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
                     </button>
                     <NavLink
