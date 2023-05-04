@@ -9,12 +9,13 @@ const UserCard = (props) => {
     const [showAction, setShowAction] = useState(false);
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
-    const toggle = () => {
+    const toggle = (e) => {
+        e.stopPropagation();
         setShowAction(!showAction);
     };
 
     return (
-        <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
+        <div onClick={() => setShowAction(false)} className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center justify-between relative text-right mb-3">
                 <div className="flex items-center">
                     <input type="checkbox" />
@@ -27,7 +28,7 @@ const UserCard = (props) => {
                 >
                     <ul>
                         <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
-                            <NavLink className="block p-[8px] text-left" to="/users/123">
+                            <NavLink className="block p-[8px] text-left" to={`/users/${props.userId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
                             </NavLink>
@@ -65,12 +66,17 @@ const UserCard = (props) => {
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Vai trò:</span>
                 <span>
-                    <DropList options={roleOptions} />
+                    <DropList
+                        options={roleOptions}
+                        listItem={props.role}
+                        setValue={props.setRole}
+                        setId={props.setUserId}
+                    />
                 </span>
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>
-                <SwitchButton />
+                <SwitchButton value={props.active} />
             </div>
         </div>
     );

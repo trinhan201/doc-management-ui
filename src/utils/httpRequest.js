@@ -15,6 +15,8 @@ httpRequest.interceptors.request.use(
             if (decodedToken.exp * 1000 < currentDate.getTime()) {
                 const res = await refresh();
                 config.headers.Authorization = `Bearer ${res.accessToken}`;
+            } else {
+                config.headers.Authorization = `Bearer ${accessToken}`;
             }
         }
         return config;

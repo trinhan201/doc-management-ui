@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InputField from '~/components/InputField';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -15,9 +15,25 @@ const CreateUser = ({ title }) => {
     const [phone, setPhone] = useState('');
     const [department, setDepartment] = useState('');
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const genderList = ['Nam', 'Nữ'];
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await userServices.getUserById(id);
+            console.log(res.data);
+            setFullName(res.data.fullName);
+            setDate(res.data.birthDate);
+            setGender(res.data.gender);
+            setEmail(res.data.email);
+            setPhone(res.data.phoneNumber);
+            setDepartment(res.data.department);
+        };
+        fetchApi();
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,8 +46,12 @@ const CreateUser = ({ title }) => {
             phoneNumber: phone,
             department: department,
         };
-
-        const res = await userServices.createUser(data);
+        let res;
+        if (id) {
+            res = await userServices.updateUser(id, data);
+        } else {
+            res = await userServices.createUser(data);
+        }
         if (res.code === 200) {
             successNotify(res.message);
             navigate('/users');
@@ -91,7 +111,7 @@ const CreateUser = ({ title }) => {
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Phòng ban:</label>
-                    <DropList options={departmentOptions} setValue={setDepartment} />
+                    <DropList options={departmentOptions} listItem={department} setValue={setDepartment} />
                 </div>
                 <div className="block md:flex items-center gap-5 mt-12">
                     <button

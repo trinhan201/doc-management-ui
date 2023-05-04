@@ -14,11 +14,13 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const User = () => {
     const [searchValue, setSearchValue] = useState('');
     const [userLists, setUserLists] = useState([]);
-    // const [userRole, setUserRole] = useState('');
+    const [userRole, setUserRole] = useState('');
+    const [userId, setUserId] = useState('');
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
     useEffect(() => {
@@ -28,6 +30,22 @@ const User = () => {
         };
         fetchApi();
     }, []);
+
+    useEffect(() => {
+        if (!userId) return;
+        const handleChangeRole = async () => {
+            const data = {
+                role: userRole,
+            };
+            const res = await userServices.updateRole(userId, data);
+            if (res.code === 200) {
+                successNotify(res.message);
+            } else {
+                errorNotify(res);
+            }
+        };
+        handleChangeRole();
+    }, [userId, userRole]);
 
     return (
         <>
@@ -115,18 +133,19 @@ const User = () => {
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     <DropList
                                                         options={roleOptions}
-                                                        // setValue={() => setUserRole(ul?.role)}
-                                                        roleValue={ul?.role}
+                                                        setValue={setUserRole}
+                                                        setId={() => setUserId(ul?._id)}
+                                                        listItem={ul?.role}
                                                     />
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     <div className="flex items-center">
-                                                        <SwitchButton />
+                                                        <SwitchButton checked={ul.isActived} />
                                                     </div>
                                                 </td>
                                                 <td className="px-2 py-1 md:px-6 md:py-4">
                                                     <div className="flex items-center text-white">
-                                                        <NavLink to="/users/123">
+                                                        <NavLink to={`/users/${ul._id}`}>
                                                             <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
                                                                 <FontAwesomeIcon
                                                                     className="m-auto"
@@ -161,41 +180,24 @@ const User = () => {
                 <div className="mb-3">
                     <input type="checkbox" /> Chọn tất cả
                 </div>
-                <UserCard
-                    id="1"
-                    fullName="Trinh Phieu An"
-                    email="trinhan201@gmail.com"
-                    phone="0123456789"
-                    department="Phòng nhân sự"
-                />
-                <UserCard
-                    id="2"
-                    fullName="Nguyen Phu Cuong"
-                    email="phucuong123@gmail.com"
-                    phone="0829734968"
-                    department="Phòng nhân sự"
-                />
-                <UserCard
-                    id="3"
-                    fullName="Nguyen Anh Minh"
-                    email="anhminh123@gmail.com"
-                    phone="0391606017"
-                    department="Phòng nhân sự"
-                />
-                <UserCard
-                    id="3"
-                    fullName="Nguyen Anh Minh"
-                    email="anhminh123@gmail.com"
-                    phone="0391606017"
-                    department="Phòng nhân sự"
-                />
-                <UserCard
-                    id="3"
-                    fullName="Nguyen Anh Minh"
-                    email="anhminh123@gmail.com"
-                    phone="0391606017"
-                    department="Phòng nhân sự"
-                />
+                {userLists?.map((ul, index) => {
+                    return (
+                        <UserCard
+                            key={index}
+                            id={index}
+                            userId={ul?._id}
+                            fullName={ul?.fullName}
+                            email={ul?.email}
+                            phone={ul?.phoneNumber}
+                            department={ul?.department}
+                            active={ul?.isActived}
+                            role={ul?.role}
+                            setRole={setUserRole}
+                            setUserId={() => setUserId(ul?._id)}
+                        />
+                    );
+                })}
+
                 <div className="flex items-center justify-center">
                     <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30">
                         Prev

@@ -16,6 +16,7 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
     const [birth, setBirth] = useState();
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
+    const [department, setDepartment] = useState('');
 
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [emailErrMsg, setEmailErrMsg] = useState({});
@@ -63,6 +64,7 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
             setBirth(res.birthDate);
             setEmail(res.email);
             setPhone(res.phoneNumber);
+            setDepartment(res.department);
         };
         fetchApi();
     }, []);
@@ -78,6 +80,7 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
             birthDate: birth,
             email: email,
             phoneNumber: phone,
+            department: department,
         };
         const decodedToken = jwt_decode(localStorage.getItem('accessToken'));
         const res = await userServices.updateUser(decodedToken._id, data);
@@ -150,7 +153,7 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
                         <InputField className="default" placeholder="Số điện thoại" value={phone} setValue={setPhone} />
                     </div>
                     <div className="mt-7">
-                        <DropList options={departmentOptions} />
+                        <DropList options={departmentOptions} listItem={department} setValue={setDepartment} />
                     </div>
                     <div className="flex justify-center items-center gap-5">
                         <button
