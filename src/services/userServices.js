@@ -30,16 +30,6 @@ export const updateRole = async (userId, data = {}) => {
     }
 };
 
-// export const deactivateUser = async (userId) => {
-//     try {
-//         const res = await httpRequest.patch(`/user/deactivate/${userId}`);
-//         return res.data;
-//     } catch (error) {
-//         console.log(error);
-//         return error.response.data.message;
-//     }
-// };
-
 export const activateUser = async (userId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/user/activate/${userId}`, data);

@@ -5,6 +5,7 @@ import * as authServices from '~/services/authServices';
 const Profile = () => {
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
+    const [isSave, setIsSave] = useState(false);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -12,13 +13,13 @@ const Profile = () => {
             setCurrUser(res);
         };
         fetchApi();
-    }, []);
+    }, [isSave]);
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row h-full gap-8">
-                <div className="flex flex-col gap-8 w-full lg:w-[320px]">
-                    <div className="flex w-full lg:w-[320px] h-[320px] bg-white shadow-4Way">
+            <div className="flex flex-col xl:flex-row h-full gap-8">
+                <div className="flex flex-col gap-8 w-full xl:w-[320px]">
+                    <div className="flex w-full xl:w-[320px] h-[320px] bg-white shadow-4Way">
                         <div className="w-[200px] h-[200px] rounded-full cursor-pointer m-auto">
                             <img
                                 className="w-full h-full object-cover rounded-full"
@@ -27,7 +28,7 @@ const Profile = () => {
                             />
                         </div>
                     </div>
-                    <div className="w-full lg:w-[320px] h-fit bg-white p-[12px] shadow-4Way">
+                    <div className="w-full xl:w-[320px] h-fit bg-white p-[12px] shadow-4Way">
                         <div>
                             <h1 className="text-[2.2rem] font-bold mb-7">Tất cả nhiệm vụ</h1>
                             <h3 className="text-[1.4rem] font-semibold">Mức độ hoàn thành</h3>
@@ -105,7 +106,11 @@ const Profile = () => {
                 </div>
             </div>
             {showProfileForm && (
-                <ProfileForm formTitle="Chỉnh sửa thông tin cá nhân" setShowForm={setShowProfileForm} />
+                <ProfileForm
+                    formTitle="Chỉnh sửa thông tin cá nhân"
+                    setShowForm={setShowProfileForm}
+                    setIsSave={() => setIsSave(!isSave)}
+                />
             )}
         </>
     );

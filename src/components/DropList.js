@@ -1,6 +1,7 @@
-const DropList = ({ options, setValue, setId, listItem }) => {
+const DropList = ({ selectedValue, options, setValue, setId, listItem }) => {
     return (
         <select
+            value={selectedValue}
             onChange={(e) => {
                 setValue(e.target.value);
                 setId();

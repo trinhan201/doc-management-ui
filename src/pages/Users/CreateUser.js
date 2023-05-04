@@ -24,7 +24,6 @@ const CreateUser = ({ title }) => {
         if (!id) return;
         const fetchApi = async () => {
             const res = await userServices.getUserById(id);
-            console.log(res.data);
             setFullName(res.data.fullName);
             setDate(res.data.birthDate);
             setGender(res.data.gender);
@@ -111,7 +110,12 @@ const CreateUser = ({ title }) => {
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Phòng ban:</label>
-                    <DropList options={departmentOptions} listItem={department} setValue={setDepartment} />
+                    <DropList
+                        options={departmentOptions}
+                        listItem={department}
+                        setValue={setDepartment}
+                        setId={() => undefined}
+                    />
                 </div>
                 <div className="block md:flex items-center gap-5 mt-12">
                     <button

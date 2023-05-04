@@ -20,7 +20,10 @@ const User = () => {
     const [searchValue, setSearchValue] = useState('');
     const [userLists, setUserLists] = useState([]);
     const [userRole, setUserRole] = useState('');
-    const [userId, setUserId] = useState('');
+    const [roleId, setRoleId] = useState('');
+    const [activeId, setActiveId] = useState('');
+    const [isActived, setIsActived] = useState(false);
+    const [isSave, setIsSave] = useState(false);
     const roleOptions = ['Admin', 'Moderator', 'Member'];
 
     useEffect(() => {
@@ -29,23 +32,41 @@ const User = () => {
             setUserLists(res.data);
         };
         fetchApi();
-    }, []);
+    }, [isSave]);
 
     useEffect(() => {
-        if (!userId) return;
+        if (!userRole) return;
         const handleChangeRole = async () => {
             const data = {
                 role: userRole,
             };
-            const res = await userServices.updateRole(userId, data);
+            const res = await userServices.updateRole(roleId, data);
             if (res.code === 200) {
                 successNotify(res.message);
+                setIsSave((isSave) => !isSave);
             } else {
                 errorNotify(res);
             }
         };
         handleChangeRole();
-    }, [userId, userRole]);
+    }, [roleId, userRole]);
+
+    useEffect(() => {
+        if (!activeId) return;
+        const handleActivateUser = async () => {
+            const data = {
+                isActived: isActived,
+            };
+            const res = await userServices.activateUser(activeId, data);
+            if (res.code === 200) {
+                successNotify(res.message);
+                setIsSave((isSave) => !isSave);
+            } else {
+                errorNotify(res);
+            }
+        };
+        handleActivateUser();
+    }, [activeId, isActived]);
 
     return (
         <>
@@ -134,13 +155,17 @@ const User = () => {
                                                     <DropList
                                                         options={roleOptions}
                                                         setValue={setUserRole}
-                                                        setId={() => setUserId(ul?._id)}
+                                                        setId={() => setRoleId(ul?._id)}
                                                         listItem={ul?.role}
                                                     />
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     <div className="flex items-center">
-                                                        <SwitchButton checked={ul.isActived} />
+                                                        <SwitchButton
+                                                            checked={ul?.isActived}
+                                                            setValue={() => setIsActived(!ul?.isActived)}
+                                                            setId={() => setActiveId(ul?._id)}
+                                                        />
                                                     </div>
                                                 </td>
                                                 <td className="px-2 py-1 md:px-6 md:py-4">
@@ -193,7 +218,10 @@ const User = () => {
                             active={ul?.isActived}
                             role={ul?.role}
                             setRole={setUserRole}
-                            setUserId={() => setUserId(ul?._id)}
+                            setRoleId={() => setRoleId(ul?._id)}
+                            checked={ul?.isActived}
+                            setIsActived={() => setIsActived(!ul?.isActived)}
+                            setActiveId={() => setActiveId(ul?._id)}
                         />
                     );
                 })}

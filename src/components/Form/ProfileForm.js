@@ -10,10 +10,10 @@ import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '../ToastMessage';
 
-const ProfileForm = ({ formTitle, setShowForm }) => {
+const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
-    const [birth, setBirth] = useState();
+    const [birth, setBirth] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [department, setDepartment] = useState('');
@@ -26,7 +26,6 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
     const genderList = ['Nam', 'Nữ'];
 
-    console.log(birth);
     const fullNameValidator = () => {
         const msg = {};
         if (isEmpty(fullName)) {
@@ -87,6 +86,7 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
         if (res.code === 200) {
             successNotify(res.message);
             setShowForm(false);
+            setIsSave(true);
         } else {
             errorNotify(res);
         }
@@ -153,7 +153,12 @@ const ProfileForm = ({ formTitle, setShowForm }) => {
                         <InputField className="default" placeholder="Số điện thoại" value={phone} setValue={setPhone} />
                     </div>
                     <div className="mt-7">
-                        <DropList options={departmentOptions} listItem={department} setValue={setDepartment} />
+                        <DropList
+                            options={departmentOptions}
+                            listItem={department}
+                            setValue={setDepartment}
+                            setId={() => undefined}
+                        />
                     </div>
                     <div className="flex justify-center items-center gap-5">
                         <button

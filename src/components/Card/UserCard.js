@@ -70,13 +70,18 @@ const UserCard = (props) => {
                         options={roleOptions}
                         listItem={props.role}
                         setValue={props.setRole}
-                        setId={props.setUserId}
+                        setId={props.setRoleId}
                     />
                 </span>
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>
-                <SwitchButton value={props.active} />
+                <SwitchButton
+                    value={props.active}
+                    checked={props.checked}
+                    setValue={props.setIsActived}
+                    setId={props.setActiveId}
+                />
             </div>
         </div>
     );
