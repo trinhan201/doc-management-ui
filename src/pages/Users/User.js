@@ -15,6 +15,7 @@ import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { useDebounce } from '~/hooks';
 
 const User = () => {
     const [searchValue, setSearchValue] = useState('');
@@ -24,15 +25,40 @@ const User = () => {
     const [activeId, setActiveId] = useState('');
     const [isActived, setIsActived] = useState(false);
     const [isSave, setIsSave] = useState(false);
+    const [page, setPage] = useState(1);
+    const [pageLength, setPageLength] = useState(0);
+    const [rowStart, setRowStart] = useState(1);
+    const [rowEnd, setRowEnd] = useState(0);
+
     const roleOptions = ['Admin', 'Moderator', 'Member'];
+
+    const totalPage = Math.ceil(pageLength / 5);
+    const filterPages = Math.ceil((pageLength - (pageLength - userLists.length)) / 5);
+    const debouncedValue = useDebounce(searchValue, 300);
+
+    const handleNextPage = () => {
+        setPage(page + 1);
+        // setRowStart(rowStart + 5);
+        // setRowEnd((rowEnd) => rowEnd + 5);
+    };
+
+    const handlePrevPage = () => {
+        setPage(page - 1);
+        // setRowStart(rowStart - 5);
+        // setRowEnd((rowEnd) => rowEnd - 5);
+    };
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await userServices.getAllUser();
+            if (debouncedValue) {
+                setPage(1);
+            }
+            const res = await userServices.getAllUser(page, debouncedValue);
             setUserLists(res.data);
+            setPageLength(debouncedValue ? filterPages : res.usersLength);
         };
         fetchApi();
-    }, [isSave]);
+    }, [isSave, page, debouncedValue, filterPages]);
 
     useEffect(() => {
         if (!userRole) return;
@@ -146,17 +172,17 @@ const User = () => {
                                                         <input type="checkbox" />
                                                     </div>
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 font-medium">{index}</td>
+                                                <td className="whitespace-nowrap px-6 py-4 font-medium">{index + 1}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.fullName}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.email}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.phoneNumber}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">{ul?.department}</td>
                                                 <td className="whitespace-nowrap px-6 py-4">
                                                     <DropList
+                                                        selectedValue={ul?.role}
                                                         options={roleOptions}
                                                         setValue={setUserRole}
                                                         setId={() => setRoleId(ul?._id)}
-                                                        listItem={ul?.role}
                                                     />
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
@@ -192,11 +218,28 @@ const User = () => {
                     </div>
                 </div>
                 <div className="flex items-center justify-end py-3 mr-2">
-                    <p className="text-[1.5rem] mr-9">1-5 of 9</p>
-                    <div className="flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full pointer-events-none opacity-30">
+                    <p className="text-[1.5rem] mr-9">
+                        Hiển thị <span>{rowStart}</span> đến <span>{rowEnd + userLists.length}</span> của{' '}
+                        <span>{debouncedValue ? userLists.length : pageLength}</span> mục
+                    </p>
+                    <div
+                        onClick={handlePrevPage}
+                        className={
+                            page <= 1
+                                ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
+                                : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                        }
+                    >
                         <FontAwesomeIcon icon={faAngleLeft} />
                     </div>
-                    <div className="flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full">
+                    <div
+                        onClick={handleNextPage}
+                        className={
+                            page >= totalPage
+                                ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
+                                : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                        }
+                    >
                         <FontAwesomeIcon icon={faAngleRight} />
                     </div>
                 </div>
@@ -209,7 +252,7 @@ const User = () => {
                     return (
                         <UserCard
                             key={index}
-                            id={index}
+                            id={index + 1}
                             userId={ul?._id}
                             fullName={ul?.fullName}
                             email={ul?.email}
@@ -227,10 +270,24 @@ const User = () => {
                 })}
 
                 <div className="flex items-center justify-center">
-                    <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30">
+                    <div
+                        onClick={handlePrevPage}
+                        className={
+                            page <= 1
+                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
+                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                        }
+                    >
                         Prev
                     </div>
-                    <div className="bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]">
+                    <div
+                        onClick={handleNextPage}
+                        className={
+                            page >= totalPage
+                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
+                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                        }
+                    >
                         Next
                     </div>
                 </div>

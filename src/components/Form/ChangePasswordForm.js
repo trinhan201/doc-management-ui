@@ -1,80 +1,46 @@
 import { useState } from 'react';
-import isEmpty from 'validator/lib/isEmpty';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
+import { oldPasswordValidator, passwordValidator, confirmPasswordValidator } from '~/utils/formValidation';
+import * as userServices from '~/services/userServices';
+import { successNotify, errorNotify } from '../ToastMessage';
 
 const ChangePasswordForm = ({ setShowChangePassword }) => {
-    const [oldPasswordValue, setOldPasswordValue] = useState('');
-    const [passwordValue, setPasswordValue] = useState('');
-    const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const [oldPasswordErrMsg, setOldPasswordErrMsg] = useState({});
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
     const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] = useState({});
 
-    const [haveOldPasswordErr, setHaveOldPasswordErr] = useState(false);
-    const [havePasswordErr, setHavePasswordErr] = useState(false);
-    const [haveConfirmPasswordErr, setHaveConfirmPasswordErr] = useState(false);
+    const [isOldPasswordErr, setIsOldPasswordErr] = useState(false);
+    const [isPasswordErr, setIsPasswordErr] = useState(false);
+    const [isConfirmPasswordErr, setIsConfirmPasswordErr] = useState(false);
 
-    const oldPasswordValidator = () => {
-        const msg = {};
-        if (isEmpty(oldPasswordValue)) {
-            msg.oldPasswordValue = 'Mật khẩu cũ không được để trống';
-            setHaveOldPasswordErr(true);
-        } else if (oldPasswordValue.length < 6) {
-            msg.oldPasswordValue = 'Mật khẩu cũ phải có ít nhất 6 kí tự';
-            setHaveOldPasswordErr(true);
-        } else {
-            setHaveOldPasswordErr(false);
-        }
-        setOldPasswordErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
-
-    const passwordValidator = () => {
-        const msg = {};
-        if (isEmpty(passwordValue)) {
-            msg.passwordValue = 'Mật khẩu mới không được để trống';
-            setHavePasswordErr(true);
-        } else if (passwordValue.length < 6) {
-            msg.passwordValue = 'Mật khẩu mới phải có ít nhất 6 kí tự';
-            setHavePasswordErr(true);
-        } else {
-            setHavePasswordErr(false);
-        }
-        setPasswordErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
-
-    const confirmPasswordValidator = () => {
-        const msg = {};
-        if (isEmpty(confirmPasswordValue)) {
-            msg.confirmPasswordValue = 'Xác nhận mật khẩu không được để trống';
-            setHaveConfirmPasswordErr(true);
-        } else if (confirmPasswordValue.length < 6) {
-            msg.confirmPasswordValue = 'Xác nhận mật khẩu phải có ít nhất 6 kí tự';
-            setHaveConfirmPasswordErr(true);
-        } else if (confirmPasswordValue !== passwordValue) {
-            msg.confirmPasswordValue = 'Xác nhận mật khẩu không trùng khớp';
-            setHaveConfirmPasswordErr(true);
-        } else {
-            setHaveConfirmPasswordErr(false);
-        }
-        setConfirmPasswordErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const isOldPasswordValid = oldPasswordValidator();
-        const isPasswordValid = passwordValidator();
-        const isConfirmPasswordValid = confirmPasswordValidator();
+        const isOldPasswordValid = oldPasswordValidator(oldPassword, setIsOldPasswordErr, setOldPasswordErrMsg);
+        const isPasswordValid = passwordValidator(password, setIsPasswordErr, setPasswordErrMsg);
+        const isConfirmPasswordValid = confirmPasswordValidator(
+            password,
+            confirmPassword,
+            setIsConfirmPasswordErr,
+            setConfirmPasswordErrMsg,
+        );
 
         if (!isOldPasswordValid || !isPasswordValid || !isConfirmPasswordValid) return;
+        const data = {
+            oldPassword: oldPassword,
+            newPassword: password,
+        };
+        const res = await userServices.changePassword(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
     };
 
     return (
@@ -92,35 +58,42 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">Đổi mật khẩu</h1>
                 <form>
                     <InputField
-                        className={haveOldPasswordErr ? 'invalid' : 'default'}
+                        className={isOldPasswordErr ? 'invalid' : 'default'}
                         name="password"
                         placeholder="Mật khẩu cũ"
-                        value={oldPasswordValue}
-                        setValue={setOldPasswordValue}
-                        onBlur={oldPasswordValidator}
+                        value={oldPassword}
+                        setValue={setOldPassword}
+                        onBlur={() => oldPasswordValidator(oldPassword, setIsOldPasswordErr, setOldPasswordErrMsg)}
                     />
-                    <p className="text-red-600 text-[1.3rem]">{oldPasswordErrMsg.oldPasswordValue}</p>
+                    <p className="text-red-600 text-[1.3rem]">{oldPasswordErrMsg.oldPassword}</p>
                     <div className="mt-7">
                         <InputField
-                            className={havePasswordErr ? 'invalid' : 'default'}
+                            className={isPasswordErr ? 'invalid' : 'default'}
                             name="password"
                             placeholder="Mật khẩu mới"
-                            value={passwordValue}
-                            setValue={setPasswordValue}
-                            onBlur={passwordValidator}
+                            value={password}
+                            setValue={setPassword}
+                            onBlur={() => passwordValidator(password, setIsPasswordErr, setPasswordErrMsg)}
                         />
-                        <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.passwordValue}</p>
+                        <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.password}</p>
                     </div>
                     <div className="mt-7">
                         <InputField
-                            className={haveConfirmPasswordErr ? 'invalid' : 'default'}
+                            className={isConfirmPasswordErr ? 'invalid' : 'default'}
                             name="password"
                             placeholder="Xác nhận mật khẩu"
-                            value={confirmPasswordValue}
-                            setValue={setConfirmPasswordValue}
-                            onBlur={confirmPasswordValidator}
+                            value={confirmPassword}
+                            setValue={setConfirmPassword}
+                            onBlur={() =>
+                                confirmPasswordValidator(
+                                    password,
+                                    confirmPassword,
+                                    setIsConfirmPasswordErr,
+                                    setConfirmPasswordErrMsg,
+                                )
+                            }
                         />
-                        <p className="text-red-600 text-[1.3rem]">{confirmPasswordErrMsg.confirmPasswordValue}</p>
+                        <p className="text-red-600 text-[1.3rem]">{confirmPasswordErrMsg.confirmPassword}</p>
                     </div>
                     <div className="flex justify-center items-center gap-5">
                         <button

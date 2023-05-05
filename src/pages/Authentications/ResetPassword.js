@@ -1,61 +1,31 @@
 import { useState } from 'react';
-import isEmpty from 'validator/lib/isEmpty';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { passwordValidator, confirmPasswordValidator } from '~/utils/formValidation';
 
 const ResetPassword = () => {
-    const [passwordValue, setPasswordValue] = useState('');
-    const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
     const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] = useState({});
-    const [havePasswordErr, setHavePasswordErr] = useState(false);
-    const [haveConfirmPasswordErr, setHaveConfirmPasswordErr] = useState(false);
-
-    const passwordValidator = () => {
-        const msg = {};
-        if (isEmpty(passwordValue)) {
-            msg.passwordValue = 'Mật khẩu không được để trống';
-            setHavePasswordErr(true);
-        } else if (passwordValue.length < 6) {
-            msg.passwordValue = 'Mật khẩu phải có ít nhất 6 kí tự';
-            setHavePasswordErr(true);
-        } else {
-            setHavePasswordErr(false);
-        }
-        setPasswordErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
-
-    const confirmPasswordValidator = () => {
-        const msg = {};
-        if (isEmpty(confirmPasswordValue)) {
-            msg.confirmPasswordValue = 'Xác nhận mật khẩu không được để trống';
-            setHaveConfirmPasswordErr(true);
-        } else if (confirmPasswordValue.length < 6) {
-            msg.confirmPasswordValue = 'Xác nhận mật khẩu phải có ít nhất 6 kí tự';
-            setHaveConfirmPasswordErr(true);
-        } else if (confirmPasswordValue !== passwordValue) {
-            msg.confirmPasswordValue = 'Xác nhận mật khẩu không trùng khớp';
-            setHaveConfirmPasswordErr(true);
-        } else {
-            setHaveConfirmPasswordErr(false);
-        }
-        setConfirmPasswordErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
+    const [isPasswordErr, setIsPasswordErr] = useState(false);
+    const [isConfirmPasswordErr, setIsConfirmPasswordErr] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isPasswordValid = passwordValidator();
-        const isConfirmPasswordValid = confirmPasswordValidator();
+        const isPasswordValid = passwordValidator(password, setIsPasswordErr, setPasswordErrMsg);
+        const isConfirmPasswordValid = confirmPasswordValidator(
+            password,
+            confirmPassword,
+            setIsConfirmPasswordErr,
+            setConfirmPasswordErrMsg,
+        );
 
         if (!isPasswordValid || !isConfirmPasswordValid) return;
         const data = {
             token: localStorage.getItem('resetToken'),
-            password: passwordValue,
+            password: password,
         };
         const res = await authServices.resetPassword(data);
         if (res.code === 200) {
@@ -75,24 +45,31 @@ const ResetPassword = () => {
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">Đặt lại mật khẩu</h1>
                 <form>
                     <InputField
-                        className={havePasswordErr ? 'invalid' : 'default'}
+                        className={isPasswordErr ? 'invalid' : 'default'}
                         name="password"
                         placeholder="Mật khẩu mới"
-                        value={passwordValue}
-                        setValue={setPasswordValue}
-                        onBlur={passwordValidator}
+                        value={password}
+                        setValue={setPassword}
+                        onBlur={() => passwordValidator(password, setIsPasswordErr, setPasswordErrMsg)}
                     />
-                    <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.passwordValue}</p>
+                    <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.password}</p>
                     <div className="mt-7">
                         <InputField
-                            className={haveConfirmPasswordErr ? 'invalid' : 'default'}
+                            className={isConfirmPasswordErr ? 'invalid' : 'default'}
                             name="password"
                             placeholder="Xác nhận mật khẩu"
-                            value={confirmPasswordValue}
-                            setValue={setConfirmPasswordValue}
-                            onBlur={confirmPasswordValidator}
+                            value={confirmPassword}
+                            setValue={setConfirmPassword}
+                            onBlur={() =>
+                                confirmPasswordValidator(
+                                    password,
+                                    confirmPassword,
+                                    setIsConfirmPasswordErr,
+                                    setConfirmPasswordErrMsg,
+                                )
+                            }
                         />
-                        <p className="text-red-600 text-[1.3rem]">{confirmPasswordErrMsg.confirmPasswordValue}</p>
+                        <p className="text-red-600 text-[1.3rem]">{confirmPasswordErrMsg.confirmPassword}</p>
                     </div>
                     <button
                         onClick={handleSubmit}

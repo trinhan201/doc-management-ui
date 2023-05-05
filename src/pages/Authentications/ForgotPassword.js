@@ -1,39 +1,22 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import isEmpty from 'validator/lib/isEmpty';
-import isEmail from 'validator/lib/isEmail';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { emailValidator } from '~/utils/formValidation';
 
 const ForgotPassword = () => {
-    const [emailValue, setEmailValue] = useState('');
+    const [email, setEmail] = useState('');
     const [emailErrMsg, setEmailErrMsg] = useState({});
-    const [haveEmailErr, setHaveEmailErr] = useState(false);
-
-    const emailValidator = () => {
-        const msg = {};
-        if (isEmpty(emailValue)) {
-            msg.emailValue = 'Email không được để trống';
-            setHaveEmailErr(true);
-        } else if (!isEmail(emailValue)) {
-            msg.emailValue = 'Email không hợp lệ';
-            setHaveEmailErr(true);
-        } else {
-            setHaveEmailErr(false);
-        }
-        setEmailErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
+    const [isEmailErr, setIsEmailErr] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isEmailValid = emailValidator();
+        const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
 
         if (!isEmailValid) return;
         const data = {
-            email: emailValue,
+            email: email,
         };
         const res = await authServices.forgotPassword(data);
         if (res.code === 200) {
@@ -53,14 +36,14 @@ const ForgotPassword = () => {
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">Quên mật khẩu</h1>
                 <form>
                     <InputField
-                        className={haveEmailErr ? 'invalid' : 'default'}
+                        className={isEmailErr ? 'invalid' : 'default'}
                         name="email"
                         placeholder="Email"
-                        value={emailValue}
-                        setValue={setEmailValue}
-                        onBlur={emailValidator}
+                        value={email}
+                        setValue={setEmail}
+                        onBlur={() => emailValidator(email, setIsEmailErr, setEmailErrMsg)}
                     />
-                    <p className="text-red-600 text-[1.3rem]">{emailErrMsg.emailValue}</p>
+                    <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
                     <div className="mt-7 text-right">
                         <NavLink className="hover:underline" to="/signin">
                             {'<<'} Trở về đăng nhập

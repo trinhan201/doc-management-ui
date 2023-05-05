@@ -40,9 +40,9 @@ export const activateUser = async (userId, data = {}) => {
     }
 };
 
-export const getAllUser = async () => {
+export const getAllUser = async (page, search) => {
     try {
-        const res = await httpRequest.get('/user/get-all');
+        const res = await httpRequest.get(`/user/get-all?page=${page}&limit=5&search=${search}`);
         return res.data;
     } catch (error) {
         console.log(error);
@@ -53,6 +53,16 @@ export const getAllUser = async () => {
 export const getUserById = async (userId) => {
     try {
         const res = await httpRequest.get(`/user/get/${userId}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
+export const changePassword = async (data = {}) => {
+    try {
+        const res = await httpRequest.patch('/user/change-password', data);
         return res.data;
     } catch (error) {
         console.log(error);

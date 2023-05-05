@@ -1,61 +1,28 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import isEmpty from 'validator/lib/isEmpty';
-import isEmail from 'validator/lib/isEmail';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { emailValidator, passwordValidator } from '~/utils/formValidation';
 
 const Signin = () => {
-    const [emailValue, setEmailValue] = useState('');
-    const [passwordValue, setPasswordValue] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
-    const [haveEmailErr, setHaveEmailErr] = useState(false);
-    const [havePasswordErr, setHavePasswordErr] = useState(false);
+    const [isEmailErr, setIsEmailErr] = useState(false);
+    const [isPasswordErr, setIsPasswordErr] = useState(false);
     const navigate = useNavigate();
-
-    const emailValidator = () => {
-        const msg = {};
-        if (isEmpty(emailValue)) {
-            msg.emailValue = 'Email không được để trống';
-            setHaveEmailErr(true);
-        } else if (!isEmail(emailValue)) {
-            msg.emailValue = 'Email không hợp lệ';
-            setHaveEmailErr(true);
-        } else {
-            setHaveEmailErr(false);
-        }
-        setEmailErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
-
-    const passwordValidator = () => {
-        const msg = {};
-        if (isEmpty(passwordValue)) {
-            msg.passwordValue = 'Mật khẩu không được để trống';
-            setHavePasswordErr(true);
-        } else if (passwordValue.length < 6) {
-            msg.passwordValue = 'Mật khẩu phải có ít nhất 6 kí tự';
-            setHavePasswordErr(true);
-        } else {
-            setHavePasswordErr(false);
-        }
-        setPasswordErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isEmailValid = emailValidator();
-        const isPasswordValid = passwordValidator();
+        const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
+        const isPasswordValid = passwordValidator(password, setIsPasswordErr, setPasswordErrMsg);
 
         if (!isEmailValid || !isPasswordValid) return;
         const data = {
-            email: emailValue,
-            password: passwordValue,
+            email: email,
+            password: password,
         };
 
         const res = await authServices.signin(data);
@@ -78,24 +45,24 @@ const Signin = () => {
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">Đăng nhập</h1>
                 <form>
                     <InputField
-                        className={haveEmailErr ? 'invalid' : 'default'}
+                        className={isEmailErr ? 'invalid' : 'default'}
                         name="email"
                         placeholder="Email"
-                        value={emailValue}
-                        setValue={setEmailValue}
-                        onBlur={emailValidator}
+                        value={email}
+                        setValue={setEmail}
+                        onBlur={() => emailValidator(email, setIsEmailErr, setEmailErrMsg)}
                     />
-                    <p className="text-red-600 text-[1.3rem]">{emailErrMsg.emailValue}</p>
+                    <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
                     <div className="mt-7">
                         <InputField
-                            className={havePasswordErr ? 'invalid' : 'default'}
+                            className={isPasswordErr ? 'invalid' : 'default'}
                             name="password"
                             placeholder="Mật khẩu"
-                            value={passwordValue}
-                            setValue={setPasswordValue}
-                            onBlur={passwordValidator}
+                            value={password}
+                            setValue={setPassword}
+                            onBlur={() => passwordValidator(password, setIsPasswordErr, setPasswordErrMsg)}
                         />
-                        <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.passwordValue}</p>
+                        <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.password}</p>
                     </div>
                     <div className="mt-7 text-right">
                         <NavLink className="hover:underline" to="/forgot-password">

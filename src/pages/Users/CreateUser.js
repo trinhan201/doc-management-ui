@@ -6,6 +6,7 @@ import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 
 const CreateUser = ({ title }) => {
     const [fullName, setFullName] = useState('');
@@ -14,6 +15,10 @@ const CreateUser = ({ title }) => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [department, setDepartment] = useState('');
+    const [fullNameErrMsg, setFullNameErrMsg] = useState({});
+    const [emailErrMsg, setEmailErrMsg] = useState({});
+    const [isFullNameErr, setIsFullNameErr] = useState(false);
+    const [isEmailErr, setIsEmailErr] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -66,11 +71,13 @@ const CreateUser = ({ title }) => {
                 <div className="mt-8">
                     <label className="font-bold">Họ và tên:</label>
                     <InputField
-                        className="default"
+                        className={isFullNameErr ? 'invalid' : 'default'}
                         placeholder="Tên người dùng"
                         value={fullName}
                         setValue={setFullName}
+                        onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
                     />
+                    <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center mt-7">
                     <label className="font-bold mr-7">Giới tính:</label>
@@ -98,11 +105,13 @@ const CreateUser = ({ title }) => {
                     <label className="font-bold">Email:</label>
                     <InputField
                         name="email"
-                        className="default"
+                        className={isEmailErr ? 'invalid' : 'default'}
                         placeholder="Email"
                         value={email}
                         setValue={setEmail}
+                        onBlur={() => emailValidator(email, setIsEmailErr, setEmailErrMsg)}
                     />
+                    <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Số điện thoại:</label>
@@ -111,8 +120,8 @@ const CreateUser = ({ title }) => {
                 <div className="mt-7">
                     <label className="font-bold">Phòng ban:</label>
                     <DropList
+                        selectedValue={department}
                         options={departmentOptions}
-                        listItem={department}
                         setValue={setDepartment}
                         setId={() => undefined}
                     />

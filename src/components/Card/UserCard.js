@@ -67,8 +67,8 @@ const UserCard = (props) => {
                 <span className="font-bold w-[120px]">Vai trò:</span>
                 <span>
                     <DropList
+                        selectedValue={props.role}
                         options={roleOptions}
-                        listItem={props.role}
                         setValue={props.setRole}
                         setId={props.setRoleId}
                     />

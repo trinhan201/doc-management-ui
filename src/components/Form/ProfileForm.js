@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import isEmpty from 'validator/lib/isEmpty';
-import isEmail from 'validator/lib/isEmail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import jwt_decode from 'jwt-decode';
@@ -9,6 +7,7 @@ import DropList from '../DropList';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '../ToastMessage';
+import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 
 const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
     const [fullName, setFullName] = useState('');
@@ -20,40 +19,11 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
 
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [emailErrMsg, setEmailErrMsg] = useState({});
-    const [haveFullNameErr, setHaveFullNameErr] = useState(false);
-    const [haveEmailErr, setHaveEmailErr] = useState(false);
+    const [isFullNameErr, setIsFullNameErr] = useState(false);
+    const [isEmailErr, setIsEmailErr] = useState(false);
 
     const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
     const genderList = ['Nam', 'Nữ'];
-
-    const fullNameValidator = () => {
-        const msg = {};
-        if (isEmpty(fullName)) {
-            msg.fullName = 'Tên người dùng không được để trống';
-            setHaveFullNameErr(true);
-        } else {
-            setHaveFullNameErr(false);
-        }
-        setFullNameErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
-
-    const emailValidator = () => {
-        const msg = {};
-        if (isEmpty(email)) {
-            msg.email = 'Email không được để trống';
-            setHaveEmailErr(true);
-        } else if (!isEmail(email)) {
-            msg.email = 'Email không hợp lệ';
-            setHaveEmailErr(true);
-        } else {
-            setHaveEmailErr(false);
-        }
-        setEmailErrMsg(msg);
-        if (Object.keys(msg).length > 0) return false;
-        return true;
-    };
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -70,8 +40,8 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isFullNameValid = fullNameValidator();
-        const isEmailValid = emailValidator();
+        const isFullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
+        const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
         if (!isFullNameValid || !isEmailValid) return;
         const data = {
             fullName: fullName,
@@ -107,11 +77,11 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">{formTitle}</h1>
                 <form>
                     <InputField
-                        className={haveFullNameErr ? 'invalid' : 'default'}
+                        className={isFullNameErr ? 'invalid' : 'default'}
                         placeholder="Họ và tên"
                         value={fullName}
                         setValue={setFullName}
-                        onBlur={fullNameValidator}
+                        onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
                     />
                     <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                     <div className="flex items-center mt-7">
@@ -141,11 +111,11 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                     <div className="mt-7">
                         <InputField
                             name="email"
-                            className={haveEmailErr ? 'invalid' : 'default'}
+                            className={isEmailErr ? 'invalid' : 'default'}
                             placeholder="Email"
                             value={email}
                             setValue={setEmail}
-                            onBlur={emailValidator}
+                            onBlur={() => emailValidator(email, setIsEmailErr, setEmailErrMsg)}
                         />
                         <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
                     </div>
@@ -154,8 +124,8 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                     </div>
                     <div className="mt-7">
                         <DropList
+                            selectedValue={department}
                             options={departmentOptions}
-                            listItem={department}
                             setValue={setDepartment}
                             setId={() => undefined}
                         />
