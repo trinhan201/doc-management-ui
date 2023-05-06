@@ -24,6 +24,10 @@ body {
     border-radius: 8px;
 }
 
+.default.icon {
+    padding-left: 45px;
+}
+
 .invalid {
     font-size: 15px;
     width: 100%;

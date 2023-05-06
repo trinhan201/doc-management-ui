@@ -18,7 +18,7 @@ const UserCard = (props) => {
         <div onClick={() => setShowAction(false)} className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center justify-between relative text-right mb-3">
                 <div className="flex items-center">
-                    <input type="checkbox" />
+                    <input type="checkbox" checked={props.checkedBox} onChange={props.handleCheckBox} />
                 </div>
                 <FontAwesomeIcon onClick={toggle} className="w-[16px] h-[16px] cursor-pointer" icon={faEllipsisH} />
                 <div
@@ -27,14 +27,14 @@ const UserCard = (props) => {
                     }
                 >
                     <ul>
-                        <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
+                        <li className="hover:bg-[#dddddd] cursor-pointer">
                             <NavLink className="block p-[8px] text-left" to={`/users/${props.userId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
                             </NavLink>
                         </li>
                         <li
-                            onClick={() => setShowAction(false)}
+                            onClick={props.handleDelete}
                             className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faTrashCan} />

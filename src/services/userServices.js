@@ -40,9 +40,29 @@ export const activateUser = async (userId, data = {}) => {
     }
 };
 
-export const getAllUser = async (page, search) => {
+export const deleteUserById = async (userId) => {
     try {
-        const res = await httpRequest.get(`/user/get-all?page=${page}&limit=5&search=${search}`);
+        const res = await httpRequest.delete(`/user/delete/${userId}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
+export const deleteManyUser = async (data = {}) => {
+    try {
+        const res = await httpRequest.post('/user/delete-many', data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
+export const getAllUser = async (page, limit, search) => {
+    try {
+        const res = await httpRequest.get(`/user/get-all?page=${page}&limit=${limit}&search=${search}`);
         return res.data;
     } catch (error) {
         console.log(error);
