@@ -7,7 +7,7 @@ import DropList from '../DropList';
 
 const UserCard = (props) => {
     const [showAction, setShowAction] = useState(false);
-    const roleOptions = ['Admin', 'Moderator', 'Member'];
+    const roleOptions = ['Moderator', 'Member'];
 
     const toggle = (e) => {
         e.stopPropagation();
@@ -18,7 +18,7 @@ const UserCard = (props) => {
         <div onClick={() => setShowAction(false)} className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center justify-between relative text-right mb-3">
                 <div className="flex items-center">
-                    <input type="checkbox" checked={props.checkedBox} onChange={props.handleCheckBox} />
+                    <input type="checkbox" checked={props.checkBox} onChange={props.handleCheckBox} />
                 </div>
                 <FontAwesomeIcon onClick={toggle} className="w-[16px] h-[16px] cursor-pointer" icon={faEllipsisH} />
                 <div

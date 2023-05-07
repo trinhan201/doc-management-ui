@@ -34,13 +34,12 @@ const User = () => {
     const [checked, setChecked] = useState([]);
     const [checkedAll, setCheckedAll] = useState(false);
 
-    const roleOptions = ['Admin', 'Moderator', 'Member'];
+    const roleOptions = ['Moderator', 'Member'];
 
     const totalPage = Math.ceil(pageLength / limit);
     const filterPages = Math.ceil((pageLength - (pageLength - userLists.length)) / limit);
     const debouncedValue = useDebounce(searchValue, 300);
 
-    console.log(checked);
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
@@ -116,30 +115,36 @@ const User = () => {
         });
     };
 
+    const isCheckedAll = () => {
+        if (debouncedValue) {
+            return checked.length === userLists.length;
+        } else {
+            return checked.length === allUsers.length;
+        }
+    };
+
     useEffect(() => {
         const handleCheckAll = () => {
             const idsArray = [];
-            if (checkedAll === true) {
-                if (debouncedValue) {
-                    userLists.map((item) => {
-                        return idsArray.push(item._id);
-                    });
-                    setChecked(idsArray);
-                } else {
-                    allUsers.map((item) => {
-                        return idsArray.push(item._id);
-                    });
-                    setChecked(idsArray);
-                }
+            if (checkedAll === false) return setChecked([]);
+            if (debouncedValue) {
+                userLists.map((item) => {
+                    return idsArray.push(item._id);
+                });
+                setChecked(idsArray);
             } else {
-                setChecked([]);
+                allUsers.map((item) => {
+                    return idsArray.push(item._id);
+                });
+                setChecked(idsArray);
             }
         };
         handleCheckAll();
-    }, [checkedAll, allUsers, userLists, debouncedValue]);
+    }, [checkedAll, debouncedValue, allUsers, userLists]);
 
     const handleDelete = async (id) => {
-        // window.confirm('Bạn có chắc muốn xóa vĩnh viễn người dùng không?');
+        const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn người dùng không?';
+        if (!window.confirm(confirmMsg)) return;
         const res = await userServices.deleteUserById(id);
         if (res.code === 200) {
             successNotify(res.message);
@@ -150,6 +155,8 @@ const User = () => {
     };
 
     const handleDeleteMany = async () => {
+        const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn những người dùng này không không?';
+        if (!window.confirm(confirmMsg)) return;
         const data = {
             arrayId: checked,
         };
@@ -214,8 +221,8 @@ const User = () => {
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
-                                                    checked={checkedAll}
-                                                    onChange={() => setCheckedAll(!checkedAll)}
+                                                    checked={isCheckedAll()}
+                                                    onChange={(e) => setCheckedAll(e.target.checked)}
                                                 />
                                             </div>
                                         </th>
@@ -358,8 +365,8 @@ const User = () => {
             </div>
             <div className="md:hidden">
                 <div className="mb-3">
-                    <input type="checkbox" checked={checkedAll} onChange={() => setCheckedAll(!checkedAll)} /> Chọn tất
-                    cả
+                    <input type="checkbox" checked={isCheckedAll()} onChange={(e) => setCheckedAll(e.target.checked)} />{' '}
+                    Chọn tất cả
                 </div>
                 {userLists?.map((ul, index) => {
                     return (
