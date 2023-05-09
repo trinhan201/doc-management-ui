@@ -33,7 +33,6 @@ const App = () => {
         const decodedToken = jwt_decode(accessToken);
         setUserRole(decodedToken.role);
     }, [isSuccess]);
-    console.log(userRole);
     return (
         <Router>
             <Routes>

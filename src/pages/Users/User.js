@@ -28,7 +28,6 @@ const User = () => {
     const [isSave, setIsSave] = useState(false);
     const [limit, setLimit] = useState(5);
     const [page, setPage] = useState(1);
-    const [pageLength, setPageLength] = useState(0);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
     const [checked, setChecked] = useState([]);
@@ -36,39 +35,36 @@ const User = () => {
 
     const roleOptions = ['Moderator', 'Member'];
 
-    const totalPage = Math.ceil(pageLength / limit);
-    const filterPages = Math.ceil((pageLength - (pageLength - userLists.length)) / limit);
+    const totalPage = Math.ceil(allUsers.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
 
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
-        setRowEnd((rowEnd) => rowEnd + 5);
+        setRowEnd(rowEnd + 5);
     };
 
     const handlePrevPage = () => {
         setPage(page - 1);
         setRowStart(rowStart - 5);
-        setRowEnd((rowEnd) => rowEnd - 5);
+        setRowEnd(rowEnd - 5);
     };
 
     useEffect(() => {
         const fetchApi = async () => {
-            if (debouncedValue) {
-                setPage(1);
-                setRowStart(1);
-                setRowEnd(0);
-            }
             const res = await userServices.getAllUser(page, Number(limit), debouncedValue);
-            if (res.data.length === 0) {
-                setRowStart(0);
-            }
             setAllUsers(res.allUsers);
             setUserLists(res.data);
-            setPageLength(debouncedValue ? filterPages : res.usersLength);
         };
         fetchApi();
-    }, [isSave, page, limit, debouncedValue, filterPages]);
+    }, [isSave, page, limit, debouncedValue]);
+
+    useEffect(() => {
+        if (!debouncedValue) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [debouncedValue]);
 
     useEffect(() => {
         if (!userRole) return;
@@ -116,31 +112,36 @@ const User = () => {
     };
 
     const isCheckedAll = () => {
-        if (debouncedValue) {
-            return checked.length === userLists.length;
-        } else {
-            return checked.length === allUsers.length;
-        }
+        // if (debouncedValue) {
+        //     return checked.length === userLists.length;
+        // } else {
+        //     return checked.length === allUsers.length;
+        // }
+        return checked.length === allUsers.length;
     };
 
     useEffect(() => {
         const handleCheckAll = () => {
             const idsArray = [];
             if (checkedAll === false) return setChecked([]);
-            if (debouncedValue) {
-                userLists.map((item) => {
-                    return idsArray.push(item._id);
-                });
-                setChecked(idsArray);
-            } else {
-                allUsers.map((item) => {
-                    return idsArray.push(item._id);
-                });
-                setChecked(idsArray);
-            }
+            // if (debouncedValue) {
+            //     userLists.map((item) => {
+            //         return idsArray.push(item._id);
+            //     });
+            //     setChecked(idsArray);
+            // } else {
+            //     allUsers.map((item) => {
+            //         return idsArray.push(item._id);
+            //     });
+            //     setChecked(idsArray);
+            // }
+            allUsers.map((item) => {
+                return idsArray.push(item._id);
+            });
+            setChecked(idsArray);
         };
         handleCheckAll();
-    }, [checkedAll, debouncedValue, allUsers, userLists]);
+    }, [checkedAll, allUsers]);
 
     const handleDelete = async (id) => {
         const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn người dùng không?';
@@ -337,8 +338,8 @@ const User = () => {
                     </div>
                     <div className="flex items-center">
                         <p className="text-[1.5rem] mr-9">
-                            Hiển thị <span>{rowStart}</span> đến <span>{rowEnd + userLists.length}</span> của{' '}
-                            <span>{debouncedValue ? userLists.length : pageLength}</span> mục
+                            Hiển thị <span>{userLists.length === 0 ? 0 : rowStart}</span> đến{' '}
+                            <span>{rowEnd + userLists.length}</span> của <span>{allUsers.length}</span> mục
                         </p>
                         <div
                             onClick={handlePrevPage}
