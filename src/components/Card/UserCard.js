@@ -67,9 +67,9 @@ const UserCard = (props) => {
                 <span className="font-bold w-[120px]">Vai trò:</span>
                 <span>
                     <DropList
-                        selectedValue={props.role}
+                        selectedValue={props.roleValue}
                         options={roleOptions}
-                        setValue={props.setRole}
+                        setValue={props.setRoleValue}
                         setId={props.setRoleId}
                     />
                 </span>
@@ -77,8 +77,8 @@ const UserCard = (props) => {
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>
                 <SwitchButton
-                    value={props.active}
-                    checked={props.checked}
+                    value={props.activeValue}
+                    checked={props.activeChecked}
                     setValue={props.setIsActived}
                     setId={props.setActiveId}
                 />

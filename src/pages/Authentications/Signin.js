@@ -5,7 +5,7 @@ import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { emailValidator, passwordValidator } from '~/utils/formValidation';
 
-const Signin = () => {
+const Signin = ({ setIsSuccess }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailErrMsg, setEmailErrMsg] = useState({});
@@ -30,6 +30,7 @@ const Signin = () => {
             localStorage.setItem('accessToken', res.accessToken);
             localStorage.setItem('refreshToken', res.refreshToken);
             successNotify(res.message);
+            setIsSuccess(true);
             navigate('/dashboard');
         } else {
             errorNotify(res);

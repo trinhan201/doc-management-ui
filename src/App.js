@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {
     Signin,
@@ -21,11 +23,24 @@ import ProtectedRoutes from './pages/Others/ProtectedRoutes';
 import { auth } from './pages/Others/ProtectedRoutes';
 
 const App = () => {
+    const [userRole, setUserRole] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
     const isAuth = auth();
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) return;
+        const decodedToken = jwt_decode(accessToken);
+        setUserRole(decodedToken.role);
+    }, [isSuccess]);
+    console.log(userRole);
     return (
         <Router>
             <Routes>
-                <Route path="/signin" element={isAuth ? <Navigate to="/dashboard" /> : <Signin />} />
+                <Route
+                    path="/signin"
+                    element={isAuth ? <Navigate to="/dashboard" /> : <Signin setIsSuccess={setIsSuccess} />}
+                />
                 <Route path="/forgot-password" element={isAuth ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
                 <Route path="/reset-password" element={isAuth ? <Navigate to="/dashboard" /> : <ResetPassword />} />
                 <Route element={<ProtectedRoutes />}>
@@ -40,73 +55,109 @@ const App = () => {
                     <Route
                         path="/departments"
                         element={
-                            <DefaultLayout>
-                                <Department />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <Department />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/departments/:id"
                         element={
-                            <DefaultLayout>
-                                <CreateDepartment title={'Chỉnh sửa phòng ban'} />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <CreateDepartment title={'Chỉnh sửa phòng ban'} />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/departments/create"
                         element={
-                            <DefaultLayout>
-                                <CreateDepartment title={'Thêm phòng ban mới'} />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <CreateDepartment title={'Thêm phòng ban mới'} />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/users"
                         element={
-                            <DefaultLayout>
-                                <User />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <User />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/users/:id"
                         element={
-                            <DefaultLayout>
-                                <CreateUser title="Chỉnh sửa thành viên" />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <CreateUser title="Chỉnh sửa thành viên" />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/users/create"
                         element={
-                            <DefaultLayout>
-                                <CreateUser title="Thêm thành viên mới" />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <CreateUser title="Thêm thành viên mới" />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/document-types"
                         element={
-                            <DefaultLayout>
-                                <DocumentType />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <DocumentType />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/document-types/:id"
                         element={
-                            <DefaultLayout>
-                                <CreateDocumentType title="Chỉnh sửa loại văn bản" />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <CreateDocumentType title="Chỉnh sửa loại văn bản" />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route
                         path="/document-types/create"
                         element={
-                            <DefaultLayout>
-                                <CreateDocumentType title="Thêm loại văn bản mới" />
-                            </DefaultLayout>
+                            userRole === 'Admin' ? (
+                                <DefaultLayout>
+                                    <CreateDocumentType title="Thêm loại văn bản mới" />
+                                </DefaultLayout>
+                            ) : (
+                                <Page404 />
+                            )
                         }
                     />
                     <Route path="/documents" element={<Page404 />} />

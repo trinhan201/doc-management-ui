@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     faAngleDown,
     faAngleRight,
@@ -12,10 +12,21 @@ import {
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import jwt_decode from 'jwt-decode';
 import SidebarItem from '~/components/SidebarItem';
 
 const Sidebar = () => {
     const [toggleSubMenu, setToggleSubMenu] = useState(false);
+    const [userRole, setUserRole] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) return;
+        const decodedToken = jwt_decode(token);
+        setUserRole(decodedToken.role);
+    }, []);
+
+    // console.log(userRole);
     return (
         <div className="w-full h-full bg-[#3c4b64] overflow-auto">
             <div className="flex h-[64px] bg-[#303c54] italic">
@@ -25,7 +36,9 @@ const Sidebar = () => {
             </div>
             <ul>
                 <SidebarItem path="/dashboard" icon={faGauge} title="Bảng điều khiển" />
-                <SidebarItem path="/document-types" icon={faFontAwesome} title="Loại văn bản" />
+                <div className={userRole === 'Admin' ? '' : 'hidden'}>
+                    <SidebarItem path="/document-types" icon={faFontAwesome} title="Loại văn bản" />
+                </div>
                 <SidebarItem
                     onClick={() => setToggleSubMenu(!toggleSubMenu)}
                     className="hello"
@@ -53,8 +66,12 @@ const Sidebar = () => {
                 />
 
                 <SidebarItem path="/tasks" icon={faListCheck} title="Việc cần làm" />
-                <SidebarItem path="/departments" icon={faLayerGroup} title="Phòng ban" />
-                <SidebarItem path="/users" icon={faUser} title="Thành viên" />
+                <div className={userRole === 'Admin' ? '' : 'hidden'}>
+                    <SidebarItem path="/departments" icon={faLayerGroup} title="Phòng ban" />
+                </div>
+                <div className={userRole === 'Admin' ? '' : 'hidden'}>
+                    <SidebarItem path="/users" icon={faUser} title="Thành viên" />
+                </div>
             </ul>
         </div>
     );

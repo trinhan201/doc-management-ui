@@ -378,11 +378,11 @@ const User = () => {
                             email={ul?.email}
                             phone={ul?.phoneNumber}
                             department={ul?.department}
-                            active={ul?.isActived}
-                            role={ul?.role}
-                            setRole={setUserRole}
+                            roleValue={ul?.role}
+                            setRoleValue={setUserRole}
                             setRoleId={() => setRoleId(ul?._id)}
-                            checked={ul?.isActived}
+                            activeValue={ul?.isActived}
+                            activeChecked={ul?.isActived}
                             setIsActived={() => setIsActived(!ul?.isActived)}
                             setActiveId={() => setActiveId(ul?._id)}
                             handleDelete={() => handleDelete(ul?._id)}
