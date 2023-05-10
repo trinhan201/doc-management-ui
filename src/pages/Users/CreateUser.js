@@ -41,7 +41,9 @@ const CreateUser = ({ title }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
+        const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
+        if (!isEmailValid || !isfullNameValid) return;
         const data = {
             fullName: fullName,
             gender: gender,

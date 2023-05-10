@@ -3,11 +3,30 @@ import { faBell, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faKey, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ChangePasswordForm from '~/components/Form/ChangePasswordForm';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import * as authServices from '~/services/authServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const Header = ({ setToggle }) => {
     const [toggleSidebar, setToggleSidebar] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
+    const navigate = useNavigate();
+
+    const handleSignOut = async () => {
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) return;
+        const data = {
+            token: refreshToken,
+        };
+        const res = await authServices.signOut(data);
+        if (res.code === 200) {
+            localStorage.clear();
+            successNotify(res.message);
+            navigate('/signin');
+        } else {
+            errorNotify(res);
+        }
+    };
 
     useEffect(() => {
         setToggle(toggleSidebar);
@@ -54,7 +73,10 @@ const Header = ({ setToggle }) => {
                                     <FontAwesomeIcon icon={faKey} />
                                     <span className="ml-3">Đổi mật khẩu</span>
                                 </li>
-                                <li className="p-[12px] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]">
+                                <li
+                                    onClick={handleSignOut}
+                                    className="p-[12px] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]"
+                                >
                                     <FontAwesomeIcon icon={faRightFromBracket} />
                                     <span className="ml-3">Đăng xuất</span>
                                 </li>

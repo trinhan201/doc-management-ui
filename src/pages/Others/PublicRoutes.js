@@ -7,9 +7,10 @@ const auth = () => {
     }
     return true;
 };
-const ProtectedRoutes = () => {
+
+const PublicRoutes = () => {
     const isAuth = auth();
-    return isAuth ? <Outlet /> : <Navigate to="/signin" />;
+    return isAuth ? <Navigate to="/dashboard" /> : <Outlet />;
 };
 
-export default ProtectedRoutes;
+export default PublicRoutes;

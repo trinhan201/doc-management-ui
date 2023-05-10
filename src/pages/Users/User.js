@@ -165,6 +165,7 @@ const User = () => {
         const res = await userServices.deleteManyUser(data);
         if (res.code === 200) {
             successNotify(res.message);
+            setChecked([]);
             setIsSave((isSave) => !isSave);
         } else {
             errorNotify(res);

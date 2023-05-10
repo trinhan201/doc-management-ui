@@ -20,12 +20,11 @@ import {
     CreateDocument,
 } from './pages';
 import ProtectedRoutes from './pages/Others/ProtectedRoutes';
-import { auth } from './pages/Others/ProtectedRoutes';
+import PublicRoutes from './pages/Others/PublicRoutes';
 
 const App = () => {
     const [userRole, setUserRole] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
-    const isAuth = auth();
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
@@ -33,15 +32,25 @@ const App = () => {
         const decodedToken = jwt_decode(accessToken);
         setUserRole(decodedToken.role);
     }, [isSuccess]);
+
+    useEffect(() => {
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) return;
+        const decodedToken = jwt_decode(refreshToken);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            return localStorage.clear();
+        }
+    }, []);
+
     return (
         <Router>
             <Routes>
-                <Route
-                    path="/signin"
-                    element={isAuth ? <Navigate to="/dashboard" /> : <Signin setIsSuccess={setIsSuccess} />}
-                />
-                <Route path="/forgot-password" element={isAuth ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
-                <Route path="/reset-password" element={isAuth ? <Navigate to="/dashboard" /> : <ResetPassword />} />
+                <Route element={<PublicRoutes />}>
+                    <Route path="/signin" element={<Signin setIsSuccess={setIsSuccess} />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                </Route>
                 <Route element={<ProtectedRoutes />}>
                     <Route
                         path="/dashboard"

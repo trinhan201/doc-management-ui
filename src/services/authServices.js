@@ -55,3 +55,12 @@ export const getCurrUser = async () => {
         console.log(error);
     }
 };
+
+export const signOut = async (data = {}) => {
+    try {
+        const res = await httpRequest.post('/auth/signout', data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
