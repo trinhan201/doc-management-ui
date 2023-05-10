@@ -30,8 +30,8 @@ const User = () => {
     const [page, setPage] = useState(1);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
-    const [checked, setChecked] = useState([]);
-    const [checkedAll, setCheckedAll] = useState(false);
+    const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('checked')) || []);
+    const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAll')) || false);
 
     const roleOptions = ['Moderator', 'Member'];
 
@@ -102,46 +102,47 @@ const User = () => {
 
     const handleCheck = (id) => {
         setChecked((prev) => {
-            const isChecked = checked.includes(id);
+            const isChecked = checked?.includes(id);
             if (isChecked) {
-                return checked.filter((item) => item !== id);
+                setCheckedAll(false);
+                return checked?.filter((item) => item !== id);
             } else {
+                if ([...prev, id].length === allUsers.length) {
+                    setCheckedAll(true);
+                }
                 return [...prev, id];
             }
         });
     };
 
+    useEffect(() => {
+        localStorage.setItem('checked', JSON.stringify(checked));
+    }, [checked]);
+
+    useEffect(() => {
+        localStorage.setItem('isCheckAll', JSON.stringify(checkedAll));
+    }, [checkedAll]);
+
     const isCheckedAll = () => {
-        // if (debouncedValue) {
-        //     return checked.length === userLists.length;
-        // } else {
-        //     return checked.length === allUsers.length;
-        // }
-        return checked.length === allUsers.length;
+        return checked?.length === allUsers.length;
     };
 
     useEffect(() => {
         const handleCheckAll = () => {
             const idsArray = [];
-            if (checkedAll === false) return setChecked([]);
-            // if (debouncedValue) {
-            //     userLists.map((item) => {
-            //         return idsArray.push(item._id);
-            //     });
-            //     setChecked(idsArray);
-            // } else {
-            //     allUsers.map((item) => {
-            //         return idsArray.push(item._id);
-            //     });
-            //     setChecked(idsArray);
-            // }
+            if (checkedAll === false) {
+                if (checked?.length === allUsers.length) {
+                    return setChecked([]);
+                }
+                return setChecked((checked) => checked);
+            }
             allUsers.map((item) => {
                 return idsArray.push(item._id);
             });
             setChecked(idsArray);
         };
         handleCheckAll();
-    }, [checkedAll, allUsers]);
+    }, [checkedAll, allUsers, checked?.length]);
 
     const handleDelete = async (id) => {
         const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn người dùng không?';
@@ -196,12 +197,12 @@ const User = () => {
                     <button
                         onClick={handleDeleteMany}
                         className={
-                            checked.length > 1
+                            checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
                                 : 'hidden'
                         }
                     >
-                        <FontAwesomeIcon icon={faTrashCan} /> Xóa <span>({checked.length})</span> mục
+                        <FontAwesomeIcon icon={faTrashCan} /> Xóa <span>({checked?.length})</span> mục
                     </button>
                     <NavLink
                         to="/users/create"
@@ -262,7 +263,7 @@ const User = () => {
                                                         <div className="flex items-center">
                                                             <input
                                                                 type="checkbox"
-                                                                checked={checked.includes(ul?._id)}
+                                                                checked={checked?.includes(ul?._id)}
                                                                 onChange={() => handleCheck(ul?._id)}
                                                             />
                                                         </div>
@@ -387,7 +388,7 @@ const User = () => {
                             setIsActived={() => setIsActived(!ul?.isActived)}
                             setActiveId={() => setActiveId(ul?._id)}
                             handleDelete={() => handleDelete(ul?._id)}
-                            checkBox={checked.includes(ul?._id)}
+                            checkBox={checked?.includes(ul?._id)}
                             handleCheckBox={() => handleCheck(ul?._id)}
                         />
                     );
