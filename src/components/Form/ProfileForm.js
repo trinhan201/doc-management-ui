@@ -75,8 +75,9 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                     QLVB <span className="text-[2.4rem]">v1.0</span>
                 </h1>
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">{formTitle}</h1>
-                <form>
+                <form autoComplete="on">
                     <InputField
+                        id="fullName"
                         className={isFullNameErr ? 'invalid' : 'default'}
                         placeholder="Họ và tên"
                         value={fullName}
@@ -110,6 +111,7 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                     </div>
                     <div className="mt-7">
                         <InputField
+                            id="email"
                             name="email"
                             className={isEmailErr ? 'invalid' : 'default'}
                             placeholder="Email"
@@ -120,7 +122,13 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                         <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
                     </div>
                     <div className="mt-7">
-                        <InputField className="default" placeholder="Số điện thoại" value={phone} setValue={setPhone} />
+                        <InputField
+                            id="phone"
+                            className="default"
+                            placeholder="Số điện thoại"
+                            value={phone}
+                            setValue={setPhone}
+                        />
                     </div>
                     <div className="mt-7">
                         <DropList

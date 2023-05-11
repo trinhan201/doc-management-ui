@@ -69,10 +69,11 @@ const CreateUser = ({ title }) => {
     return (
         <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
             <h1 className="text-[2rem] font-bold">{title}</h1>
-            <form>
+            <form autoComplete="on">
                 <div className="mt-8">
                     <label className="font-bold">Họ và tên:</label>
                     <InputField
+                        id="fullName"
                         className={isFullNameErr ? 'invalid' : 'default'}
                         placeholder="Tên người dùng"
                         value={fullName}
@@ -106,6 +107,7 @@ const CreateUser = ({ title }) => {
                 <div className="mt-7">
                     <label className="font-bold">Email:</label>
                     <InputField
+                        id="email"
                         name="email"
                         className={isEmailErr ? 'invalid' : 'default'}
                         placeholder="Email"
@@ -117,7 +119,13 @@ const CreateUser = ({ title }) => {
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Số điện thoại:</label>
-                    <InputField className="default" placeholder="Số điện thoại" value={phone} setValue={setPhone} />
+                    <InputField
+                        id="phone"
+                        className="default"
+                        placeholder="Số điện thoại"
+                        value={phone}
+                        setValue={setPhone}
+                    />
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Phòng ban:</label>

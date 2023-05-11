@@ -32,6 +32,7 @@ const InputField = (props) => {
     return (
         <div className="relative rounded-md">
             <Comp
+                id={props.id}
                 className={props.className}
                 type={setTypes()}
                 value={props.value}
@@ -41,6 +42,7 @@ const InputField = (props) => {
                 rows={props.rows}
                 cols={props.cols}
                 checked={props.checked}
+                autoComplete="on"
             />
             <div
                 onClick={toggle}

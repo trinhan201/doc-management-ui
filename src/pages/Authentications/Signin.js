@@ -44,8 +44,9 @@ const Signin = ({ setIsSuccess }) => {
                     QLVB <span className="text-[2.4rem]">v1.0</span>
                 </h1>
                 <h1 className="text-[#9fa9ae] text-center text-[2.0rem] font-medium mb-16">Đăng nhập</h1>
-                <form>
+                <form id="signin" autoComplete="on">
                     <InputField
+                        id="email"
                         className={isEmailErr ? 'invalid' : 'default'}
                         name="email"
                         placeholder="Email"
