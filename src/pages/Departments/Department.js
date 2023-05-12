@@ -62,6 +62,13 @@ const Department = () => {
     }, [debouncedValue]);
 
     useEffect(() => {
+        if (!limit) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [limit]);
+
+    useEffect(() => {
         if (!activeId) return;
         const handleActivateDepartment = async () => {
             const data = {
@@ -330,9 +337,24 @@ const Department = () => {
                 </div>
             </div>
             <div className="md:hidden">
-                <div className="mb-3">
-                    <input type="checkbox" checked={isCheckedAll()} onChange={(e) => setCheckedAll(e.target.checked)} />{' '}
-                    Chọn tất cả
+                <div className="flex items-center justify-between mb-5">
+                    <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={isCheckedAll()}
+                            onChange={(e) => setCheckedAll(e.target.checked)}
+                        />{' '}
+                        <p className="ml-3 mt-1">Chọn tất cả</p>
+                    </label>
+                    <select
+                        value={limit}
+                        onChange={(e) => setLimit(e.target.value)}
+                        className="bg-inherit border border-[#cccccc] text-[1.5rem] rounded-[8px] block w-fit px-[14px] py-[8px] outline-none"
+                    >
+                        <option value={5}>5 mục</option>
+                        <option value={10}>10 mục</option>
+                        <option value={100}>100 mục</option>
+                    </select>
                 </div>
                 {departmentLists?.length !== 0 ? (
                     departmentLists?.map((dl, index) => {
