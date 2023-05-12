@@ -6,6 +6,7 @@ import InputField from '../InputField';
 import DropList from '../DropList';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
+import * as departmentServices from '~/services/departmentServices';
 import { successNotify, errorNotify } from '../ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 
@@ -22,7 +23,8 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
 
-    const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
+    const [departments, setDepartments] = useState([]);
+
     const genderList = ['Nam', 'Nữ'];
 
     useEffect(() => {
@@ -34,6 +36,15 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
             setEmail(res.email);
             setPhone(res.phoneNumber);
             setDepartment(res.department);
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await departmentServices.getAllDepartment(1, 1, '');
+            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
+            setDepartments(departmentArray);
         };
         fetchApi();
     }, []);
@@ -133,7 +144,7 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                     <div className="mt-7">
                         <DropList
                             selectedValue={department}
-                            options={departmentOptions}
+                            options={departments}
                             setValue={setDepartment}
                             setId={() => undefined}
                         />

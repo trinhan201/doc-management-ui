@@ -30,8 +30,8 @@ const User = () => {
     const [page, setPage] = useState(1);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
-    const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('checked')) || []);
-    const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAll')) || false);
+    const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('userChecked')) || []);
+    const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllUser')) || false);
 
     const roleOptions = ['Moderator', 'Member'];
 
@@ -116,11 +116,11 @@ const User = () => {
     };
 
     useEffect(() => {
-        localStorage.setItem('checked', JSON.stringify(checked));
+        localStorage.setItem('userChecked', JSON.stringify(checked));
     }, [checked]);
 
     useEffect(() => {
-        localStorage.setItem('isCheckAll', JSON.stringify(checkedAll));
+        localStorage.setItem('isCheckAllUser', JSON.stringify(checkedAll));
     }, [checkedAll]);
 
     const isCheckedAll = () => {
@@ -256,7 +256,7 @@ const User = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {userLists.length !== 0 ? (
+                                    {userLists?.length !== 0 ? (
                                         userLists?.map((ul, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
@@ -371,29 +371,33 @@ const User = () => {
                     <input type="checkbox" checked={isCheckedAll()} onChange={(e) => setCheckedAll(e.target.checked)} />{' '}
                     Chọn tất cả
                 </div>
-                {userLists?.map((ul, index) => {
-                    return (
-                        <UserCard
-                            key={index}
-                            id={index + 1}
-                            userId={ul?._id}
-                            fullName={ul?.fullName}
-                            email={ul?.email}
-                            phone={ul?.phoneNumber}
-                            department={ul?.department}
-                            roleValue={ul?.role}
-                            setRoleValue={setUserRole}
-                            setRoleId={() => setRoleId(ul?._id)}
-                            activeValue={ul?.isActived}
-                            activeChecked={ul?.isActived}
-                            setIsActived={() => setIsActived(!ul?.isActived)}
-                            setActiveId={() => setActiveId(ul?._id)}
-                            handleDelete={() => handleDelete(ul?._id)}
-                            checkBox={checked?.includes(ul?._id)}
-                            handleCheckBox={() => handleCheck(ul?._id)}
-                        />
-                    );
-                })}
+                {userLists?.length !== 0 ? (
+                    userLists?.map((ul, index) => {
+                        return (
+                            <UserCard
+                                key={index}
+                                id={index + 1}
+                                userId={ul?._id}
+                                fullName={ul?.fullName}
+                                email={ul?.email}
+                                phone={ul?.phoneNumber}
+                                department={ul?.department}
+                                roleValue={ul?.role}
+                                setRoleValue={setUserRole}
+                                setRoleId={() => setRoleId(ul?._id)}
+                                activeValue={ul?.isActived}
+                                activeChecked={ul?.isActived}
+                                setIsActived={() => setIsActived(!ul?.isActived)}
+                                setActiveId={() => setActiveId(ul?._id)}
+                                handleDelete={() => handleDelete(ul?._id)}
+                                checkBox={checked?.includes(ul?._id)}
+                                handleCheckBox={() => handleCheck(ul?._id)}
+                            />
+                        );
+                    })
+                ) : (
+                    <p className="text-center p-5">Không tìm thấy dữ liệu</p>
+                )}
 
                 <div className="flex items-center justify-center">
                     <div
@@ -404,7 +408,7 @@ const User = () => {
                                 : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
                         }
                     >
-                        Prev
+                        Trước
                     </div>
                     <div
                         onClick={handleNextPage}
@@ -414,7 +418,7 @@ const User = () => {
                                 : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
                         }
                     >
-                        Next
+                        Sau
                     </div>
                 </div>
             </div>

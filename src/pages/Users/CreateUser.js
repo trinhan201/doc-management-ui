@@ -5,6 +5,7 @@ import InputField from '~/components/InputField';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
+import * as departmentServices from '~/services/departmentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 
@@ -19,11 +20,11 @@ const CreateUser = ({ title }) => {
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
+    const [departments, setDepartments] = useState([]);
     const navigate = useNavigate();
     const { id } = useParams();
 
     const genderList = ['Nam', 'Nữ'];
-    const departmentOptions = ['Phòng nhân sự', 'Phòng IT', 'Phòng hành chính'];
 
     useEffect(() => {
         if (!id) return;
@@ -38,6 +39,15 @@ const CreateUser = ({ title }) => {
         };
         fetchApi();
     }, [id]);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await departmentServices.getAllDepartment(1, 1, '');
+            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
+            setDepartments(departmentArray);
+        };
+        fetchApi();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -131,7 +141,7 @@ const CreateUser = ({ title }) => {
                     <label className="font-bold">Phòng ban:</label>
                     <DropList
                         selectedValue={department}
-                        options={departmentOptions}
+                        options={departments}
                         setValue={setDepartment}
                         setId={() => undefined}
                     />

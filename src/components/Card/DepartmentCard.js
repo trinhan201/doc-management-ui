@@ -7,15 +7,16 @@ import { NavLink } from 'react-router-dom';
 const DepartmentCard = (props) => {
     const [showAction, setShowAction] = useState(false);
 
-    const toggle = () => {
+    const toggle = (e) => {
+        e.stopPropagation();
         setShowAction(!showAction);
     };
 
     return (
-        <div className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
+        <div onClick={() => setShowAction(false)} className="text-[1.4rem] bg-white p-[16px] mb-5 shadow-4Way">
             <div className="flex items-center justify-between relative text-right mb-3">
                 <div className="flex items-center">
-                    <input type="checkbox" />
+                    <input type="checkbox" checked={props.checkBox} onChange={props.handleCheckBox} />
                 </div>
                 <FontAwesomeIcon onClick={toggle} className="w-[16px] h-[16px] cursor-pointer" icon={faEllipsisH} />
                 <div
@@ -25,13 +26,13 @@ const DepartmentCard = (props) => {
                 >
                     <ul>
                         <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
-                            <NavLink className="block p-[8px] text-left" to="/departments/123">
+                            <NavLink className="block p-[8px] text-left" to={`/departments/${props.departmentId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
                             </NavLink>
                         </li>
                         <li
-                            onClick={() => setShowAction(false)}
+                            onClick={props.handleDelete}
                             className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faTrashCan} />
@@ -50,7 +51,12 @@ const DepartmentCard = (props) => {
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Trạng thái:</span>
-                <SwitchButton />
+                <SwitchButton
+                    value={props.activeValue}
+                    checked={props.activeChecked}
+                    setValue={props.setIsActived}
+                    setId={props.setActiveId}
+                />
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Ghi chú:</span>
