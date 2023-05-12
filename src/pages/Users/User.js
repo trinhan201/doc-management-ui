@@ -173,6 +173,9 @@ const User = () => {
         if (res.code === 200) {
             successNotify(res.message);
             setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
             setIsSave((isSave) => !isSave);
         } else {
             errorNotify(res);

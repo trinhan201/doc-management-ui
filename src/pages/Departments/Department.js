@@ -151,6 +151,9 @@ const Department = () => {
         if (res.code === 200) {
             successNotify(res.message);
             setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
             setIsSave((isSave) => !isSave);
         } else {
             errorNotify(res);
@@ -177,7 +180,7 @@ const Department = () => {
                     </div>
                 </form>
             </div>
-            <div className="flex items-center justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
+            <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách phòng ban</h1>
                 <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
                     <button

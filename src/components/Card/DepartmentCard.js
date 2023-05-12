@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import SwitchButton from '../SwitchButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
+import SwitchButton from '../SwitchButton';
 
 const DepartmentCard = (props) => {
     const [showAction, setShowAction] = useState(false);
