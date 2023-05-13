@@ -38,6 +38,7 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
         const res = await userServices.changePassword(data);
         if (res.code === 200) {
             successNotify(res.message);
+            setShowChangePassword(false);
         } else {
             errorNotify(res);
         }

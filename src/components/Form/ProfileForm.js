@@ -43,7 +43,9 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
     useEffect(() => {
         const fetchApi = async () => {
             const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
+            const departmentArray = res.allDepartments
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.departmentName);
             setDepartments(departmentArray);
         };
         fetchApi();

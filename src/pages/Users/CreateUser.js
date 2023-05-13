@@ -12,7 +12,7 @@ import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 const CreateUser = ({ title }) => {
     const [fullName, setFullName] = useState('');
     const [date, setDate] = useState('');
-    const [gender, setGender] = useState('');
+    const [gender, setGender] = useState('Nam');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [department, setDepartment] = useState('');
@@ -43,7 +43,9 @@ const CreateUser = ({ title }) => {
     useEffect(() => {
         const fetchApi = async () => {
             const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
+            const departmentArray = res.allDepartments
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.departmentName);
             setDepartments(departmentArray);
         };
         fetchApi();
