@@ -282,10 +282,16 @@ const User = () => {
                                                     <td className="whitespace-nowrap px-6 py-4 font-medium">
                                                         {index + 1}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{ul?.fullName}</td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{ul?.email}</td>
+                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate">
+                                                        {ul?.fullName}
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[200px] truncate">
+                                                        {ul?.email}
+                                                    </td>
                                                     <td className="whitespace-nowrap px-6 py-4">{ul?.phoneNumber}</td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{ul?.department}</td>
+                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate">
+                                                        {ul?.department}
+                                                    </td>
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <DropList
                                                             selectedValue={ul?.role}

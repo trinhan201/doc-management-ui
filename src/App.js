@@ -51,6 +51,8 @@ const App = () => {
     }, []);
 
     useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) return;
         const fetchApi = async () => {
             const res = await authServices.getCurrUser();
             setActiveFlag(res.isActived);
