@@ -38,7 +38,7 @@ const Header = ({ setToggle }) => {
     useEffect(() => {
         const fetchApi = async () => {
             const res = await authServices.getCurrUser();
-            setUserAvatar(res.avatar);
+            setUserAvatar(res?.avatar);
         };
         fetchApi();
     }, [isChangeAvatar]);
@@ -63,7 +63,15 @@ const Header = ({ setToggle }) => {
                     </ul>
                     <div className="relative group">
                         <div className="w-[50px] h-[50px] rounded-full ml-8 cursor-pointer">
-                            <img className="w-full h-full object-cover rounded-full" src={userAvatar} alt="avatar" />
+                            <img
+                                className="w-full h-full object-cover rounded-full"
+                                src={
+                                    userAvatar
+                                        ? userAvatar
+                                        : 'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
+                                }
+                                alt="avatar"
+                            />
                         </div>
                         <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block">
                             <ul className="w-[180px]">

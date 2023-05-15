@@ -99,3 +99,13 @@ export const changeAvatar = async (data) => {
         return error.response.data.message;
     }
 };
+
+export const removeAvatar = async (fileName) => {
+    try {
+        const res = await httpRequest.delete(`/user/file/${fileName}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

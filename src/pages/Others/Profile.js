@@ -5,13 +5,18 @@ import * as authServices from '~/services/authServices';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { AvatarContext } from '~/App';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const Profile = () => {
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
+    const [fileName, setFileName] = useState(JSON.parse(localStorage.getItem('imageName')));
     const [isSave, setIsSave] = useState(false);
+    const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
     const { isChangeAvatar, setIsChangeAvatar } = useContext(AvatarContext);
 
+    console.log(fileName);
     const changeAvatar = async (e) => {
         const data = new FormData();
         const file = e.target.files[0];
@@ -19,8 +24,10 @@ const Profile = () => {
         if (!file) return;
         const res = await userServices.changeAvatar(data);
         if (res.code === 200) {
+            setFileName(res.fileName);
             successNotify(res.message);
             setIsChangeAvatar(!isChangeAvatar);
+            setIsRemove(false);
         } else {
             errorNotify(res);
         }
@@ -34,6 +41,28 @@ const Profile = () => {
         fetchApi();
     }, [isSave, isChangeAvatar]);
 
+    const handleRemoveAvatar = async () => {
+        if (!fileName) return;
+        const res = await userServices.removeAvatar(fileName);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsChangeAvatar(!isChangeAvatar);
+            setIsRemove(true);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    useEffect(() => {
+        localStorage.setItem('imageName', JSON.stringify(fileName));
+    }, [isRemove]);
+
+    useEffect(() => {
+        localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
+    }, [isRemove]);
+
+    console.log(isRemove);
+
     return (
         <>
             <div className="flex flex-col xl:flex-row h-full gap-8">
@@ -41,10 +70,16 @@ const Profile = () => {
                     <div className="flex w-full xl:w-[320px] h-[320px] bg-white shadow-4Way">
                         <div className="m-auto">
                             <label className="label">
-                                <input className="hidden" type="file" name="myFile" onChange={(e) => changeAvatar(e)} />
+                                <input
+                                    className="hidden"
+                                    disabled={isRemove === false ? true : false}
+                                    type="file"
+                                    name="myFile"
+                                    onChange={(e) => changeAvatar(e)}
+                                />
                                 <figure className="relative w-[200px] h-[200px]">
                                     <img
-                                        src={currUser.avatar}
+                                        src="https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg"
                                         className="w-[200px] h-[200px] box-border rounded-full border-2 border-solid border-[#ccc] shadow-md transition-all hover:shadow-xl cursor-pointer"
                                         alt="avatar"
                                     />
@@ -55,6 +90,23 @@ const Profile = () => {
                                             alt=""
                                         />
                                     </figcaption>
+                                    <div
+                                        className={
+                                            isRemove === false ? 'group absolute top-0 w-[200px] h-[200px]' : 'hidden'
+                                        }
+                                    >
+                                        <img
+                                            src={currUser.avatar}
+                                            className="absolute top-0 w-full h-full box-border rounded-full border-2 border-solid border-[#ccc] shadow-md transition-all hover:shadow-xl"
+                                            alt="avatar"
+                                        />
+                                        <div
+                                            onClick={handleRemoveAvatar}
+                                            className="absolute top-0 right-0 hidden text-[2rem] group-hover:block cursor-pointer"
+                                        >
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </div>
+                                    </div>
                                 </figure>
                             </label>
                         </div>
