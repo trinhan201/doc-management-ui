@@ -89,3 +89,13 @@ export const changePassword = async (data = {}) => {
         return error.response.data.message;
     }
 };
+
+export const changeAvatar = async (data) => {
+    try {
+        const res = await httpRequest.post('/user/change-avatar', data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

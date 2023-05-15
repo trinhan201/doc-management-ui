@@ -1,11 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import FormData from 'form-data';
 import ProfileForm from '~/components/Form/ProfileForm';
 import * as authServices from '~/services/authServices';
+import * as userServices from '~/services/userServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { AvatarContext } from '~/App';
 
 const Profile = () => {
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
     const [isSave, setIsSave] = useState(false);
+    const { isChangeAvatar, setIsChangeAvatar } = useContext(AvatarContext);
+
+    const changeAvatar = async (e) => {
+        const data = new FormData();
+        const file = e.target.files[0];
+        data.append('myFile', file);
+        if (!file) return;
+        const res = await userServices.changeAvatar(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsChangeAvatar(!isChangeAvatar);
+        } else {
+            errorNotify(res);
+        }
+    };
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -13,19 +32,31 @@ const Profile = () => {
             setCurrUser(res);
         };
         fetchApi();
-    }, [isSave]);
+    }, [isSave, isChangeAvatar]);
 
     return (
         <>
             <div className="flex flex-col xl:flex-row h-full gap-8">
                 <div className="flex flex-col gap-8 w-full xl:w-[320px]">
                     <div className="flex w-full xl:w-[320px] h-[320px] bg-white shadow-4Way">
-                        <div className="w-[200px] h-[200px] rounded-full cursor-pointer m-auto">
-                            <img
-                                className="w-full h-full object-cover rounded-full"
-                                src="https://img.freepik.com/premium-vector/cute-orange-robot-cat-avatar_79416-86.jpg?w=2000"
-                                alt="avatar"
-                            />
+                        <div className="m-auto">
+                            <label className="label">
+                                <input className="hidden" type="file" name="myFile" onChange={(e) => changeAvatar(e)} />
+                                <figure className="relative w-[200px] h-[200px]">
+                                    <img
+                                        src={currUser.avatar}
+                                        className="w-[200px] h-[200px] box-border rounded-full border-2 border-solid border-[#ccc] shadow-md transition-all hover:shadow-xl cursor-pointer"
+                                        alt="avatar"
+                                    />
+                                    <figcaption className="flex cursor-pointer absolute top-0 w-full h-full rounded-full transition-all bg-[#000] opacity-0 hover:bg-[#000] hover:opacity-40">
+                                        <img
+                                            className="w-[50px] h-[50px] m-auto"
+                                            src="https://raw.githubusercontent.com/ThiagoLuizNunes/angular-boilerplate/master/src/assets/imgs/camera-white.png"
+                                            alt=""
+                                        />
+                                    </figcaption>
+                                </figure>
+                            </label>
                         </div>
                     </div>
                     <div className="w-full xl:w-[320px] h-fit bg-white p-[12px] shadow-4Way">

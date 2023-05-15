@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { faBell, faEnvelopeOpen } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faKey, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,10 +6,13 @@ import ChangePasswordForm from '~/components/Form/ChangePasswordForm';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { AvatarContext } from '~/App';
 
 const Header = ({ setToggle }) => {
     const [toggleSidebar, setToggleSidebar] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
+    const [userAvatar, setUserAvatar] = useState('');
+    const { isChangeAvatar } = useContext(AvatarContext);
     const navigate = useNavigate();
 
     const handleSignOut = async () => {
@@ -32,6 +35,14 @@ const Header = ({ setToggle }) => {
         setToggle(toggleSidebar);
     }, [setToggle, toggleSidebar]);
 
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await authServices.getCurrUser();
+            setUserAvatar(res.avatar);
+        };
+        fetchApi();
+    }, [isChangeAvatar]);
+
     return (
         <>
             <div className="flex items-center justify-between w-full h-[64px] bg-white text-[#9fa9ae] pl-[16px] pr-[24px] border-b-[1px] border-solid border-[#cccccc]">
@@ -52,11 +63,7 @@ const Header = ({ setToggle }) => {
                     </ul>
                     <div className="relative group">
                         <div className="w-[50px] h-[50px] rounded-full ml-8 cursor-pointer">
-                            <img
-                                className="w-full h-full object-cover rounded-full"
-                                src="https://img.freepik.com/premium-vector/cute-orange-robot-cat-avatar_79416-86.jpg?w=2000"
-                                alt="avatar"
-                            />
+                            <img className="w-full h-full object-cover rounded-full" src={userAvatar} alt="avatar" />
                         </div>
                         <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block">
                             <ul className="w-[180px]">
