@@ -263,7 +263,7 @@ const Department = () => {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[200px] truncate">
                                                         {dl?.note}
                                                     </td>
                                                     <td className="px-2 py-1 md:px-6 md:py-4">

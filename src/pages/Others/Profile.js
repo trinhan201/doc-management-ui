@@ -42,6 +42,8 @@ const Profile = () => {
     }, [isSave, isChangeAvatar]);
 
     const handleRemoveAvatar = async () => {
+        const confirmMsg = 'Bạn có chắc muốn xóa ảnh nền không?';
+        if (!window.confirm(confirmMsg)) return;
         if (!fileName) return;
         const res = await userServices.removeAvatar(fileName);
         if (res.code === 200) {
@@ -55,7 +57,7 @@ const Profile = () => {
 
     useEffect(() => {
         localStorage.setItem('imageName', JSON.stringify(fileName));
-    }, [isRemove]);
+    }, [isRemove, fileName]);
 
     useEffect(() => {
         localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));

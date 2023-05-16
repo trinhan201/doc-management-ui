@@ -16,8 +16,11 @@ import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useDebounce } from '~/hooks';
+import UserDetail from '~/components/Detail/UserDetail';
 
 const User = () => {
+    const [showUserDetail, setShowUserDetail] = useState(false);
+    const [user, setUser] = useState({});
     const [searchValue, setSearchValue] = useState('');
     const [allUsers, setAllUsers] = useState([]);
     const [userLists, setUserLists] = useState([]);
@@ -182,6 +185,17 @@ const User = () => {
         }
     };
 
+    const handleShowUserDetail = async (id) => {
+        setShowUserDetail(true);
+        if (!id) return;
+        const res = await userServices.getUserById(id);
+        if (res.code === 200) {
+            setUser(res.data);
+        } else {
+            return;
+        }
+    };
+
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
@@ -282,7 +296,10 @@ const User = () => {
                                                     <td className="whitespace-nowrap px-6 py-4 font-medium">
                                                         {index + 1}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate">
+                                                    <td
+                                                        onClick={() => handleShowUserDetail(ul?._id)}
+                                                        className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate hover:font-semibold hover:text-blue-600 cursor-pointer"
+                                                    >
                                                         {ul?.fullName}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4 max-w-[200px] truncate">
@@ -382,6 +399,19 @@ const User = () => {
                     </div>
                 </div>
             </div>
+            {showUserDetail && (
+                <UserDetail
+                    avatar={user?.avatar}
+                    fullName={user?.fullName}
+                    gender={user?.gender}
+                    birthDate={user?.birthDate}
+                    email={user?.email}
+                    phoneNumber={user?.phoneNumber}
+                    department={user?.department}
+                    role={user?.role}
+                    setShowUserDetail={setShowUserDetail}
+                />
+            )}
             <div className="md:hidden">
                 <div className="flex items-center justify-between mb-5">
                     <label className="flex items-center">
@@ -423,6 +453,7 @@ const User = () => {
                                 handleDelete={() => handleDelete(ul?._id)}
                                 checkBox={checked?.includes(ul?._id)}
                                 handleCheckBox={() => handleCheck(ul?._id)}
+                                setShowUserDetail={() => handleShowUserDetail(ul?._id)}
                             />
                         );
                     })

@@ -49,7 +49,12 @@ const UserCard = (props) => {
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Họ và tên:</span>
-                <span className="flex-1 truncate">{props.fullName}</span>
+                <span
+                    onClick={props.setShowUserDetail}
+                    className="flex-1 truncate hover:font-semibold hover:text-blue-600 cursor-pointer"
+                >
+                    {props.fullName}
+                </span>
             </div>
             <div className="flex items-center mb-3">
                 <span className="font-bold w-[120px]">Email:</span>
