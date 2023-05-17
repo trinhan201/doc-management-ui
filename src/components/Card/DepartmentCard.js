@@ -42,15 +42,18 @@ const DepartmentCard = (props) => {
                 </div>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">STT:</span>
-                <span className="flex-1 truncate">{props.id}</span>
+                <p className="font-bold w-[120px]">STT:</p>
+                <p className="flex-1 truncate">{props.id}</p>
+            </div>
+            <div className="relative group flex items-center mb-3">
+                <p className="font-bold w-[120px]">Tên phòng ban:</p>
+                <p className="flex-1 truncate">{props.departmentName}</p>
+                <p className="absolute bottom-[150%] rounded-xl left-[50%] translate-x-[-50%] hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-20 tooltip-bottom">
+                    {props.departmentName}
+                </p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Tên phòng ban:</span>
-                <span className="flex-1 truncate">{props.departmentName}</span>
-            </div>
-            <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Trạng thái:</span>
+                <p className="font-bold w-[120px]">Trạng thái:</p>
                 <SwitchButton
                     value={props.activeValue}
                     checked={props.activeChecked}
@@ -58,9 +61,12 @@ const DepartmentCard = (props) => {
                     setId={props.setActiveId}
                 />
             </div>
-            <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Ghi chú:</span>
-                <span className="flex-1 truncate">{props.note}</span>
+            <div className="relative group flex items-center mb-3">
+                <p className="font-bold w-[120px]">Ghi chú:</p>
+                <p className="flex-1 truncate">{props.note}</p>
+                <p className="absolute bottom-[150%] rounded-xl left-[50%] translate-x-[-50%] hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-20 break-words whitespace-pre-wrap tooltip-bottom">
+                    {props.note}
+                </p>
             </div>
         </div>
     );

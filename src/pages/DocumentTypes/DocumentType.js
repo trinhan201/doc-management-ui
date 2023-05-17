@@ -251,8 +251,11 @@ const DocumentType = () => {
                                                     <td className="whitespace-nowrap px-6 py-4 font-medium">
                                                         {index + 1}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
-                                                        {dtl?.documentTypeName}
+                                                    <td className="relative group whitespace-nowrap px-6 py-4 max-w-[200px]">
+                                                        <p className="w-[200px] truncate">{dtl?.documentTypeName}</p>
+                                                        <p className="absolute bottom-[100%] rounded-xl left-0 hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-50 tooltip-bottom">
+                                                            {dtl?.documentTypeName}
+                                                        </p>
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex items-center">
@@ -263,8 +266,11 @@ const DocumentType = () => {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
-                                                        {dtl?.note}
+                                                    <td className="relative group whitespace-nowrap px-6 py-4 max-w-[200px]">
+                                                        <p className="w-[200px] truncate">{dtl?.note}</p>
+                                                        <p className="absolute bottom-[100%] rounded-xl left-0 hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-50 break-words whitespace-pre-wrap tooltip-bottom">
+                                                            {dtl?.note}
+                                                        </p>
                                                     </td>
                                                     <td className="px-2 py-1 md:px-6 md:py-4">
                                                         <div className="flex items-center text-white">
