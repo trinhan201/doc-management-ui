@@ -16,7 +16,6 @@ const Profile = () => {
     const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
     const { isChangeAvatar, setIsChangeAvatar } = useContext(AvatarContext);
 
-    console.log(fileName);
     const changeAvatar = async (e) => {
         const data = new FormData();
         const file = e.target.files[0];

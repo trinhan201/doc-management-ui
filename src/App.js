@@ -208,7 +208,7 @@ const App = () => {
                                     path="/documents/documents-out/:id"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Sửa văn bản đi" />
+                                            <CreateDocument title="Sửa văn bản đi" documentIn={false} />
                                         </DefaultLayout>
                                     }
                                 />
@@ -216,7 +216,7 @@ const App = () => {
                                     path="/documents/documents-out/create"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Thêm văn bản đi mới" />
+                                            <CreateDocument title="Thêm văn bản đi mới" documentIn={false} />
                                         </DefaultLayout>
                                     }
                                 />
@@ -232,7 +232,7 @@ const App = () => {
                                     path="/documents/documents-in/:id"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Sửa văn bản đến" />
+                                            <CreateDocument title="Sửa văn bản đến" documentIn={true} />
                                         </DefaultLayout>
                                     }
                                 />
@@ -240,7 +240,7 @@ const App = () => {
                                     path="/documents/documents-in/create"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Thêm văn bản đến mới" />
+                                            <CreateDocument title="Thêm văn bản đến mới" documentIn={true} />
                                         </DefaultLayout>
                                     }
                                 />

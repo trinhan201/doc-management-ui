@@ -14,6 +14,19 @@ export const fullNameValidator = (fullName, setIsFullNameErr, setFullNameErrMsg)
     return true;
 };
 
+export const codeValidator = (code, setIsCodeErr, setCodeErrMsg) => {
+    const msg = {};
+    if (isEmpty(code)) {
+        msg.code = 'Số ký hiệu không được để trống';
+        setIsCodeErr(true);
+    } else {
+        setIsCodeErr(false);
+    }
+    setCodeErrMsg(msg);
+    if (Object.keys(msg).length > 0) return false;
+    return true;
+};
+
 export const emailValidator = (email, setIsEmailErr, setEmailErrMsg) => {
     const msg = {};
     if (isEmpty(email)) {

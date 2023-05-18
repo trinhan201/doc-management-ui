@@ -6,6 +6,7 @@ import {
     faAngleRight,
     faTrashCan,
     faPenToSquare,
+    faEye,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink } from 'react-router-dom';
@@ -167,7 +168,7 @@ const User = () => {
     };
 
     const handleDeleteMany = async () => {
-        const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn những người dùng này không không?';
+        const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn những người dùng này không?';
         if (!window.confirm(confirmMsg)) return;
         const data = {
             arrayId: checked,
@@ -296,10 +297,7 @@ const User = () => {
                                                     <td className="whitespace-nowrap px-6 py-4 font-medium">
                                                         {index + 1}
                                                     </td>
-                                                    <td
-                                                        onClick={() => handleShowUserDetail(ul?._id)}
-                                                        className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate hover:font-semibold hover:text-blue-600 cursor-pointer"
-                                                    >
+                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate">
                                                         {ul?.fullName}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4 max-w-[200px] truncate">
@@ -328,8 +326,14 @@ const User = () => {
                                                     </td>
                                                     <td className="px-2 py-1 md:px-6 md:py-4">
                                                         <div className="flex items-center text-white">
+                                                            <div
+                                                                onClick={() => handleShowUserDetail(ul?._id)}
+                                                                className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary"
+                                                            >
+                                                                <FontAwesomeIcon className="m-auto" icon={faEye} />
+                                                            </div>
                                                             <NavLink to={`/users/${ul._id}`}>
-                                                                <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                                <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
                                                                     <FontAwesomeIcon
                                                                         className="m-auto"
                                                                         icon={faPenToSquare}
@@ -451,9 +455,9 @@ const User = () => {
                                 setIsActived={() => setIsActived(!ul?.isActived)}
                                 setActiveId={() => setActiveId(ul?._id)}
                                 handleDelete={() => handleDelete(ul?._id)}
+                                handleDetail={() => handleShowUserDetail(ul?._id)}
                                 checkBox={checked?.includes(ul?._id)}
                                 handleCheckBox={() => handleCheck(ul?._id)}
-                                setShowUserDetail={() => handleShowUserDetail(ul?._id)}
                             />
                         );
                     })

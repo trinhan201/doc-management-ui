@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisH, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faEye, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
 import SwitchButton from '~/components/SwitchButton';
 import DropList from '../DropList';
@@ -27,6 +27,13 @@ const UserCard = (props) => {
                     }
                 >
                     <ul>
+                        <li
+                            onClick={props.handleDetail}
+                            className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
+                        >
+                            <FontAwesomeIcon icon={faEye} />
+                            <span className="ml-3">Chi tiết</span>
+                        </li>
                         <li className="hover:bg-[#dddddd] cursor-pointer">
                             <NavLink className="block p-[8px] text-left" to={`/users/${props.userId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
@@ -44,43 +51,38 @@ const UserCard = (props) => {
                 </div>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">STT:</span>
-                <span className="flex-1 truncate">{props.id}</span>
+                <p className="font-bold w-[120px]">STT:</p>
+                <p className="flex-1 truncate">{props.id}</p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Họ và tên:</span>
-                <span
-                    onClick={props.setShowUserDetail}
-                    className="flex-1 truncate hover:font-semibold hover:text-blue-600 cursor-pointer"
-                >
-                    {props.fullName}
-                </span>
+                <p className="font-bold w-[120px]">Họ và tên:</p>
+                <p className="flex-1 truncate">{props.fullName}</p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Email:</span>
-                <span className="flex-1 truncate">{props.email}</span>
+                <p className="font-bold w-[120px]">Email:</p>
+                <p className="flex-1 truncate">{props.email}</p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Số điện thoại:</span>
-                <span className="flex-1 truncate">{props.phone}</span>
+                <p className="font-bold w-[120px]">Số điện thoại:</p>
+                <p className="flex-1 truncate">{props.phone}</p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Phòng ban:</span>
-                <span className="flex-1 truncate">{props.department}</span>
+                <p className="font-bold w-[120px]">Phòng ban:</p>
+                <p className="flex-1 truncate">{props.department}</p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Vai trò:</span>
-                <span>
+                <p className="font-bold w-[120px]">Vai trò:</p>
+                <p>
                     <DropList
                         selectedValue={props.roleValue}
                         options={roleOptions}
                         setValue={props.setRoleValue}
                         setId={props.setRoleId}
                     />
-                </span>
+                </p>
             </div>
             <div className="flex items-center mb-3">
-                <span className="font-bold w-[120px]">Trạng thái:</span>
+                <p className="font-bold w-[120px]">Trạng thái:</p>
                 <SwitchButton
                     value={props.activeValue}
                     checked={props.activeChecked}

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import InputField from '~/components/InputField';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
+import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
 import * as departmentServices from '~/services/departmentServices';
