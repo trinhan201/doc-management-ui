@@ -11,6 +11,7 @@ import {
     DocumentType,
     DocumentIn,
     DocumentOut,
+    DocumentDetail,
     Page404,
     Profile,
     CreateDepartment,
@@ -196,6 +197,14 @@ const App = () => {
                                     }
                                 />
                                 <Route path="/documents" element={<Navigate to="/documents/documents-in" />} />
+                                <Route
+                                    path="/documents/detail/:id"
+                                    element={
+                                        <DefaultLayout>
+                                            <DocumentDetail />
+                                        </DefaultLayout>
+                                    }
+                                />
                                 <Route
                                     path="/documents/documents-out"
                                     element={

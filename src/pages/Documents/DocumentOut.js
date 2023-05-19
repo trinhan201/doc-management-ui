@@ -6,7 +6,7 @@ import {
     faTrashCan,
     faPenToSquare,
     faEye,
-    faSearch,
+    faFilterCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink } from 'react-router-dom';
@@ -15,9 +15,12 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
 import * as departmentServices from '~/services/departmentServices';
+import * as documentTypeServices from '~/services/documentTypeServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { useDebounce } from '~/hooks';
 
 const DocumentOut = () => {
+    const [documentTypes, setDocumentTypes] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentLists, setDocumentLists] = useState([]);
@@ -33,16 +36,18 @@ const DocumentOut = () => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('documentOutChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAlldocumentOut')) || false);
 
+    const [fName, setFName] = useState('');
+    const [fCode, setFCode] = useState('');
+    const [fType, setFType] = useState('');
+    const [fStatus, setFStatus] = useState('');
+    const [fLevel, setFLevel] = useState('');
+    const [fSendDate, setFSendDate] = useState('');
+
+    const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
     const totalPage = Math.ceil(allDocuments.length / limit);
-
-    // ------------------------------------------------------------------
-    const [docName, setDocName] = useState('');
-    const [code, setCode] = useState('');
-    const [createDate, setCreateDate] = useState('');
-
-    const typeOptions = ['Hợp đồng', 'Thông báo', 'Khiếu nại'];
-    const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
+    const nameValue = useDebounce(fName, 300);
+    const codeValue = useDebounce(fCode, 300);
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
@@ -68,6 +73,17 @@ const DocumentOut = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
+            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
+            const documentTypeArray = res.allDocumentTypes
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.documentTypeName);
+            setDocumentTypes(documentTypeArray);
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        const fetchApi = async () => {
             const res = await departmentServices.getAllDepartment(1, 1, '');
             const departmentArray = res.allDepartments
                 ?.filter((item) => item.status !== false)
@@ -79,12 +95,39 @@ const DocumentOut = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(page, Number(limit));
+            const res = await documentServices.getAllDocument(
+                page,
+                Number(limit),
+                nameValue,
+                codeValue,
+                fType,
+                fStatus,
+                fLevel,
+                fSendDate,
+            );
             setAllDocuments(res.allDocumentOut);
             setDocumentLists(res.documentOut);
         };
         fetchApi();
-    }, [isSave, page, limit]);
+    }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
+
+    const removeFilter = (e) => {
+        e.preventDefault();
+        setFName('');
+        setFCode('');
+        setFType('');
+        setFStatus('');
+        setFLevel('');
+        setFSendDate('');
+    };
+
+    const isFilters = () => {
+        if (fName || fCode || fType || fStatus || fLevel || fSendDate) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     useEffect(() => {
         if (!limit) return;
@@ -92,6 +135,48 @@ const DocumentOut = () => {
         setRowStart(1);
         setRowEnd(0);
     }, [limit]);
+
+    useEffect(() => {
+        if (!nameValue) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [nameValue]);
+
+    useEffect(() => {
+        if (!codeValue) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [codeValue]);
+
+    useEffect(() => {
+        if (!fType) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fType]);
+
+    useEffect(() => {
+        if (!fStatus) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fStatus]);
+
+    useEffect(() => {
+        if (!fLevel) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fLevel]);
+
+    useEffect(() => {
+        if (!fSendDate) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fSendDate]);
 
     useEffect(() => {
         if (!documentStatus) return;
@@ -213,41 +298,64 @@ const DocumentOut = () => {
                             <InputField
                                 className="default"
                                 placeholder="Tên văn bản"
-                                value={docName}
-                                setValue={setDocName}
+                                value={fName}
+                                setValue={setFName}
                             />
                         </div>
                         <div className="flex-1">
                             <label className="text-[1.4rem]">Số ký hiệu:</label>
-                            <InputField className="default" placeholder="Số ký hiệu" value={code} setValue={setCode} />
+                            <InputField
+                                className="default"
+                                placeholder="Số ký hiệu"
+                                value={fCode}
+                                setValue={setFCode}
+                            />
                         </div>
                         <div className="flex-1">
                             <label className="text-[1.4rem]">Ngày ban hành:</label>
                             <InputField
                                 name="date"
                                 className="default leading-[1.3]"
-                                value={createDate}
-                                setValue={setCreateDate}
+                                value={fSendDate}
+                                setValue={setFSendDate}
                             />
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row gap-5 mt-[12.5px]">
                         <div className="flex-1">
                             <label className="text-[1.4rem]">Loại văn bản:</label>
-                            <DropList options={typeOptions} />
+                            <DropList
+                                selectedValue={fType}
+                                options={documentTypes}
+                                setValue={setFType}
+                                setId={() => undefined}
+                            />
                         </div>
                         <div className="flex-1">
                             <label className="text-[1.4rem]">Trạng thái:</label>
-                            <DropList options={statusOptions} />
+                            <DropList
+                                selectedValue={fStatus}
+                                options={statusOptions}
+                                setValue={setFStatus}
+                                setId={() => undefined}
+                            />
                         </div>
                         <div className="flex-1">
                             <label className="text-[1.4rem]">Mức độ:</label>
-                            <DropList options={levelOptions} />
+                            <DropList
+                                selectedValue={fLevel}
+                                options={levelOptions}
+                                setValue={setFLevel}
+                                setId={() => undefined}
+                            />
                         </div>
                     </div>
-                    <div className="flex justify-center">
-                        <button className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-[#321fdb] mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
-                            <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
+                    <div className={isFilters() ? 'flex justify-center' : 'hidden'}>
+                        <button
+                            onClick={removeFilter}
+                            className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
                         </button>
                     </div>
                 </form>
@@ -362,9 +470,11 @@ const DocumentOut = () => {
                                                     </td>
                                                     <td className="px-2 py-1 md:px-6 md:py-4">
                                                         <div className="flex items-center text-white">
-                                                            <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                                <FontAwesomeIcon className="m-auto" icon={faEye} />
-                                                            </div>
+                                                            <NavLink to={`/documents/detail/${dcl?._id}`}>
+                                                                <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                                    <FontAwesomeIcon className="m-auto" icon={faEye} />
+                                                                </div>
+                                                            </NavLink>
                                                             <NavLink to={`/documents/documents-out/edit/${dcl?._id}`}>
                                                                 <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
                                                                     <FontAwesomeIcon

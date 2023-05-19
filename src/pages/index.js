@@ -7,6 +7,7 @@ import User from './Users/User';
 import DocumentType from './DocumentTypes/DocumentType';
 import DocumentIn from './Documents/DocumentIn';
 import DocumentOut from './Documents/DocumentOut';
+import DocumentDetail from './Documents/DocumentDetail';
 import Page404 from './Others/Page404';
 import Profile from './Others/Profile';
 import CreateDepartment from './Departments/CreateDepartment';
@@ -25,6 +26,7 @@ export {
     DocumentType,
     DocumentIn,
     DocumentOut,
+    DocumentDetail,
     Page404,
     Profile,
     CreateDepartment,
