@@ -90,7 +90,7 @@ const App = () => {
                                 <Route
                                     path="/departments"
                                     element={
-                                        userRole === 'Admin' ? (
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
                                                 <Department />
                                             </DefaultLayout>
@@ -102,7 +102,7 @@ const App = () => {
                                 <Route
                                     path="/departments/:id"
                                     element={
-                                        userRole === 'Admin' ? (
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
                                                 <CreateDepartment title={'Chỉnh sửa phòng ban'} />
                                             </DefaultLayout>
@@ -114,7 +114,7 @@ const App = () => {
                                 <Route
                                     path="/departments/create"
                                     element={
-                                        userRole === 'Admin' ? (
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
                                                 <CreateDepartment title={'Thêm phòng ban mới'} />
                                             </DefaultLayout>
@@ -162,7 +162,7 @@ const App = () => {
                                 <Route
                                     path="/document-types"
                                     element={
-                                        userRole === 'Admin' ? (
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
                                                 <DocumentType />
                                             </DefaultLayout>
@@ -174,7 +174,7 @@ const App = () => {
                                 <Route
                                     path="/document-types/:id"
                                     element={
-                                        userRole === 'Admin' ? (
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
                                                 <CreateDocumentType title="Chỉnh sửa loại văn bản" />
                                             </DefaultLayout>
@@ -186,7 +186,7 @@ const App = () => {
                                 <Route
                                     path="/document-types/create"
                                     element={
-                                        userRole === 'Admin' ? (
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
                                                 <CreateDocumentType title="Thêm loại văn bản mới" />
                                             </DefaultLayout>

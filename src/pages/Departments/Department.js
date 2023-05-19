@@ -30,7 +30,7 @@ const Department = () => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('departmentChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllDepartment')) || false);
 
-    const totalPage = Math.ceil(allDepartments.length / limit);
+    const totalPage = Math.ceil(allDepartments?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
 
     const handleNextPage = () => {
@@ -92,7 +92,7 @@ const Department = () => {
                 setCheckedAll(false);
                 return checked?.filter((item) => item !== id);
             } else {
-                if ([...prev, id].length === allDepartments.length) {
+                if ([...prev, id].length === allDepartments?.length) {
                     setCheckedAll(true);
                 }
                 return [...prev, id];
@@ -109,19 +109,19 @@ const Department = () => {
     }, [checkedAll]);
 
     const isCheckedAll = () => {
-        return checked?.length === allDepartments.length;
+        return checked?.length === allDepartments?.length;
     };
 
     useEffect(() => {
         const handleCheckAll = () => {
             const idsArray = [];
             if (checkedAll === false) {
-                if (checked?.length === allDepartments.length) {
+                if (checked?.length === allDepartments?.length) {
                     return setChecked([]);
                 }
                 return setChecked((checked) => checked);
             }
-            allDepartments.map((item) => {
+            allDepartments?.map((item) => {
                 return idsArray.push(item._id);
             });
             setChecked(idsArray);
@@ -311,8 +311,9 @@ const Department = () => {
                     </div>
                     <div className="flex items-center">
                         <p className="text-[1.5rem] mr-9">
-                            Hiển thị <span>{departmentLists.length === 0 ? 0 : rowStart}</span> đến{' '}
-                            <span>{rowEnd + departmentLists.length}</span> của <span>{allDepartments.length}</span> mục
+                            Hiển thị <span>{departmentLists?.length === 0 ? 0 : rowStart}</span> đến{' '}
+                            <span>{rowEnd + departmentLists?.length}</span> của <span>{allDepartments?.length}</span>{' '}
+                            mục
                         </p>
                         <div
                             onClick={handlePrevPage}

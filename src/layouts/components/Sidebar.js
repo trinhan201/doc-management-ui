@@ -26,7 +26,6 @@ const Sidebar = () => {
         setUserRole(decodedToken.role);
     }, []);
 
-    // console.log(userRole);
     return (
         <div className="w-full h-full bg-[#3c4b64] overflow-auto">
             <div className="flex h-[64px] bg-[#303c54] italic">
@@ -36,7 +35,7 @@ const Sidebar = () => {
             </div>
             <ul>
                 <SidebarItem path="/dashboard" icon={faGauge} title="Bảng điều khiển" />
-                <div className={userRole === 'Admin' ? '' : 'hidden'}>
+                <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
                     <SidebarItem path="/document-types" icon={faFontAwesome} title="Loại văn bản" />
                 </div>
                 <SidebarItem
@@ -66,7 +65,7 @@ const Sidebar = () => {
                 />
 
                 <SidebarItem path="/tasks" icon={faListCheck} title="Việc cần làm" />
-                <div className={userRole === 'Admin' ? '' : 'hidden'}>
+                <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
                     <SidebarItem path="/departments" icon={faLayerGroup} title="Phòng ban" />
                 </div>
                 <div className={userRole === 'Admin' ? '' : 'hidden'}>

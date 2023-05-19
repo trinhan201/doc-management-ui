@@ -30,7 +30,7 @@ const DocumentType = () => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('documentTypeChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllDocumentType')) || false);
 
-    const totalPage = Math.ceil(allDocumentTypes.length / limit);
+    const totalPage = Math.ceil(allDocumentTypes?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
 
     const handleNextPage = () => {
@@ -109,14 +109,14 @@ const DocumentType = () => {
     }, [checkedAll]);
 
     const isCheckedAll = () => {
-        return checked?.length === allDocumentTypes.length;
+        return checked?.length === allDocumentTypes?.length;
     };
 
     useEffect(() => {
         const handleCheckAll = () => {
             const idsArray = [];
             if (checkedAll === false) {
-                if (checked?.length === allDocumentTypes.length) {
+                if (checked?.length === allDocumentTypes?.length) {
                     return setChecked([]);
                 }
                 return setChecked((checked) => checked);
@@ -311,9 +311,9 @@ const DocumentType = () => {
                     </div>
                     <div className="flex items-center">
                         <p className="text-[1.5rem] mr-9">
-                            Hiển thị <span>{documentTypeLists.length === 0 ? 0 : rowStart}</span> đến{' '}
-                            <span>{rowEnd + documentTypeLists.length}</span> của <span>{allDocumentTypes.length}</span>{' '}
-                            mục
+                            Hiển thị <span>{documentTypeLists?.length === 0 ? 0 : rowStart}</span> đến{' '}
+                            <span>{rowEnd + documentTypeLists?.length}</span> của{' '}
+                            <span>{allDocumentTypes?.length}</span> mục
                         </p>
                         <div
                             onClick={handlePrevPage}
