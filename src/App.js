@@ -100,7 +100,7 @@ const App = () => {
                                     }
                                 />
                                 <Route
-                                    path="/departments/:id"
+                                    path="/departments/edit/:id"
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
@@ -136,7 +136,7 @@ const App = () => {
                                     }
                                 />
                                 <Route
-                                    path="/users/:id"
+                                    path="/users/edit/:id"
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout>
@@ -172,7 +172,7 @@ const App = () => {
                                     }
                                 />
                                 <Route
-                                    path="/document-types/:id"
+                                    path="/document-types/edit/:id"
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout>
@@ -205,7 +205,7 @@ const App = () => {
                                     }
                                 />
                                 <Route
-                                    path="/documents/documents-out/:id"
+                                    path="/documents/documents-out/edit/:id"
                                     element={
                                         <DefaultLayout>
                                             <CreateDocument title="Sửa văn bản đi" documentIn={false} />
@@ -229,7 +229,7 @@ const App = () => {
                                     }
                                 />
                                 <Route
-                                    path="/documents/documents-in/:id"
+                                    path="/documents/documents-in/edit/:id"
                                     element={
                                         <DefaultLayout>
                                             <CreateDocument title="Sửa văn bản đến" documentIn={true} />

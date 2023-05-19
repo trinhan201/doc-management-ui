@@ -17,7 +17,7 @@ import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useDebounce } from '~/hooks';
-import UserDetail from '~/components/Detail/UserDetail';
+import UserDetailCard from '~/components/Card/UserDetailCard';
 
 const User = () => {
     const [showUserDetail, setShowUserDetail] = useState(false);
@@ -332,7 +332,7 @@ const User = () => {
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                             </div>
-                                                            <NavLink to={`/users/${ul._id}`}>
+                                                            <NavLink to={`/users/edit/${ul._id}`}>
                                                                 <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
                                                                     <FontAwesomeIcon
                                                                         className="m-auto"
@@ -404,7 +404,7 @@ const User = () => {
                 </div>
             </div>
             {showUserDetail && (
-                <UserDetail
+                <UserDetailCard
                     avatar={user?.avatar}
                     fullName={user?.fullName}
                     gender={user?.gender}

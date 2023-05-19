@@ -365,7 +365,7 @@ const DocumentOut = () => {
                                                             <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
                                                                 <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                             </div>
-                                                            <NavLink to={`/documents/documents-out/${dcl?._id}`}>
+                                                            <NavLink to={`/documents/documents-out/edit/${dcl?._id}`}>
                                                                 <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
                                                                     <FontAwesomeIcon
                                                                         className="m-auto"
@@ -463,7 +463,7 @@ const DocumentOut = () => {
                                 key={index}
                                 id={index + 1}
                                 documentId={dcl?._id}
-                                path="documents-out"
+                                path="documents-out/edit"
                                 code={dcl?.code}
                                 docName={dcl?.documentName}
                                 type={dcl?.type}

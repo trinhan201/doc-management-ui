@@ -26,7 +26,10 @@ const DocumentTypeCard = (props) => {
                 >
                     <ul>
                         <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
-                            <NavLink className="block p-[8px] text-left" to={`/document-types/${props.documentTypeId}`}>
+                            <NavLink
+                                className="block p-[8px] text-left"
+                                to={`/document-types/edit/${props.documentTypeId}`}
+                            >
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
                             </NavLink>

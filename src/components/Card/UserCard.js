@@ -35,7 +35,7 @@ const UserCard = (props) => {
                             <span className="ml-3">Chi tiết</span>
                         </li>
                         <li className="hover:bg-[#dddddd] cursor-pointer">
-                            <NavLink className="block p-[8px] text-left" to={`/users/${props.userId}`}>
+                            <NavLink className="block p-[8px] text-left" to={`/users/edit/${props.userId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
                             </NavLink>

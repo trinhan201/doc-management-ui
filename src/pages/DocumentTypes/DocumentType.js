@@ -270,7 +270,7 @@ const DocumentType = () => {
                                             </td>
                                             <td className="px-2 py-1 md:px-6 md:py-4">
                                                 <div className="flex items-center text-white">
-                                                    <NavLink to={`/document-types/${dtl?._id}`}>
+                                                    <NavLink to={`/document-types/edit/${dtl?._id}`}>
                                                         <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
                                                             <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
                                                         </div>

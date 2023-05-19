@@ -26,7 +26,7 @@ const DepartmentCard = (props) => {
                 >
                     <ul>
                         <li onClick={() => setShowAction(false)} className="hover:bg-[#dddddd] cursor-pointer">
-                            <NavLink className="block p-[8px] text-left" to={`/departments/${props.departmentId}`}>
+                            <NavLink className="block p-[8px] text-left" to={`/departments/edit/${props.departmentId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
                             </NavLink>
