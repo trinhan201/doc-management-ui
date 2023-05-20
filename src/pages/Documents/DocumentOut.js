@@ -98,6 +98,7 @@ const DocumentOut = () => {
             const res = await documentServices.getAllDocument(
                 page,
                 Number(limit),
+                false,
                 nameValue,
                 codeValue,
                 fType,
@@ -106,10 +107,13 @@ const DocumentOut = () => {
                 fSendDate,
             );
             setAllDocuments(res.allDocumentOut);
-            setDocumentLists(res.documentOut);
+            setDocumentLists(res.documents);
         };
         fetchApi();
     }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
+
+    console.log(documentLists);
+    console.log(allDocuments);
 
     const removeFilter = () => {
         setFName('');
@@ -411,7 +415,7 @@ const DocumentOut = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
                                     {documentLists?.length !== 0 ? (
                                         documentLists?.map((dcl, index) => {
                                             return (

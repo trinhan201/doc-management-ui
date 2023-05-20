@@ -12,7 +12,7 @@ import * as documentServices from '~/services/documentServices';
 import { fullNameValidator, codeValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
-const CreateDocument = ({ title, documentIn }) => {
+const CreateDocument = ({ title, documentIn, path }) => {
     const [fullName, setFullName] = useState('');
     const [type, setType] = useState('');
     const [code, setCode] = useState('');
@@ -98,7 +98,7 @@ const CreateDocument = ({ title, documentIn }) => {
         if (res.code === 200) {
             if (!attachFiles) {
                 successNotify(res.message);
-                navigate('/documents/documents-out');
+                navigate(`/documents/${path}`);
             } else {
                 const data = new FormData();
                 for (let i = 0; i < attachFiles.length; i++) {
@@ -106,7 +106,7 @@ const CreateDocument = ({ title, documentIn }) => {
                 }
                 await documentServices.uploadFile(res.data._id, data);
                 successNotify(res.message);
-                navigate('/documents/documents-out');
+                navigate(`/documents/${path}`);
             }
         } else {
             errorNotify(res);
@@ -212,7 +212,7 @@ const CreateDocument = ({ title, documentIn }) => {
                         <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
                     </button>
                     <NavLink
-                        to="/documents/documents-out"
+                        to={`/documents/${path}`}
                         className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                     >
                         <FontAwesomeIcon icon={faXmark} /> Hủy bỏ

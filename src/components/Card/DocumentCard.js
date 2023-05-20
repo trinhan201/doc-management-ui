@@ -26,12 +26,11 @@ const DocumentCard = (props) => {
                     }
                 >
                     <ul>
-                        <li
-                            onClick={() => setShowAction(false)}
-                            className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
-                        >
-                            <FontAwesomeIcon icon={faEye} />
-                            <span className="ml-3">Chi tiết</span>
+                        <li className="hover:bg-[#dddddd] cursor-pointer">
+                            <NavLink className="block p-[8px] text-left" to={`/documents/detail/${props.documentId}`}>
+                                <FontAwesomeIcon icon={faEye} />
+                                <span className="ml-3">Chi tiết</span>
+                            </NavLink>
                         </li>
                         <li className="hover:bg-[#dddddd] cursor-pointer">
                             <NavLink

@@ -217,7 +217,11 @@ const App = () => {
                                     path="/documents/documents-out/edit/:id"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Sửa văn bản đi" documentIn={false} />
+                                            <CreateDocument
+                                                title="Sửa văn bản đi"
+                                                documentIn={false}
+                                                path="documents-out"
+                                            />
                                         </DefaultLayout>
                                     }
                                 />
@@ -225,7 +229,11 @@ const App = () => {
                                     path="/documents/documents-out/create"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Thêm văn bản đi mới" documentIn={false} />
+                                            <CreateDocument
+                                                title="Thêm văn bản đi mới"
+                                                documentIn={false}
+                                                path="documents-out"
+                                            />
                                         </DefaultLayout>
                                     }
                                 />
@@ -241,7 +249,11 @@ const App = () => {
                                     path="/documents/documents-in/edit/:id"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Sửa văn bản đến" documentIn={true} />
+                                            <CreateDocument
+                                                title="Sửa văn bản đến"
+                                                documentIn={true}
+                                                path="documents-in"
+                                            />
                                         </DefaultLayout>
                                     }
                                 />
@@ -249,7 +261,11 @@ const App = () => {
                                     path="/documents/documents-in/create"
                                     element={
                                         <DefaultLayout>
-                                            <CreateDocument title="Thêm văn bản đến mới" documentIn={true} />
+                                            <CreateDocument
+                                                title="Thêm văn bản đến mới"
+                                                documentIn={true}
+                                                path="documents-in"
+                                            />
                                         </DefaultLayout>
                                     }
                                 />
