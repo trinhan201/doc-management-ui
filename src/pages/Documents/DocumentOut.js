@@ -111,8 +111,7 @@ const DocumentOut = () => {
         fetchApi();
     }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
 
-    const removeFilter = (e) => {
-        e.preventDefault();
+    const removeFilter = () => {
         setFName('');
         setFCode('');
         setFType('');
@@ -291,74 +290,62 @@ const DocumentOut = () => {
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
                 <h1 className="text-[2rem] md:text-[2.4rem] font-bold">Tìm kiếm</h1>
-                <form>
-                    <div className="flex flex-col md:flex-row gap-5 mt-5">
-                        <div className="flex-1">
-                            <label className="text-[1.4rem]">Tên văn bản:</label>
-                            <InputField
-                                className="default"
-                                placeholder="Tên văn bản"
-                                value={fName}
-                                setValue={setFName}
-                            />
-                        </div>
-                        <div className="flex-1">
-                            <label className="text-[1.4rem]">Số ký hiệu:</label>
-                            <InputField
-                                className="default"
-                                placeholder="Số ký hiệu"
-                                value={fCode}
-                                setValue={setFCode}
-                            />
-                        </div>
-                        <div className="flex-1">
-                            <label className="text-[1.4rem]">Ngày ban hành:</label>
-                            <InputField
-                                name="date"
-                                className="default leading-[1.3]"
-                                value={fSendDate}
-                                setValue={setFSendDate}
-                            />
-                        </div>
+                <div className="flex flex-col md:flex-row gap-5 mt-5">
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Tên văn bản:</label>
+                        <InputField className="default" placeholder="Tên văn bản" value={fName} setValue={setFName} />
                     </div>
-                    <div className="flex flex-col md:flex-row gap-5 mt-[12.5px]">
-                        <div className="flex-1">
-                            <label className="text-[1.4rem]">Loại văn bản:</label>
-                            <DropList
-                                selectedValue={fType}
-                                options={documentTypes}
-                                setValue={setFType}
-                                setId={() => undefined}
-                            />
-                        </div>
-                        <div className="flex-1">
-                            <label className="text-[1.4rem]">Trạng thái:</label>
-                            <DropList
-                                selectedValue={fStatus}
-                                options={statusOptions}
-                                setValue={setFStatus}
-                                setId={() => undefined}
-                            />
-                        </div>
-                        <div className="flex-1">
-                            <label className="text-[1.4rem]">Mức độ:</label>
-                            <DropList
-                                selectedValue={fLevel}
-                                options={levelOptions}
-                                setValue={setFLevel}
-                                setId={() => undefined}
-                            />
-                        </div>
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Số ký hiệu:</label>
+                        <InputField className="default" placeholder="Số ký hiệu" value={fCode} setValue={setFCode} />
                     </div>
-                    <div className={isFilters() ? 'flex justify-center' : 'hidden'}>
-                        <button
-                            onClick={removeFilter}
-                            className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                        >
-                            <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
-                        </button>
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Ngày ban hành:</label>
+                        <InputField
+                            name="date"
+                            className="default leading-[1.3]"
+                            value={fSendDate}
+                            setValue={setFSendDate}
+                        />
                     </div>
-                </form>
+                </div>
+                <div className="flex flex-col md:flex-row gap-5 mt-[12.5px]">
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Loại văn bản:</label>
+                        <DropList
+                            selectedValue={fType}
+                            options={documentTypes}
+                            setValue={setFType}
+                            setId={() => undefined}
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Trạng thái:</label>
+                        <DropList
+                            selectedValue={fStatus}
+                            options={statusOptions}
+                            setValue={setFStatus}
+                            setId={() => undefined}
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Mức độ:</label>
+                        <DropList
+                            selectedValue={fLevel}
+                            options={levelOptions}
+                            setValue={setFLevel}
+                            setId={() => undefined}
+                        />
+                    </div>
+                </div>
+                <div className={isFilters() ? 'flex justify-center' : 'hidden'}>
+                    <button
+                        onClick={removeFilter}
+                        className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                    >
+                        <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
+                    </button>
+                </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách văn bản đi</h1>
