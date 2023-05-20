@@ -20,6 +20,16 @@ export const uploadFile = async (documentId, data) => {
     }
 };
 
+export const deleteFileUrl = async (documentId, data) => {
+    try {
+        const res = await httpRequest.patch(`/document/delete-file-url/${documentId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
 export const updateDocument = async (documentId, data = {}) => {
     try {
         const res = await httpRequest.put(`/document/update/${documentId}`, data);
