@@ -17,7 +17,7 @@ import SidebarItem from '~/components/SidebarItem';
 
 const Sidebar = () => {
     const [toggleSubMenu, setToggleSubMenu] = useState(false);
-    const [userRole, setUserRole] = useState('');
+    const [userRole, setUserRole] = useState(JSON.parse(localStorage.getItem('userRole')));
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');

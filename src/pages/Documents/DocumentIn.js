@@ -48,6 +48,7 @@ const DocumentIn = () => {
     const totalPage = Math.ceil(allDocuments.length / limit);
     const nameValue = useDebounce(fName, 300);
     const codeValue = useDebounce(fCode, 300);
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
@@ -351,7 +352,13 @@ const DocumentIn = () => {
             </div>
             <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách văn bản đến</h1>
-                <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
+                <div
+                    className={
+                        userRole === 'Member'
+                            ? 'hidden'
+                            : 'flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0'
+                    }
+                >
                     <button
                         onClick={handleDeleteMany}
                         className={
@@ -377,7 +384,7 @@ const DocumentIn = () => {
                             <table className="min-w-full text-left text-[1.4rem] font-light">
                                 <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
-                                        <th scope="col" className="px-6 py-4">
+                                        <th scope="col" className={userRole === 'Member' ? 'hidden' : 'px-6 py-4'}>
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
@@ -418,7 +425,13 @@ const DocumentIn = () => {
                                         documentLists?.map((dcl, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
-                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                    <td
+                                                        className={
+                                                            userRole === 'Member'
+                                                                ? 'hidden'
+                                                                : 'whitespace-nowrap px-6 py-4'
+                                                        }
+                                                    >
                                                         <div className="flex items-center">
                                                             <input
                                                                 type="checkbox"
@@ -446,7 +459,14 @@ const DocumentIn = () => {
                                                     <td title={dcl?.level} className="whitespace-nowrap px-6 py-4">
                                                         <div className={setLevelColor(dcl?.level)}>{dcl?.level}</div>
                                                     </td>
-                                                    <td title={dcl?.status} className="whitespace-nowrap px-6 py-4">
+                                                    <td
+                                                        title={dcl?.status}
+                                                        className={
+                                                            userRole === 'Member'
+                                                                ? 'pointer-events-none opacity-50 whitespace-nowrap px-6 py-4'
+                                                                : 'whitespace-nowrap px-6 py-4'
+                                                        }
+                                                    >
                                                         <DropList
                                                             selectedValue={dcl?.status}
                                                             options={statusOptions}
@@ -456,7 +476,11 @@ const DocumentIn = () => {
                                                     </td>
                                                     <td
                                                         title={dcl?.currentLocation}
-                                                        className="whitespace-nowrap px-6 py-4"
+                                                        className={
+                                                            userRole === 'Member'
+                                                                ? 'pointer-events-none opacity-50 whitespace-nowrap px-6 py-4'
+                                                                : 'whitespace-nowrap px-6 py-4'
+                                                        }
                                                     >
                                                         <DropList
                                                             selectedValue={dcl?.currentLocation}
@@ -473,7 +497,13 @@ const DocumentIn = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <NavLink to={`/documents/documents-in/edit/${dcl?._id}`}>
-                                                                <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                                <div
+                                                                    className={
+                                                                        userRole === 'Member'
+                                                                            ? 'hidden'
+                                                                            : 'flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary'
+                                                                    }
+                                                                >
                                                                     <FontAwesomeIcon
                                                                         className="m-auto"
                                                                         icon={faPenToSquare}
@@ -482,7 +512,11 @@ const DocumentIn = () => {
                                                             </NavLink>
                                                             <div
                                                                 onClick={() => handleDelete(dcl?._id)}
-                                                                className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
+                                                                className={
+                                                                    userRole === 'Member'
+                                                                        ? 'hidden'
+                                                                        : 'flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary'
+                                                                }
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                             </div>

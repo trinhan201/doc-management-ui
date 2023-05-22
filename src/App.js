@@ -42,7 +42,7 @@ const App = () => {
 
     useEffect(() => {
         localStorage.setItem('userRole', JSON.stringify(userRole));
-    }, [userRole]);
+    }, [userRole, isSuccess]);
 
     useEffect(() => {
         const refreshToken = localStorage.getItem('refreshToken');
@@ -62,18 +62,18 @@ const App = () => {
             setActiveFlag(res.isActived);
         };
         fetchApi();
-    }, []);
+    }, [isSuccess]);
 
     useEffect(() => {
         localStorage.setItem('activeFlag', JSON.stringify(activeFlag));
-    }, [activeFlag]);
+    }, [activeFlag, isSuccess]);
 
     return (
         <AvatarContext.Provider value={{ isChangeAvatar, setIsChangeAvatar }}>
             <Router>
                 <Routes>
                     <Route element={<PublicRoutes />}>
-                        <Route path="/signin" element={<Signin setIsSuccess={setIsSuccess} />} />
+                        <Route path="/signin" element={<Signin setIsSuccess={() => setIsSuccess(!isSuccess)} />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                     </Route>

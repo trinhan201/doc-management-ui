@@ -13,6 +13,7 @@ const DocumentDetail = () => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const { id } = useParams();
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
@@ -165,7 +166,7 @@ const DocumentDetail = () => {
                                 </div>
                             </li>
                         ))}
-                        <li>
+                        <li className={userRole === 'Member' ? 'pointer-events-none opacity-40' : ''}>
                             <label
                                 className="text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl cursor-pointer"
                                 htmlFor="upload"
