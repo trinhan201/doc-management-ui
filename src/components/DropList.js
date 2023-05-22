@@ -11,7 +11,7 @@ const DropList = ({ selectedValue, options, setValue, setId, listItem }) => {
             <option value="">--Vui lòng chọn--</option>
             {options?.map((option, index) => {
                 return (
-                    <option key={index} value={option}>
+                    <option key={index} title={option} value={option}>
                         {option}
                     </option>
                 );

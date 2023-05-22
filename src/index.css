@@ -37,19 +37,6 @@ body {
     border-radius: 8px;
 }
 
-.tooltip-bottom::before {
-    content: '';
-    position: absolute;
-    display: block;
-    width: 0px;
-    left: 50%;
-    bottom: 0;
-    border: 10px solid transparent;
-    border-bottom: 0;
-    border-top: 10px solid #cccccc;
-    transform: translate(-50%, calc(100% + 5px));
-}
-
 .level {
     color: white;
     font-size: 1.3rem;

@@ -430,16 +430,23 @@ const DocumentIn = () => {
                                                     <td className="whitespace-nowrap px-6 py-4 font-medium">
                                                         {index + 1}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{dcl?.code}</td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate">
+                                                    <td title={dcl?.code} className="whitespace-nowrap px-6 py-4">
+                                                        {dcl?.code}
+                                                    </td>
+                                                    <td
+                                                        title={dcl?.documentName}
+                                                        className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate"
+                                                    >
                                                         {dcl?.documentName}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{dcl?.type}</td>
+                                                    <td title={dcl?.type} className="whitespace-nowrap px-6 py-4">
+                                                        {dcl?.type}
+                                                    </td>
 
-                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                    <td title={dcl?.level} className="whitespace-nowrap px-6 py-4">
                                                         <div className={setLevelColor(dcl?.level)}>{dcl?.level}</div>
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                    <td title={dcl?.status} className="whitespace-nowrap px-6 py-4">
                                                         <DropList
                                                             selectedValue={dcl?.status}
                                                             options={statusOptions}
@@ -447,15 +454,16 @@ const DocumentIn = () => {
                                                             setId={() => setStatusId(dcl?._id)}
                                                         />
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
-                                                        <div className="flex items-center">
-                                                            <DropList
-                                                                selectedValue={dcl?.currentLocation}
-                                                                options={departments}
-                                                                setValue={setDocumentLocation}
-                                                                setId={() => setLocationId(dcl?._id)}
-                                                            />
-                                                        </div>
+                                                    <td
+                                                        title={dcl?.currentLocation}
+                                                        className="whitespace-nowrap px-6 py-4"
+                                                    >
+                                                        <DropList
+                                                            selectedValue={dcl?.currentLocation}
+                                                            options={departments}
+                                                            setValue={setDocumentLocation}
+                                                            setId={() => setLocationId(dcl?._id)}
+                                                        />
                                                     </td>
                                                     <td className="px-2 py-1 md:px-6 md:py-4">
                                                         <div className="flex items-center text-white">

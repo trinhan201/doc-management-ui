@@ -56,23 +56,31 @@ const UserCard = (props) => {
             </div>
             <div className="flex items-center mb-3">
                 <p className="font-bold w-[120px]">Họ và tên:</p>
-                <p className="flex-1 truncate">{props.fullName}</p>
+                <p title={props.fullName} className="flex-1 truncate">
+                    {props.fullName}
+                </p>
             </div>
             <div className="flex items-center mb-3">
                 <p className="font-bold w-[120px]">Email:</p>
-                <p className="flex-1 truncate">{props.email}</p>
+                <p title={props.email} className="flex-1 truncate">
+                    {props.email}
+                </p>
             </div>
             <div className="flex items-center mb-3">
                 <p className="font-bold w-[120px]">Số điện thoại:</p>
-                <p className="flex-1 truncate">{props.phone}</p>
+                <p title={props.phone} className="flex-1 truncate">
+                    {props.phone}
+                </p>
             </div>
             <div className="flex items-center mb-3">
                 <p className="font-bold w-[120px]">Phòng ban:</p>
-                <p className="flex-1 truncate">{props.department}</p>
+                <p title={props.department} className="flex-1 truncate">
+                    {props.department}
+                </p>
             </div>
             <div className="flex items-center mb-3">
                 <p className="font-bold w-[120px]">Vai trò:</p>
-                <p>
+                <p title={props.roleValue} className="flex-1">
                     <DropList
                         selectedValue={props.roleValue}
                         options={roleOptions}

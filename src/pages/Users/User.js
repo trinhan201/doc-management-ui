@@ -297,17 +297,28 @@ const User = () => {
                                                     <td className="whitespace-nowrap px-6 py-4 font-medium">
                                                         {index + 1}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate">
+                                                    <td
+                                                        title={ul?.fullName}
+                                                        className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate"
+                                                    >
                                                         {ul?.fullName}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[200px] truncate">
+                                                    <td
+                                                        title={ul?.email}
+                                                        className="whitespace-nowrap px-6 py-4 max-w-[200px] truncate"
+                                                    >
                                                         {ul?.email}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{ul?.phoneNumber}</td>
-                                                    <td className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate">
+                                                    <td title={ul?.phoneNumber} className="whitespace-nowrap px-6 py-4">
+                                                        {ul?.phoneNumber}
+                                                    </td>
+                                                    <td
+                                                        title={ul?.department}
+                                                        className="whitespace-nowrap px-6 py-4 max-w-[150px] truncate"
+                                                    >
                                                         {ul?.department}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                    <td title={ul?.role} className="whitespace-nowrap px-6 py-4">
                                                         <DropList
                                                             selectedValue={ul?.role}
                                                             options={roleOptions}

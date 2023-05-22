@@ -202,99 +202,106 @@ const DocumentType = () => {
                 </div>
             </div>
             <div className="hidden md:flex flex-col bg-white shadow-4Way">
-                <div className="inline-block min-w-full">
-                    <table className="min-w-full text-left text-[1.4rem] font-light">
-                        <thead className="border-b font-medium dark:border-neutral-500">
-                            <tr>
-                                <th scope="col" className="px-6 py-4">
-                                    <div className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={isCheckedAll()}
-                                            onChange={(e) => setCheckedAll(e.target.checked)}
-                                        />
-                                    </div>
-                                </th>
-                                <th scope="col" className="px-6 py-4">
-                                    STT
-                                </th>
-                                <th scope="col" className="px-6 py-4">
-                                    Loại văn bản
-                                </th>
-                                <th scope="col" className="px-6 py-4">
-                                    Trạng thái
-                                </th>
-                                <th scope="col" className="px-6 py-4">
-                                    Ghi chú
-                                </th>
-                                <th scope="col" className="px-6 py-4">
-                                    Thao tác
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                            {documentTypeLists?.length !== 0 ? (
-                                documentTypeLists?.map((dtl, index) => {
-                                    return (
-                                        <tr key={index} className="border-b dark:border-neutral-500">
-                                            <td className="whitespace-nowrap px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={checked?.includes(dtl?._id)}
-                                                        onChange={() => handleCheck(dtl?._id)}
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="whitespace-nowrap px-6 py-4 font-medium">{index + 1}</td>
-                                            <td className="relative group whitespace-nowrap px-6 py-4 max-w-[200px]">
-                                                <p className="w-[200px] truncate">{dtl?.documentTypeName}</p>
-                                                <p className="absolute bottom-[100%] rounded-xl left-0 hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-50 tooltip-bottom">
-                                                    {dtl?.documentTypeName}
-                                                </p>
-                                            </td>
-                                            <td className="whitespace-nowrap px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <SwitchButton
-                                                        checked={dtl?.status}
-                                                        setValue={() => setIsActived(!dtl?.status)}
-                                                        setId={() => setActiveId(dtl?._id)}
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="relative group whitespace-nowrap px-6 py-4 max-w-[200px]">
-                                                <p className="w-[200px] truncate">{dtl?.note}</p>
-                                                <p className="absolute bottom-[100%] rounded-xl left-0 hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-50 break-words whitespace-pre-wrap tooltip-bottom">
-                                                    {dtl?.note}
-                                                </p>
-                                            </td>
-                                            <td className="px-2 py-1 md:px-6 md:py-4">
-                                                <div className="flex items-center text-white">
-                                                    <NavLink to={`/document-types/edit/${dtl?._id}`}>
-                                                        <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
-                                                            <FontAwesomeIcon className="m-auto" icon={faPenToSquare} />
+                <div className="overflow-x-auto">
+                    <div className="inline-block min-w-full">
+                        <div className="overflow-hidden">
+                            <table className="min-w-full text-left text-[1.4rem] font-light">
+                                <thead className="border-b font-medium dark:border-neutral-500">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-4">
+                                            <div className="flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isCheckedAll()}
+                                                    onChange={(e) => setCheckedAll(e.target.checked)}
+                                                />
+                                            </div>
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            STT
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Loại văn bản
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Trạng thái
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Ghi chú
+                                        </th>
+                                        <th scope="col" className="px-6 py-4">
+                                            Thao tác
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
+                                    {documentTypeLists?.length !== 0 ? (
+                                        documentTypeLists?.map((dtl, index) => {
+                                            return (
+                                                <tr key={index} className="border-b dark:border-neutral-500">
+                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                        <div className="flex items-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={checked?.includes(dtl?._id)}
+                                                                onChange={() => handleCheck(dtl?._id)}
+                                                            />
                                                         </div>
-                                                    </NavLink>
-                                                    <div
-                                                        onClick={() => handleDelete(dtl?._id)}
-                                                        className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
-                                                    >
-                                                        <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
-                                                    </div>
-                                                </div>
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4 font-medium">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="relative group whitespace-nowrap px-6 py-4 max-w-[200px]">
+                                                        <p title={dtl?.documentTypeName} className="w-[200px] truncate">
+                                                            {dtl?.documentTypeName}
+                                                        </p>
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                        <div className="flex items-center">
+                                                            <SwitchButton
+                                                                checked={dtl?.status}
+                                                                setValue={() => setIsActived(!dtl?.status)}
+                                                                setId={() => setActiveId(dtl?._id)}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td className="relative group whitespace-nowrap px-6 py-4 max-w-[200px]">
+                                                        <p title={dtl?.note} className="w-[200px] truncate">
+                                                            {dtl?.note}
+                                                        </p>
+                                                    </td>
+                                                    <td className="px-2 py-1 md:px-6 md:py-4">
+                                                        <div className="flex items-center text-white">
+                                                            <NavLink to={`/document-types/edit/${dtl?._id}`}>
+                                                                <div className="flex w-[30px] h-[30px] bg-green-600 p-2 rounded-lg cursor-pointer hover:text-primary">
+                                                                    <FontAwesomeIcon
+                                                                        className="m-auto"
+                                                                        icon={faPenToSquare}
+                                                                    />
+                                                                </div>
+                                                            </NavLink>
+                                                            <div
+                                                                onClick={() => handleDelete(dtl?._id)}
+                                                                className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
+                                                            >
+                                                                <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={9} className="text-center p-5">
+                                                Không tìm thấy dữ liệu
                                             </td>
                                         </tr>
-                                    );
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={9} className="text-center p-5">
-                                        Không tìm thấy dữ liệu
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-between py-3 mx-5">

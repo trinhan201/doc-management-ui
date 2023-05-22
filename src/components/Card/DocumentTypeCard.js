@@ -50,8 +50,7 @@ const DocumentTypeCard = (props) => {
             </div>
             <div className="relative group flex items-center mb-3">
                 <p className="font-bold w-[120px]">Loại văn bản:</p>
-                <p className="flex-1 truncate">{props.documentTypeName}</p>
-                <p className="absolute bottom-[150%] rounded-xl left-[50%] translate-x-[-50%] hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-20 tooltip-bottom">
+                <p title={props.documentTypeName} className="flex-1 truncate">
                     {props.documentTypeName}
                 </p>
             </div>
@@ -66,8 +65,7 @@ const DocumentTypeCard = (props) => {
             </div>
             <div className="relative group flex items-center mb-3">
                 <p className="font-bold w-[120px]">Ghi chú:</p>
-                <p className="flex-1 truncate">{props.note}</p>
-                <p className="absolute bottom-[150%] rounded-xl left-[50%] translate-x-[-50%] hidden bg-[#cccccc] px-6 py-4 shadow-4Way group-hover:block z-20 break-words whitespace-pre-wrap tooltip-bottom">
+                <p title={props.note} className="flex-1 truncate">
                     {props.note}
                 </p>
             </div>
