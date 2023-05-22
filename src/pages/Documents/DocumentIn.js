@@ -45,7 +45,7 @@ const DocumentIn = () => {
 
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
-    const totalPage = Math.ceil(allDocuments.length / limit);
+    const totalPage = Math.ceil(allDocuments?.length / limit);
     const nameValue = useDebounce(fName, 300);
     const codeValue = useDebounce(fCode, 300);
     const userRole = JSON.parse(localStorage.getItem('userRole'));
@@ -220,7 +220,7 @@ const DocumentIn = () => {
                 setCheckedAll(false);
                 return checked?.filter((item) => item !== id);
             } else {
-                if ([...prev, id].length === allDocuments.length) {
+                if ([...prev, id].length === allDocuments?.length) {
                     setCheckedAll(true);
                 }
                 return [...prev, id];
@@ -237,14 +237,14 @@ const DocumentIn = () => {
     }, [checkedAll]);
 
     const isCheckedAll = () => {
-        return checked?.length === allDocuments.length;
+        return checked?.length === allDocuments?.length;
     };
 
     useEffect(() => {
         const handleCheckAll = () => {
             const idsArray = [];
             if (checkedAll === false) {
-                if (checked?.length === allDocuments.length) {
+                if (checked?.length === allDocuments?.length) {
                     return setChecked([]);
                 }
                 return setChecked((checked) => checked);
@@ -551,8 +551,8 @@ const DocumentIn = () => {
                     </div>
                     <div className="flex items-center">
                         <p className="text-[1.5rem] mr-9">
-                            Hiển thị <span>{documentLists.length === 0 ? 0 : rowStart}</span> đến{' '}
-                            <span>{rowEnd + documentLists.length}</span> của <span>{allDocuments.length}</span> mục
+                            Hiển thị <span>{documentLists?.length === 0 ? 0 : rowStart}</span> đến{' '}
+                            <span>{rowEnd + documentLists?.length}</span> của <span>{allDocuments?.length}</span> mục
                         </p>
                         <div
                             onClick={handlePrevPage}

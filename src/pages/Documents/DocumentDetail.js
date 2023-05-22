@@ -1,7 +1,7 @@
 import { faPlusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as documentServices from '~/services/documentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { faFileExcel, faFileWord, faFilePowerpoint, faFilePdf, faFile } from '@fortawesome/free-regular-svg-icons';
@@ -13,6 +13,7 @@ const DocumentDetail = () => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const setLevelColor = (level) => {
@@ -184,6 +185,13 @@ const DocumentDetail = () => {
                         </li>
                     </ul>
                 </div>
+            </div>
+
+            <div
+                onClick={() => navigate(-1)}
+                className="block w-full md:w-fit text-center text-[white] bg-blue-600 mt-16 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] cursor-pointer"
+            >
+                {'<<'} Trở về
             </div>
         </div>
     );
