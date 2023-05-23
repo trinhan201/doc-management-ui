@@ -19,6 +19,7 @@ import {
     DefaultLayout,
     CreateUser,
     CreateDocument,
+    Tasks,
 } from './pages';
 import ProtectedRoutes from './pages/Others/ProtectedRoutes';
 import PublicRoutes from './pages/Others/PublicRoutes';
@@ -274,6 +275,14 @@ const App = () => {
                                     element={
                                         <DefaultLayout>
                                             <Profile />
+                                        </DefaultLayout>
+                                    }
+                                />
+                                <Route
+                                    path="/tasks"
+                                    element={
+                                        <DefaultLayout>
+                                            <Tasks />
                                         </DefaultLayout>
                                     }
                                 />
