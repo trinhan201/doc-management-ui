@@ -18,6 +18,8 @@ const InputField = (props) => {
             return 'email';
         } else if (inputName === 'date') {
             return 'date';
+        } else if (inputName === 'datetime-local') {
+            return 'datetime-local';
         } else if (inputName === 'radio') {
             return 'radio';
         } else {

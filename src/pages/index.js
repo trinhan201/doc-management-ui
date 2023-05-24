@@ -16,6 +16,9 @@ import DefaultLayout from '~/layouts/DefaultLayout';
 import CreateUser from './Users/CreateUser';
 import CreateDocument from './Documents/CreateDocument';
 import Tasks from './Tasks/Tasks';
+import CreateTask from './Tasks/CreateTask';
+import AdminTaskDetail from './Tasks/AdminTaskDetail';
+import MemberTaskDetail from './Tasks/MemberTaskDetail';
 
 export {
     Signin,
@@ -36,4 +39,7 @@ export {
     CreateUser,
     CreateDocument,
     Tasks,
+    CreateTask,
+    AdminTaskDetail,
+    MemberTaskDetail,
 };

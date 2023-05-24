@@ -90,3 +90,8 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.activeTab {
+    color: #2563eb;
+    background-color: #ffffff;
+}

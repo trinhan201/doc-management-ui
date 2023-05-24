@@ -20,6 +20,9 @@ import {
     CreateUser,
     CreateDocument,
     Tasks,
+    CreateTask,
+    AdminTaskDetail,
+    MemberTaskDetail,
 } from './pages';
 import ProtectedRoutes from './pages/Others/ProtectedRoutes';
 import PublicRoutes from './pages/Others/PublicRoutes';
@@ -283,6 +286,31 @@ const App = () => {
                                     element={
                                         <DefaultLayout>
                                             <Tasks />
+                                        </DefaultLayout>
+                                    }
+                                />
+                                <Route
+                                    path="/tasks/detail/:id"
+                                    element={
+                                        <DefaultLayout>
+                                            {/* <AdminTaskDetail /> */}
+                                            <MemberTaskDetail />
+                                        </DefaultLayout>
+                                    }
+                                />
+                                <Route
+                                    path="/tasks/create"
+                                    element={
+                                        <DefaultLayout>
+                                            <CreateTask title="Thêm công việc mới" />
+                                        </DefaultLayout>
+                                    }
+                                />
+                                <Route
+                                    path="/tasks/edit/:id"
+                                    element={
+                                        <DefaultLayout>
+                                            <CreateTask title="Chỉnh sửa công việc" />
                                         </DefaultLayout>
                                     }
                                 />
