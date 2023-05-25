@@ -19,7 +19,8 @@ import {
     DefaultLayout,
     CreateUser,
     CreateDocument,
-    Tasks,
+    AdminTasks,
+    MemberTask,
     CreateTask,
     AdminTaskDetail,
     MemberTaskDetail,
@@ -220,25 +221,33 @@ const App = () => {
                                 <Route
                                     path="/documents/documents-out/edit/:id"
                                     element={
-                                        <DefaultLayout>
-                                            <CreateDocument
-                                                title="Sửa văn bản đi"
-                                                documentIn={false}
-                                                path="documents-out"
-                                            />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <CreateDocument
+                                                    title="Sửa văn bản đi"
+                                                    documentIn={false}
+                                                    path="documents-out"
+                                                />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/documents/documents-out/create"
                                     element={
-                                        <DefaultLayout>
-                                            <CreateDocument
-                                                title="Thêm văn bản đi mới"
-                                                documentIn={false}
-                                                path="documents-out"
-                                            />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <CreateDocument
+                                                    title="Thêm văn bản đi mới"
+                                                    documentIn={false}
+                                                    path="documents-out"
+                                                />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
@@ -252,25 +261,33 @@ const App = () => {
                                 <Route
                                     path="/documents/documents-in/edit/:id"
                                     element={
-                                        <DefaultLayout>
-                                            <CreateDocument
-                                                title="Sửa văn bản đến"
-                                                documentIn={true}
-                                                path="documents-in"
-                                            />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <CreateDocument
+                                                    title="Sửa văn bản đến"
+                                                    documentIn={true}
+                                                    path="documents-in"
+                                                />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/documents/documents-in/create"
                                     element={
-                                        <DefaultLayout>
-                                            <CreateDocument
-                                                title="Thêm văn bản đến mới"
-                                                documentIn={true}
-                                                path="documents-in"
-                                            />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <CreateDocument
+                                                    title="Thêm văn bản đến mới"
+                                                    documentIn={true}
+                                                    path="documents-in"
+                                                />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
@@ -284,34 +301,53 @@ const App = () => {
                                 <Route
                                     path="/tasks"
                                     element={
-                                        <DefaultLayout>
-                                            <Tasks />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <AdminTasks />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <DefaultLayout>
+                                                <MemberTask />
+                                            </DefaultLayout>
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/tasks/detail/:id"
                                     element={
-                                        <DefaultLayout>
-                                            {/* <AdminTaskDetail /> */}
-                                            <MemberTaskDetail />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <AdminTaskDetail />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <DefaultLayout>
+                                                <MemberTaskDetail />
+                                            </DefaultLayout>
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/tasks/create"
                                     element={
-                                        <DefaultLayout>
-                                            <CreateTask title="Thêm công việc mới" />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <CreateTask title="Thêm công việc mới" />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/tasks/edit/:id"
                                     element={
-                                        <DefaultLayout>
-                                            <CreateTask title="Chỉnh sửa công việc" />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout>
+                                                <CreateTask title="Chỉnh sửa công việc" />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                             </>

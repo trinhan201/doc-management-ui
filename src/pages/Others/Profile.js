@@ -62,8 +62,6 @@ const Profile = () => {
         localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
     }, [isRemove]);
 
-    console.log(isRemove);
-
     return (
         <>
             <div className="flex flex-col xl:flex-row h-full gap-8">
