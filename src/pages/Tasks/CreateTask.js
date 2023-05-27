@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import FormData from 'form-data';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import FileInput from '~/components/FileInput';
 import { fullNameValidator } from '~/utils/formValidation';
 import * as documentServices from '~/services/documentServices';
+import * as taskServices from '~/services/taskServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const CreateTask = ({ title }) => {
     const [documents, setDocuments] = useState([]);
@@ -20,14 +23,60 @@ const CreateTask = ({ title }) => {
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
 
+    const { id } = useParams();
     const navigate = useNavigate();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const progressOptions = ['Khởi tạo', 'Đang xử lý', 'Chờ duyệt', 'Hoàn thành'];
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await taskServices.getTaskById(id);
+            setFullName(res.data.taskName);
+            setDeadline(res.data.dueDate);
+            setLevel(res.data.level);
+            setDocument(res.data.refLink);
+            setProgress(res.data.progress);
+            setDesc(res.data.desc);
+        };
+        fetchApi();
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         if (!isfullNameValid) return;
+
+        const data = {
+            taskName: fullName,
+            dueDate: deadline,
+            level: level,
+            progress: progress || 'Khởi tạo',
+            refLink: document,
+            desc: desc,
+        };
+        let res;
+        if (id) {
+            res = await taskServices.updateTask(id, data);
+        } else {
+            res = await taskServices.createTask(data);
+        }
+        if (res.code === 200) {
+            if (!attachFiles) {
+                successNotify(res.message);
+                navigate(`/tasks`);
+            } else {
+                const data = new FormData();
+                for (let i = 0; i < attachFiles.length; i++) {
+                    data.append('myFile', attachFiles[i]);
+                }
+                await taskServices.uploadFile(res.data._id, data);
+                successNotify(res.message);
+                navigate(`/tasks`);
+            }
+        } else {
+            errorNotify(res);
+        }
     };
 
     useEffect(() => {
@@ -71,7 +120,7 @@ const CreateTask = ({ title }) => {
                         />
                     </div>
                 </div>
-                <div className="mt-7">
+                <div className={title.includes('Chỉnh sửa') ? 'mt-7' : 'hidden'}>
                     <label className="font-bold">Tiến trình:</label>
                     <DropList
                         selectedValue={progress}

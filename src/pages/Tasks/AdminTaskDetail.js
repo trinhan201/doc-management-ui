@@ -1,15 +1,50 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import {
+    faPenToSquare,
+    faTrashCan,
+    faFileExcel,
+    faFilePowerpoint,
+    faFileWord,
+    faFilePdf,
+    faFile,
+    faXmark,
+    faPlusCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
+import * as taskServices from '~/services/taskServices';
+import * as userServices from '~/services/userServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const AdminTaskDetail = () => {
+    const [allUsers, setAllUsers] = useState([]);
+    const [percent, setPercent] = useState('');
+    const [progressStyle, setProgressStyle] = useState('');
     const [tab, setTab] = useState('detail');
+    const [task, setTask] = useState({});
+    const [attachFiles, setAttachFiles] = useState([]);
+    const [isSave, setIsSave] = useState(false);
+
+    const { id } = useParams();
 
     const onUpdateTab = (value) => {
         setTab(value);
+    };
+
+    const setFileIcon = (fileName) => {
+        if (fileName.includes('.xlsx') || fileName.includes('.csv')) {
+            return <FontAwesomeIcon className="w-full h-full text-green-700" icon={faFileExcel} />;
+        } else if (fileName.includes('.pptx') || fileName.includes('.ppt')) {
+            return <FontAwesomeIcon className="w-full h-full text-[#ff5722]" icon={faFilePowerpoint} />;
+        } else if (fileName.includes('.docx') || fileName.includes('.doc')) {
+            return <FontAwesomeIcon className="w-full h-full text-blue-700" icon={faFileWord} />;
+        } else if (fileName.includes('.pdf')) {
+            return <FontAwesomeIcon className="w-full h-full text-red-600" icon={faFilePdf} />;
+        } else {
+            return <FontAwesomeIcon className="w-full h-full text-black" icon={faFile} />;
+        }
     };
 
     const setLevelColor = (level) => {
@@ -21,6 +56,75 @@ const AdminTaskDetail = () => {
             return 'w-fit px-6 py-4 level normal';
         }
     };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getAllUser(1, 1, '');
+            setAllUsers(res.allUsers);
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        const setStatusPercentage = () => {
+            if (task.progress === 'Hoàn thành') {
+                setPercent('100%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar full');
+            } else if (task.progress === 'Chờ duyệt') {
+                setPercent('75%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent75');
+            } else if (task.progress === 'Đang xử lý') {
+                setPercent('50%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent50');
+            } else {
+                setPercent('25%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent25');
+            }
+        };
+        setStatusPercentage();
+    }, [task.progress]);
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await taskServices.getTaskById(id);
+            setTask(res.data);
+        };
+        fetchApi();
+    }, [id, isSave]);
+
+    const handleDeleteFile = async (fileName) => {
+        const data = {
+            filename: fileName,
+        };
+        const res = await taskServices.deleteFileUrl(id, data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res.message);
+        }
+    };
+
+    useEffect(() => {
+        if (attachFiles.length === 0) return;
+        const uploadFile = async () => {
+            const data = new FormData();
+            for (let i = 0; i < attachFiles?.length; i++) {
+                data.append('myFile', attachFiles[i]);
+            }
+            const res = await taskServices.uploadFile(id, data);
+            if (res.code === 200) {
+                successNotify(res.message);
+                setIsSave((isSave) => !isSave);
+                setAttachFiles([]);
+            } else {
+                errorNotify(res.message);
+            }
+        };
+        uploadFile();
+    }, [attachFiles, id]);
+
     return (
         <>
             <ul class="flex flex-wrap text-[1.5rem] font-medium text-center text-gray-500">
@@ -52,76 +156,87 @@ const AdminTaskDetail = () => {
                     <div className={tab === 'detail' ? '' : 'hidden'}>
                         <div>
                             <h3 className="text-[2rem] font-bold">
-                                Lap ke hoach thanh lap khoa moi o benh vien Nha Be Lap ke hoach thanh lap khoa moi o
-                                benh vien Nha Be Lap ke hoach thanh lap khoa moi o benh vien Nha Be{' '}
-                                <span className={setLevelColor('Khẩn cấp')}>Khẩn cấp</span>
+                                <span className="mr-2">{task?.taskName}</span>
+                                <span className={setLevelColor(task?.level)}>{task?.level}</span>
                             </h3>
-                            <p className="text-[1.4rem] mt-6">
-                                Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong
-                                viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta
-                                cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo
-                                ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la
-                                mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day
-                                la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec
-                            </p>
+                            <p className="text-[1.4rem] mt-6">{task?.desc}</p>
                             <div className="flex items-center mt-12">
                                 <div className="flex-1">
                                     <h3 className="text-[1.8rem] font-bold">Ngày bắt đầu:</h3>
-                                    <p className="text-[1.4rem]">20/01/2023 2:00 PM</p>
+                                    <p className="text-[1.4rem]">{task?.createdAt}</p>
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="text-[1.8rem] font-bold">Ngày kết thúc:</h3>
-                                    <p className="text-[1.4rem]">20/01/2023 2:00 PM</p>
+                                    <p className="text-[1.4rem]">{task?.dueDate}</p>
                                 </div>
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">Tiến trình:</h3>
                                 <div className="bg-gray-200 rounded-full mt-3">
-                                    <div className="progress-bar full">
-                                        <span>100%</span> <span>Hoàn thành</span>
+                                    <div className={progressStyle}>
+                                        <span>{percent}</span> <span>{task?.progress}</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">Người thực hiện:</h3>
                                 <div className="flex -space-x-2">
-                                    <img
-                                        className="inline-block h-[35px] w-[35px] rounded-full ring-2 ring-white"
-                                        src="https://hips.hearstapps.com/hmg-prod/images/domestic-cat-lies-in-a-basket-with-a-knitted-royalty-free-image-1592337336.jpg?crop=0.668xw:1.00xh;0.247xw,0&resize=1200:*"
-                                        alt=""
-                                    />
-                                    <img
-                                        className="inline-block h-[35px] w-[35px] rounded-full ring-2 ring-white"
-                                        src="https://hips.hearstapps.com/hmg-prod/images/domestic-cat-lies-in-a-basket-with-a-knitted-royalty-free-image-1592337336.jpg?crop=0.668xw:1.00xh;0.247xw,0&resize=1200:*"
-                                        alt=""
-                                    />
-                                    <img
-                                        className="inline-block h-[35px] w-[35px] rounded-full ring-2 ring-white"
-                                        src="https://hips.hearstapps.com/hmg-prod/images/domestic-cat-lies-in-a-basket-with-a-knitted-royalty-free-image-1592337336.jpg?crop=0.668xw:1.00xh;0.247xw,0&resize=1200:*"
-                                        alt=""
-                                    />
-                                    <img
-                                        className="inline-block h-[35px] w-[35px] rounded-full ring-2 ring-white"
-                                        src="https://hips.hearstapps.com/hmg-prod/images/domestic-cat-lies-in-a-basket-with-a-knitted-royalty-free-image-1592337336.jpg?crop=0.668xw:1.00xh;0.247xw,0&resize=1200:*"
-                                        alt=""
-                                    />
-                                    <div className="hs-dropdown relative inline-flex [--placement:top-left]">
-                                        <button
-                                            id="hs-dropdown-avatar-more"
-                                            className="hs-dropdown-toggle inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle hover:bg-gray-300 focus:outline-none focus:bg-blue-100 focus:text-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm"
-                                        >
-                                            <span className="font-medium leading-none">9+</span>
-                                        </button>
+                                    {task?.assignTo?.slice(0, 3).map((at, index) => {
+                                        const user = allUsers.find((user) => {
+                                            return user?._id === at;
+                                        });
+                                        return (
+                                            <img
+                                                key={index}
+                                                className="inline-block h-[35px] w-[35px] rounded-full ring-2 ring-white"
+                                                src={
+                                                    user?.avatar ||
+                                                    'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
+                                                }
+                                                alt="avatar"
+                                            />
+                                        );
+                                    })}
+                                    <div
+                                        className={
+                                            task?.assignTo?.length > 3
+                                                ? 'hs-dropdown relative inline-flex [--placement:top-left]'
+                                                : 'hidden'
+                                        }
+                                    >
+                                        <div className="inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle">
+                                            <span className="font-medium leading-none text-[1.3rem]">
+                                                +{task?.assignTo?.length - 3}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">File đính kèm:</h3>
                                 <ul>
-                                    <li>Test.docx</li>
-                                    <li>Test.docx</li>
-                                    <li>Test.docx</li>
-                                    {/* <li className={userRole === 'Member' ? 'pointer-events-none opacity-40' : ''}>
+                                    {task?.attachFiles?.map((item, index) => (
+                                        <li key={index} className="mb-2">
+                                            <div className="flex items-center w-fit">
+                                                <div className="w-[24px] h-[24px] mr-3">{setFileIcon(item)}</div>
+                                                <a
+                                                    className="text-blue-600 text-[1.4rem] flex-1"
+                                                    href={item}
+                                                    target="_blank"
+                                                    rel="noreferrer noopener"
+                                                >
+                                                    {item.replace('http://localhost:8080/static/', '')}
+                                                </a>
+                                                <div
+                                                    onClick={() => handleDeleteFile(item)}
+                                                    className="flex items-center leading-6 text-[1.7rem] text-red-600 ml-3 cursor-pointer"
+                                                >
+                                                    <FontAwesomeIcon icon={faXmark} />
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                    <li>
                                         <label
                                             className="text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl cursor-pointer"
                                             htmlFor="upload"
@@ -136,7 +251,7 @@ const AdminTaskDetail = () => {
                                             onChange={(e) => setAttachFiles(e.target.files)}
                                             multiple
                                         />
-                                    </li> */}
+                                    </li>
                                 </ul>
                             </div>
                             <div className="mt-12">

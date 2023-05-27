@@ -151,7 +151,7 @@ const DocumentDetail = () => {
                                 <div className="flex items-center w-fit">
                                     <div className="w-[24px] h-[24px] mr-3">{setFileIcon(item)}</div>
                                     <a
-                                        className="text-blue-600 text-[1.4rem]"
+                                        className="text-blue-600 text-[1.4rem] flex-1"
                                         href={item}
                                         target="_blank"
                                         rel="noreferrer noopener"
