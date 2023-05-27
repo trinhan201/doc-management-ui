@@ -47,7 +47,7 @@ const Department = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(page, Number(limit), debouncedValue);
+            const res = await departmentServices.getAllDepartment(page, limit, debouncedValue);
             setAllDepartments(res.allDepartments);
             setDepartmentLists(res.data);
         };

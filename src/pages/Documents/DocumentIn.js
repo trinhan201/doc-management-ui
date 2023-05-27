@@ -98,7 +98,7 @@ const DocumentIn = () => {
         const fetchApi = async () => {
             const res = await documentServices.getAllDocument(
                 page,
-                Number(limit),
+                limit,
                 true,
                 nameValue,
                 codeValue,

@@ -1,27 +1,62 @@
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle, faFilterCircleXmark, faEye, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import {
+    faPlusCircle,
+    faFilterCircleXmark,
+    faEye,
+    faPenToSquare,
+    faTrashCan,
+    faAngleRight,
+    faAngleLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
+import TaskCard from '~/components/Card/TaskCard';
 
 const AdminTasks = () => {
-    const [allTaskLists, setAllTaskLists] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
+    const [allTasks, setAllTasks] = useState([]);
+    const [taskLists, setTaskLists] = useState([]);
+    const [isSave, setIsSave] = useState(false);
+    const [limit, setLimit] = useState(5);
+    const [page, setPage] = useState(1);
+    const [rowStart, setRowStart] = useState(1);
+    const [rowEnd, setRowEnd] = useState(0);
+    const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('taskChecked')) || []);
+    const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllTask')) || false);
 
-    const userRole = JSON.parse(localStorage.getItem('userRole'));
+    // const userRole = JSON.parse(localStorage.getItem('userRole'));
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
+    const totalPage = Math.ceil(allTasks?.length / limit);
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask();
-            setAllTaskLists(res.tasks);
-        };
-        fetchApi();
-    }, []);
+    const setProgressPercentage = (progress) => {
+        if (progress === 'Hoàn thành') {
+            return 'progress-bar full';
+        } else if (progress === 'Chờ duyệt') {
+            return 'progress-bar percent75';
+        } else if (progress === 'Đang xử lý') {
+            return 'progress-bar percent50';
+        } else {
+            return 'progress-bar percent25';
+        }
+    };
+
+    const handleNextPage = () => {
+        setPage(page + 1);
+        setRowStart(rowStart + 5);
+        setRowEnd(rowEnd + 5);
+    };
+
+    const handlePrevPage = () => {
+        setPage(page - 1);
+        setRowStart(rowStart - 5);
+        setRowEnd(rowEnd - 5);
+    };
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -30,6 +65,97 @@ const AdminTasks = () => {
         };
         fetchApi();
     }, []);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskServices.getAllTask(page, limit);
+            setTaskLists(res.tasks);
+            setAllTasks(res.allTasks);
+        };
+        fetchApi();
+    }, [isSave, page, limit]);
+
+    useEffect(() => {
+        if (!limit) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [limit]);
+
+    const handleCheck = (id) => {
+        setChecked((prev) => {
+            const isChecked = checked?.includes(id);
+            if (isChecked) {
+                setCheckedAll(false);
+                return checked?.filter((item) => item !== id);
+            } else {
+                if ([...prev, id].length === allTasks?.length) {
+                    setCheckedAll(true);
+                }
+                return [...prev, id];
+            }
+        });
+    };
+
+    useEffect(() => {
+        localStorage.setItem('taskChecked', JSON.stringify(checked));
+    }, [checked]);
+
+    useEffect(() => {
+        localStorage.setItem('isCheckAllTask', JSON.stringify(checkedAll));
+    }, [checkedAll]);
+
+    const isCheckedAll = () => {
+        return checked?.length === allTasks?.length;
+    };
+
+    useEffect(() => {
+        const handleCheckAll = () => {
+            const idsArray = [];
+            if (checkedAll === false) {
+                if (checked?.length === allTasks?.length) {
+                    return setChecked([]);
+                }
+                return setChecked((checked) => checked);
+            }
+            allTasks.map((item) => {
+                return idsArray.push(item._id);
+            });
+            setChecked(idsArray);
+        };
+        handleCheckAll();
+    }, [checkedAll, allTasks, checked?.length]);
+
+    const handleDelete = async (id) => {
+        const confirmMsg = 'Bạn có chắc muốn xóa công việc này không?';
+        if (!window.confirm(confirmMsg)) return;
+        const res = await taskServices.deleteTaskById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    const handleDeleteMany = async () => {
+        const confirmMsg = 'Bạn có chắc muốn xóa những công việc này không?';
+        if (!window.confirm(confirmMsg)) return;
+        const data = {
+            arrayId: checked,
+        };
+        const res = await taskServices.deleteManyTask(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
+    };
 
     return (
         <>
@@ -66,15 +192,19 @@ const AdminTasks = () => {
                     </button>
                 </div>
             </div>
-            <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] shadow-4Way">
+            <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách công việc</h1>
-                <div
-                    className={
-                        userRole === 'Member'
-                            ? 'hidden'
-                            : 'flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0'
-                    }
-                >
+                <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
+                    <button
+                        onClick={handleDeleteMany}
+                        className={
+                            checked?.length > 1
+                                ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
+                                : 'hidden'
+                        }
+                    >
+                        <FontAwesomeIcon icon={faTrashCan} /> Xóa <span>({checked?.length})</span> mục
+                    </button>
                     <NavLink
                         to="/tasks/create"
                         className="text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
@@ -83,64 +213,6 @@ const AdminTasks = () => {
                     </NavLink>
                 </div>
             </div>
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {userRole === 'Member'
-                    ? memTaskLists.map((mtl, index) => {
-                          return (
-                              <NavLink key={index} to="/tasks/detail/123">
-                                  <div className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 cursor-pointer">
-                                      <h5 className="mb-2 text-[1.5rem] font-bold text-gray-900 block-ellipsis">
-                                          {mtl?.taskName}
-                                      </h5>
-                                      <p className="text-[1.3rem] font-normal text-gray-700">{mtl?.dueDate}</p>
-                                      <hr className="my-8" />
-                                      <div className="text-right text-blue-600 text-[1.4rem] font-semibold">
-                                          <FontAwesomeIcon icon={faArrowRight} /> Chi tiết
-                                      </div>
-                                  </div>
-                              </NavLink>
-                          );
-                      })
-                    : allTaskLists.map((atl, index) => {
-                          return (
-                              <NavLink key={index} to="/tasks/detail/123">
-                                  <div className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 cursor-pointer">
-                                      <h5 className="mb-2 text-[1.5rem] font-bold text-gray-900 block-ellipsis">
-                                          {atl?.taskName}
-                                      </h5>
-                                      <p className="text-[1.3rem] font-normal text-gray-700">{atl?.dueDate}</p>
-                                      <hr className="my-8" />
-                                      <div className="flex -space-x-2">
-                                          {atl?.assignTo.map((at, index) => {
-                                              const user = allUsers.find((user) => {
-                                                  return user._id === at;
-                                              });
-                                              return (
-                                                  <img
-                                                      key={index}
-                                                      className="inline-block h-[35px] w-[35px] rounded-full ring-2 ring-white"
-                                                      src={
-                                                          user?.avatar ||
-                                                          'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
-                                                      }
-                                                      alt=""
-                                                  />
-                                              );
-                                          })}
-                                          <div className="hs-dropdown relative inline-flex [--placement:top-left]">
-                                              <button
-                                                  id="hs-dropdown-avatar-more"
-                                                  className="hs-dropdown-toggle inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle hover:bg-gray-300 focus:outline-none focus:bg-blue-100 focus:text-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm"
-                                              >
-                                                  <span className="font-medium leading-none">9+</span>
-                                              </button>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </NavLink>
-                          );
-                      })}
-            </div> */}
             <div className="hidden md:flex flex-col bg-white shadow-4Way">
                 <div className="overflow-x-auto">
                     <div className="inline-block min-w-full">
@@ -148,12 +220,12 @@ const AdminTasks = () => {
                             <table className="min-w-full text-left text-[1.4rem] font-light">
                                 <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
-                                        <th scope="col" className={userRole === 'Member' ? 'hidden' : 'px-6 py-4'}>
+                                        <th scope="col" className="px-6 py-4">
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
-                                                    // checked={isCheckedAll()}
-                                                    // onChange={(e) => setCheckedAll(e.target.checked)}
+                                                    checked={isCheckedAll()}
+                                                    onChange={(e) => setCheckedAll(e.target.checked)}
                                                 />
                                             </div>
                                         </th>
@@ -178,22 +250,16 @@ const AdminTasks = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {allTaskLists?.length !== 0 ? (
-                                        allTaskLists?.map((atl, index) => {
+                                    {taskLists?.length !== 0 ? (
+                                        taskLists?.map((tl, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
-                                                    <td
-                                                        className={
-                                                            userRole === 'Member'
-                                                                ? 'hidden'
-                                                                : 'whitespace-nowrap px-6 py-4'
-                                                        }
-                                                    >
+                                                    <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex items-center">
                                                             <input
                                                                 type="checkbox"
-                                                                // checked={checked?.includes(dcl?._id)}
-                                                                // onChange={() => handleCheck(dcl?._id)}
+                                                                checked={checked?.includes(tl?._id)}
+                                                                onChange={() => handleCheck(tl?._id)}
                                                             />
                                                         </div>
                                                     </td>
@@ -201,24 +267,24 @@ const AdminTasks = () => {
                                                         {index + 1}
                                                     </td>
                                                     <td
-                                                        title={atl?.taskName}
+                                                        title={tl?.taskName}
                                                         className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate"
                                                     >
-                                                        {atl?.taskName}
+                                                        {tl?.taskName}
                                                     </td>
-                                                    <td title={atl?.progress} className="whitespace-nowrap px-6 py-4">
+                                                    <td title={tl?.progress} className="whitespace-nowrap px-6 py-4">
                                                         <div className="bg-gray-200 rounded-full">
-                                                            <div className="progress-bar percent60"></div>
+                                                            <div className={setProgressPercentage(tl?.progress)}></div>
                                                         </div>
                                                     </td>
-                                                    <td title={atl?.dueDate} className="whitespace-nowrap px-6 py-4">
-                                                        {atl?.dueDate}
+                                                    <td title={tl?.dueDate} className="whitespace-nowrap px-6 py-4">
+                                                        {tl?.dueDate}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex -space-x-2">
-                                                            {atl?.assignTo.map((at, index) => {
+                                                            {tl?.assignTo.slice(0, 3).map((at, index) => {
                                                                 const user = allUsers.find((user) => {
-                                                                    return user._id === at;
+                                                                    return user?._id === at;
                                                                 });
                                                                 return (
                                                                     <img
@@ -228,35 +294,34 @@ const AdminTasks = () => {
                                                                             user?.avatar ||
                                                                             'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
                                                                         }
-                                                                        alt=""
+                                                                        alt="avatar"
                                                                     />
                                                                 );
                                                             })}
-                                                            <div className="hs-dropdown relative inline-flex [--placement:top-left]">
-                                                                <button
-                                                                    id="hs-dropdown-avatar-more"
-                                                                    className="hs-dropdown-toggle inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle hover:bg-gray-300 focus:outline-none focus:bg-blue-100 focus:text-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm"
-                                                                >
-                                                                    <span className="font-medium leading-none">9+</span>
-                                                                </button>
+                                                            <div
+                                                                className={
+                                                                    tl?.assignTo.length > 3
+                                                                        ? 'hs-dropdown relative inline-flex [--placement:top-left]'
+                                                                        : 'hidden'
+                                                                }
+                                                            >
+                                                                <div className="inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle">
+                                                                    <span className="font-medium leading-none text-[1.3rem]">
+                                                                        +{tl?.assignTo.length - 3}
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-2 py-1 md:px-6 md:py-4">
                                                         <div className="flex items-center text-white">
-                                                            <NavLink to={`/tasks/detail/${atl?._id}`}>
+                                                            <NavLink to={`/tasks/detail/${tl?._id}`}>
                                                                 <div className="flex w-[30px] h-[30px] bg-blue-600 p-2 rounded-lg cursor-pointer hover:text-primary">
                                                                     <FontAwesomeIcon className="m-auto" icon={faEye} />
                                                                 </div>
                                                             </NavLink>
-                                                            <NavLink to={`/tasks/edit/${atl?._id}`}>
-                                                                <div
-                                                                    className={
-                                                                        userRole === 'Member'
-                                                                            ? 'hidden'
-                                                                            : 'flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary'
-                                                                    }
-                                                                >
+                                                            <NavLink to={`/tasks/edit/${tl?._id}`}>
+                                                                <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
                                                                     <FontAwesomeIcon
                                                                         className="m-auto"
                                                                         icon={faPenToSquare}
@@ -264,12 +329,8 @@ const AdminTasks = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                // onClick={() => handleDelete(dcl?._id)}
-                                                                className={
-                                                                    userRole === 'Member'
-                                                                        ? 'hidden'
-                                                                        : 'flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary'
-                                                                }
+                                                                onClick={() => handleDelete(tl?._id)}
+                                                                className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                             </div>
@@ -290,7 +351,7 @@ const AdminTasks = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="flex items-center justify-between py-3 mx-5">
+                <div className="flex items-center justify-between py-3 mx-5">
                     <div className="flex items-center text-[1.5rem]">
                         <select
                             value={limit}
@@ -304,8 +365,8 @@ const AdminTasks = () => {
                     </div>
                     <div className="flex items-center">
                         <p className="text-[1.5rem] mr-9">
-                            Hiển thị <span>{documentLists?.length === 0 ? 0 : rowStart}</span> đến{' '}
-                            <span>{rowEnd + documentLists?.length}</span> của <span>{allDocuments?.length}</span> mục
+                            Hiển thị <span>{taskLists?.length === 0 ? 0 : rowStart}</span> đến{' '}
+                            <span>{rowEnd + taskLists?.length}</span> của <span>{allTasks?.length}</span> mục
                         </p>
                         <div
                             onClick={handlePrevPage}
@@ -328,7 +389,74 @@ const AdminTasks = () => {
                             <FontAwesomeIcon icon={faAngleRight} />
                         </div>
                     </div>
-                </div> */}
+                </div>
+            </div>
+
+            <div className="md:hidden">
+                <div className="flex items-center justify-between mb-5">
+                    <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={isCheckedAll()}
+                            onChange={(e) => setCheckedAll(e.target.checked)}
+                        />{' '}
+                        <p className="ml-3 mt-1">Chọn tất cả</p>
+                    </label>
+                    <select
+                        value={limit}
+                        onChange={(e) => setLimit(e.target.value)}
+                        className="bg-inherit border border-[#cccccc] text-[1.5rem] rounded-[8px] block w-fit px-[14px] py-[8px] outline-none"
+                    >
+                        <option value={5}>5 mục</option>
+                        <option value={10}>10 mục</option>
+                        <option value={100}>100 mục</option>
+                    </select>
+                </div>
+                {taskLists?.length !== 0 ? (
+                    taskLists?.map((tl, index) => {
+                        return (
+                            <TaskCard
+                                key={index}
+                                id={index + 1}
+                                taskId={tl?._id}
+                                taskName={tl?.taskName}
+                                progress={tl?.progress}
+                                dueDate={tl?.dueDate}
+                                progressClass={setProgressPercentage(tl?.progress)}
+                                assignTo={tl?.assignTo}
+                                allUsers={allUsers}
+                                handleDelete={() => handleDelete(tl?._id)}
+                                checkBox={checked?.includes(tl?._id)}
+                                handleCheckBox={() => handleCheck(tl?._id)}
+                            />
+                        );
+                    })
+                ) : (
+                    <p className="text-center p-5">Không tìm thấy dữ liệu</p>
+                )}
+
+                <div className="flex items-center justify-center">
+                    <div
+                        onClick={handlePrevPage}
+                        className={
+                            page <= 1
+                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
+                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                        }
+                    >
+                        Trước
+                    </div>
+                    <div
+                        onClick={handleNextPage}
+                        className={
+                            page >= totalPage
+                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
+                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                        }
+                    >
+                        Sau
+                    </div>
+                </div>
             </div>
         </>
     );

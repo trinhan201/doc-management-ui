@@ -47,7 +47,7 @@ const DocumentType = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await documentTypeServices.getAllDocumentType(page, Number(limit), debouncedValue);
+            const res = await documentTypeServices.getAllDocumentType(page, limit, debouncedValue);
             setAllDocumentTypes(res.allDocumentTypes);
             setDocumentTypeLists(res.data);
         };

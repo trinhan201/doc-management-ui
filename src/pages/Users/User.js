@@ -56,7 +56,7 @@ const User = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await userServices.getAllUser(page, Number(limit), debouncedValue);
+            const res = await userServices.getAllUser(page, limit, debouncedValue);
             setAllUsers(res.allUsers);
             setUserLists(res.data);
         };
