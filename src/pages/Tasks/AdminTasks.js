@@ -284,7 +284,7 @@ const AdminTasks = () => {
                                                         <div className="flex -space-x-2">
                                                             {tl?.assignTo.slice(0, 3).map((at, index) => {
                                                                 const user = allUsers.find((user) => {
-                                                                    return user?._id === at;
+                                                                    return user?._id === at.value;
                                                                 });
                                                                 return (
                                                                     <img

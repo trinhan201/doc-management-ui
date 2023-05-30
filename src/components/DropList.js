@@ -1,4 +1,4 @@
-const DropList = ({ selectedValue, options, setValue, setId, listItem }) => {
+const DropList = ({ selectedValue, options, setValue, setId }) => {
     return (
         <select
             value={selectedValue}
@@ -6,9 +6,11 @@ const DropList = ({ selectedValue, options, setValue, setId, listItem }) => {
                 setValue(e.target.value);
                 setId();
             }}
-            className="bg-inherit border border-[#cccccc] text-[1.5rem] rounded-[8px] block w-full px-[14px] py-[8px] outline-none"
+            className="drop-list appearance-none bg-inherit border border-[#cccccc] text-[1.5rem] rounded-[4px] block w-full h-[38px] leading-[1.2] outline-[#2684ff] truncate"
         >
-            <option value="">--Vui lòng chọn--</option>
+            <option disabled value="">
+                --Vui lòng chọn--
+            </option>
             {options?.map((option, index) => {
                 return (
                     <option key={index} title={option} value={option}>

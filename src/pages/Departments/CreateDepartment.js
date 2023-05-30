@@ -97,7 +97,7 @@ const CreateDepartment = ({ title }) => {
                         textarea
                         rows="6"
                         cols="50"
-                        className="default"
+                        className="default textarea"
                         placeholder="Ghi chú"
                         value={note}
                         setValue={setNote}

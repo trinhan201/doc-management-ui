@@ -3,15 +3,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import FormData from 'form-data';
+import Select from 'react-select';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import FileInput from '~/components/FileInput';
 import { fullNameValidator } from '~/utils/formValidation';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
+import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const CreateTask = ({ title }) => {
+    const [allUsers, setAllUsers] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [fullName, setFullName] = useState('');
     const [deadline, setDeadline] = useState('');
@@ -19,6 +22,7 @@ const CreateTask = ({ title }) => {
     const [document, setDocument] = useState('');
     const [progress, setProgress] = useState('');
     const [attachFiles, setAttachFiles] = useState([]);
+    const [assignTo, setAssignTo] = useState([]);
     const [desc, setDesc] = useState('');
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
@@ -27,6 +31,21 @@ const CreateTask = ({ title }) => {
     const navigate = useNavigate();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const progressOptions = ['Khởi tạo', 'Đang xử lý', 'Chờ duyệt', 'Hoàn thành'];
+
+    const getUserOptions = () => {
+        const options = allUsers?.map((item) => {
+            return { value: item._id, label: item.fullName };
+        });
+        return options;
+    };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getAllUser(1, 1, '');
+            setAllUsers(res.allUsers);
+        };
+        fetchApi();
+    }, []);
 
     useEffect(() => {
         if (!id) return;
@@ -38,6 +57,7 @@ const CreateTask = ({ title }) => {
             setDocument(res.data.refLink);
             setProgress(res.data.progress);
             setDesc(res.data.desc);
+            setAssignTo(res.data.assignTo);
         };
         fetchApi();
     }, [id]);
@@ -54,6 +74,7 @@ const CreateTask = ({ title }) => {
             progress: progress || 'Khởi tạo',
             refLink: document,
             desc: desc,
+            assignTo: assignTo,
         };
         let res;
         if (id) {
@@ -138,15 +159,16 @@ const CreateTask = ({ title }) => {
                         setId={() => undefined}
                     />
                 </div>
-                {/* <div className="mt-7">
+                <div className="mt-7">
                     <label className="font-bold">Người thực hiện:</label>
-                    <DropList
-                    // selectedValue={department}
-                    // options={departments}
-                    // setValue={setDepartment}
-                    // setId={() => undefined}
+                    <Select
+                        isMulti
+                        placeholder="--Vui lòng chọn--"
+                        options={getUserOptions()}
+                        onChange={setAssignTo}
+                        value={assignTo}
                     />
-                </div> */}
+                </div>
                 <div className="mt-7">
                     <label className="font-bold">File đính kèm:</label>
                     <FileInput setAttachFiles={setAttachFiles} />
@@ -155,7 +177,7 @@ const CreateTask = ({ title }) => {
                     <label className="font-bold">Mô tả công việc:</label>
                     <InputField
                         textarea
-                        className="default"
+                        className="default textarea"
                         placeholder="Mô tả công việc"
                         rows="6"
                         cols="50"

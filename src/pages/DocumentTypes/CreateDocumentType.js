@@ -95,7 +95,7 @@ const CreateDocumentType = ({ title }) => {
                     <label className="font-bold">Ghi chú:</label>
                     <InputField
                         textarea
-                        className="default"
+                        className="default textarea"
                         rows="6"
                         cols="50"
                         placeholder="Ghi chú"

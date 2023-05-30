@@ -196,7 +196,7 @@ const CreateDocument = ({ title, documentIn, path }) => {
                     <label className="font-bold">Trích yếu:</label>
                     <InputField
                         textarea
-                        className="default"
+                        className="default textarea"
                         rows="6"
                         cols="50"
                         placeholder="Trích yếu"
