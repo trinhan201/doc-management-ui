@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
-import { oldPasswordValidator, passwordValidator, confirmPasswordValidator } from '~/utils/formValidation';
+import { passwordValidator } from '~/utils/formValidation';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '../ToastMessage';
 
@@ -21,11 +21,16 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isOldPasswordValid = oldPasswordValidator(oldPassword, setIsOldPasswordErr, setOldPasswordErrMsg);
-        const isPasswordValid = passwordValidator(password, setIsPasswordErr, setPasswordErrMsg);
-        const isConfirmPasswordValid = confirmPasswordValidator(
-            password,
+        const isOldPasswordValid = passwordValidator(
+            oldPassword,
+            oldPassword,
+            setIsOldPasswordErr,
+            setOldPasswordErrMsg,
+        );
+        const isPasswordValid = passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg);
+        const isConfirmPasswordValid = passwordValidator(
             confirmPassword,
+            password,
             setIsConfirmPasswordErr,
             setConfirmPasswordErrMsg,
         );
@@ -64,7 +69,9 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
                         placeholder="Mật khẩu cũ"
                         value={oldPassword}
                         setValue={setOldPassword}
-                        onBlur={() => oldPasswordValidator(oldPassword, setIsOldPasswordErr, setOldPasswordErrMsg)}
+                        onBlur={() =>
+                            passwordValidator(oldPassword, oldPassword, setIsOldPasswordErr, setOldPasswordErrMsg)
+                        }
                     />
                     <p className="text-red-600 text-[1.3rem]">{oldPasswordErrMsg.oldPassword}</p>
                     <div className="mt-7">
@@ -74,9 +81,9 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
                             placeholder="Mật khẩu mới"
                             value={password}
                             setValue={setPassword}
-                            onBlur={() => passwordValidator(password, setIsPasswordErr, setPasswordErrMsg)}
+                            onBlur={() => passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg)}
                         />
-                        <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.password}</p>
+                        <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.newPassword}</p>
                     </div>
                     <div className="mt-7">
                         <InputField
@@ -86,9 +93,9 @@ const ChangePasswordForm = ({ setShowChangePassword }) => {
                             value={confirmPassword}
                             setValue={setConfirmPassword}
                             onBlur={() =>
-                                confirmPasswordValidator(
-                                    password,
+                                passwordValidator(
                                     confirmPassword,
+                                    password,
                                     setIsConfirmPasswordErr,
                                     setConfirmPasswordErrMsg,
                                 )

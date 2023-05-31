@@ -9,7 +9,7 @@ import FileInput from '~/components/FileInput';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
 import * as documentServices from '~/services/documentServices';
-import { fullNameValidator, codeValidator } from '~/utils/formValidation';
+import { fullNameValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const CreateDocument = ({ title, documentIn, path }) => {
@@ -29,6 +29,8 @@ const CreateDocument = ({ title, documentIn, path }) => {
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [codeErrMsg, setCodeErrMsg] = useState({});
     const [isCodeErr, setIsCodeErr] = useState(false);
+    const [senderErrMsg, setSenderErrMsg] = useState({});
+    const [isSenderErr, setIsSenderErr] = useState(false);
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -76,8 +78,9 @@ const CreateDocument = ({ title, documentIn, path }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
-        const isCodeValid = codeValidator(code, setIsCodeErr, setCodeErrMsg);
-        if (!isfullNameValid || !isCodeValid) return;
+        const isCodeValid = fullNameValidator(code, setIsCodeErr, setCodeErrMsg);
+        const isSenderValid = fullNameValidator(sender, setIsSenderErr, setSenderErrMsg);
+        if (!isfullNameValid || !isCodeValid || !isSenderValid) return;
         const data = {
             documentName: fullName,
             type: type,
@@ -139,7 +142,7 @@ const CreateDocument = ({ title, documentIn, path }) => {
                             placeholder="Số ký hiệu"
                             value={code}
                             setValue={setCode}
-                            onBlur={() => codeValidator(code, setIsCodeErr, setCodeErrMsg)}
+                            onBlur={() => fullNameValidator(code, setIsCodeErr, setCodeErrMsg)}
                         />
                         <p className="text-red-600 text-[1.3rem]">{codeErrMsg.code}</p>
                     </div>
@@ -161,11 +164,13 @@ const CreateDocument = ({ title, documentIn, path }) => {
                     <div className="flex-1">
                         <label className="font-bold">Nơi ban hành:</label>
                         <InputField
-                            className="default"
+                            className={isSenderErr ? 'invalid' : 'default'}
                             placeholder="Nơi ban hành"
                             value={sender}
                             setValue={setSender}
+                            onBlur={() => fullNameValidator(sender, setIsSenderErr, setSenderErrMsg)}
                         />
+                        <p className="text-red-600 text-[1.3rem]">{senderErrMsg.sender}</p>
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-6 mt-7">

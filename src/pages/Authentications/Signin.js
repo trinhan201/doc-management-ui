@@ -17,7 +17,7 @@ const Signin = ({ setIsSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
-        const isPasswordValid = passwordValidator(password, setIsPasswordErr, setPasswordErrMsg);
+        const isPasswordValid = passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg);
 
         if (!isEmailValid || !isPasswordValid) return;
         const data = {
@@ -62,7 +62,7 @@ const Signin = ({ setIsSuccess }) => {
                             placeholder="Mật khẩu"
                             value={password}
                             setValue={setPassword}
-                            onBlur={() => passwordValidator(password, setIsPasswordErr, setPasswordErrMsg)}
+                            onBlur={() => passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg)}
                         />
                         <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.password}</p>
                     </div>

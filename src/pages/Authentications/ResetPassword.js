@@ -2,7 +2,7 @@ import { useState } from 'react';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { passwordValidator, confirmPasswordValidator } from '~/utils/formValidation';
+import { passwordValidator } from '~/utils/formValidation';
 
 const ResetPassword = () => {
     const [password, setPassword] = useState('');
@@ -14,10 +14,10 @@ const ResetPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isPasswordValid = passwordValidator(password, setIsPasswordErr, setPasswordErrMsg);
-        const isConfirmPasswordValid = confirmPasswordValidator(
-            password,
+        const isPasswordValid = passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg);
+        const isConfirmPasswordValid = passwordValidator(
             confirmPassword,
+            password,
             setIsConfirmPasswordErr,
             setConfirmPasswordErrMsg,
         );
@@ -50,9 +50,9 @@ const ResetPassword = () => {
                         placeholder="Mật khẩu mới"
                         value={password}
                         setValue={setPassword}
-                        onBlur={() => passwordValidator(password, setIsPasswordErr, setPasswordErrMsg)}
+                        onBlur={() => passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg)}
                     />
-                    <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.password}</p>
+                    <p className="text-red-600 text-[1.3rem]">{passwordErrMsg.newPassword}</p>
                     <div className="mt-7">
                         <InputField
                             className={isConfirmPasswordErr ? 'invalid' : 'default'}
@@ -61,9 +61,9 @@ const ResetPassword = () => {
                             value={confirmPassword}
                             setValue={setConfirmPassword}
                             onBlur={() =>
-                                confirmPasswordValidator(
-                                    password,
+                                passwordValidator(
                                     confirmPassword,
+                                    password,
                                     setIsConfirmPasswordErr,
                                     setConfirmPasswordErrMsg,
                                 )
