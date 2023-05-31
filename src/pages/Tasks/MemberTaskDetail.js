@@ -70,7 +70,13 @@ const MemberTaskDetail = () => {
                 <div className="bg-white p-[16px] mb-5 shadow-4Way flex-[2]">
                     <h3>Bình luận</h3>
                     <form>
-                        <InputField textarea className="default" rows="3" cols="50" placeholder="Viết gì đó..." />
+                        <InputField
+                            textarea
+                            className="default textarea"
+                            rows="3"
+                            cols="50"
+                            placeholder="Viết gì đó..."
+                        />
                         <button className="w-full md:w-fit text-[1.4rem] text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
                             Gửi
                         </button>

@@ -130,7 +130,7 @@ const CreateDocument = ({ title, documentIn, path }) => {
                     />
                     <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                 </div>
-                <div className="flex gap-6 mt-7">
+                <div className="flex flex-col md:flex-row gap-6 mt-7">
                     <div className="flex-1">
                         <label className="font-bold">Số ký hiệu:</label>
                         <InputField
@@ -153,7 +153,7 @@ const CreateDocument = ({ title, documentIn, path }) => {
                         />
                     </div>
                 </div>
-                <div className="flex gap-6 mt-7">
+                <div className="flex flex-col md:flex-row gap-6 mt-7">
                     <div className="flex-1">
                         <label className="font-bold">Ngày ban hành:</label>
                         <InputField name="date" className="default" value={sendDate} setValue={setSendDate} />
@@ -168,7 +168,7 @@ const CreateDocument = ({ title, documentIn, path }) => {
                         />
                     </div>
                 </div>
-                <div className="flex gap-6 mt-7">
+                <div className="flex flex-col md:flex-row gap-6 mt-7">
                     <div className="flex-1">
                         <label className="font-bold">Mức độ:</label>
                         <DropList

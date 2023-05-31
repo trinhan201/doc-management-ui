@@ -1,6 +1,7 @@
 import isEmpty from 'validator/lib/isEmpty';
 import isEmail from 'validator/lib/isEmail';
 
+// Validate name
 export const fullNameValidator = (fullName, setIsFullNameErr, setFullNameErrMsg) => {
     const msg = {};
     if (isEmpty(fullName)) {
@@ -14,6 +15,7 @@ export const fullNameValidator = (fullName, setIsFullNameErr, setFullNameErrMsg)
     return true;
 };
 
+// Validate code
 export const codeValidator = (code, setIsCodeErr, setCodeErrMsg) => {
     const msg = {};
     if (isEmpty(code)) {
@@ -27,6 +29,7 @@ export const codeValidator = (code, setIsCodeErr, setCodeErrMsg) => {
     return true;
 };
 
+// Validate email
 export const emailValidator = (email, setIsEmailErr, setEmailErrMsg) => {
     const msg = {};
     if (isEmpty(email)) {
@@ -43,6 +46,7 @@ export const emailValidator = (email, setIsEmailErr, setEmailErrMsg) => {
     return true;
 };
 
+// Validate old password
 export const oldPasswordValidator = (oldPassword, setIsOldPasswordErr, setOldPasswordErrMsg) => {
     const msg = {};
     if (isEmpty(oldPassword)) {
@@ -59,6 +63,7 @@ export const oldPasswordValidator = (oldPassword, setIsOldPasswordErr, setOldPas
     return true;
 };
 
+// Validate password
 export const passwordValidator = (password, setIsPasswordErr, setPasswordErrMsg) => {
     const msg = {};
     if (isEmpty(password)) {
@@ -75,6 +80,7 @@ export const passwordValidator = (password, setIsPasswordErr, setPasswordErrMsg)
     return true;
 };
 
+// Validate confirm password
 export const confirmPasswordValidator = (
     password,
     confirmPassword,
@@ -95,6 +101,31 @@ export const confirmPasswordValidator = (
         setIsConfirmPasswordErr(false);
     }
     setConfirmPasswordErrMsg(msg);
+    if (Object.keys(msg).length > 0) return false;
+    return true;
+};
+
+// Validate date
+export const disabledPastDate = () => {
+    let today, dd, mm, yyyy, hh, minu;
+    today = new Date();
+    dd = today.getDate();
+    mm = ('0' + (today.getMonth() + 1)).slice(-2);
+    yyyy = today.getFullYear();
+    hh = ('0' + today.getHours()).slice(-2);
+    minu = ('0' + today.getMinutes()).slice(-2);
+    return yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + minu;
+};
+
+export const dateValidator = (date, setIsDateErr, setDateErrMsg) => {
+    const msg = {};
+    if (isEmpty(date)) {
+        msg.date = 'Thơi gian không được để trống';
+        setIsDateErr(true);
+    } else {
+        setIsDateErr(false);
+    }
+    setDateErrMsg(msg);
     if (Object.keys(msg).length > 0) return false;
     return true;
 };

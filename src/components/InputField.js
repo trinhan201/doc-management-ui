@@ -45,6 +45,7 @@ const InputField = (props) => {
                 cols={props.cols}
                 checked={props.checked}
                 autoComplete="on"
+                min={props.min}
             />
             <div
                 onClick={toggle}

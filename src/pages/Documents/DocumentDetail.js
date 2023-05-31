@@ -115,7 +115,7 @@ const DocumentDetail = () => {
                 </div>
                 <div className="flex flex-col md:flex-row my-5">
                     <h3 className="w-[180px] font-bold">Ngày ban hành:</h3>
-                    <p className="flex-1">{document?.sendDate}</p>
+                    <p className="flex-1">{new Date(document?.sendDate).toLocaleDateString()}</p>
                 </div>
                 <div className="flex flex-col md:flex-row my-5">
                     <h3 className="w-[180px] font-bold">Nơi ban hành:</h3>

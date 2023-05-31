@@ -154,7 +154,7 @@ const Profile = () => {
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Ngày sinh:</span>{' '}
-                            <span className="flex-1">{currUser?.birthDate}</span>
+                            <span className="flex-1">{new Date(currUser?.birthDate).toLocaleDateString()}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">

@@ -8,7 +8,7 @@ const DropList = ({ selectedValue, options, setValue, setId }) => {
             }}
             className="drop-list appearance-none bg-inherit border border-[#cccccc] text-[1.5rem] rounded-[4px] block w-full h-[38px] leading-[1.2] outline-[#2684ff] truncate"
         >
-            <option disabled value="">
+            <option disabled hidden value="">
                 --Vui lòng chọn--
             </option>
             {options?.map((option, index) => {

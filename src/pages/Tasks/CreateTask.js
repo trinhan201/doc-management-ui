@@ -7,7 +7,7 @@ import Select from 'react-select';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import FileInput from '~/components/FileInput';
-import { fullNameValidator } from '~/utils/formValidation';
+import { disabledPastDate, fullNameValidator, dateValidator } from '~/utils/formValidation';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
@@ -26,6 +26,8 @@ const CreateTask = ({ title }) => {
     const [desc, setDesc] = useState('');
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
+    const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
+    const [isDeadlineErr, setIsDeadlineErr] = useState(false);
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -93,7 +95,7 @@ const CreateTask = ({ title }) => {
                 }
                 await taskServices.uploadFile(res.data._id, data);
                 successNotify(res.message);
-                navigate(`/tasks`);
+                navigate(-1);
             }
         } else {
             errorNotify(res);
@@ -126,10 +128,18 @@ const CreateTask = ({ title }) => {
                     />
                     <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                 </div>
-                <div className="flex mt-7 gap-6">
+                <div className="flex flex-col md:flex-row mt-7 gap-6">
                     <div className="flex-1">
                         <label className="font-bold">Ngày đến hạn:</label>
-                        <InputField name="datetime-local" className="default" value={deadline} setValue={setDeadline} />
+                        <InputField
+                            name="datetime-local"
+                            className={isDeadlineErr ? 'invalid' : 'default'}
+                            value={deadline}
+                            setValue={setDeadline}
+                            min={disabledPastDate()}
+                            onBlur={() => dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg)}
+                        />
+                        <p className="text-red-600 text-[1.3rem]">{deadlineErrMsg.date}</p>
                     </div>
                     <div className="flex-1">
                         <label className="font-bold">Mức độ:</label>

@@ -16,16 +16,16 @@ const MemberTask = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await taskServices.getAllTask();
-            setMemTaskLists(res.memberTasks);
+            const res = await taskServices.getAllTask(1, 1);
+            setMemTaskLists(res.allMemberTasks);
         };
         fetchApi();
     }, []);
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            setAllUsers(res.allUsers);
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
         };
         fetchApi();
     }, []);
@@ -78,9 +78,9 @@ const MemberTask = () => {
                                 <p className="text-[1.3rem] font-normal text-gray-700">{mtl?.dueDate}</p>
                                 <hr className="my-8" />
                                 <div className="flex -space-x-2">
-                                    {mtl?.assignTo.map((mt, index) => {
+                                    {mtl?.assignTo.slice(0, 3).map((mt, index) => {
                                         const user = allUsers.find((user) => {
-                                            return user._id === mt;
+                                            return user._id === mt.value;
                                         });
                                         return (
                                             <img
@@ -90,17 +90,22 @@ const MemberTask = () => {
                                                     user?.avatar ||
                                                     'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
                                                 }
-                                                alt=""
+                                                alt="avatar"
                                             />
                                         );
                                     })}
-                                    <div className="hs-dropdown relative inline-flex [--placement:top-left]">
-                                        <button
-                                            id="hs-dropdown-avatar-more"
-                                            className="hs-dropdown-toggle inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle hover:bg-gray-300 focus:outline-none focus:bg-blue-100 focus:text-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm"
-                                        >
-                                            <span className="font-medium leading-none">9+</span>
-                                        </button>
+                                    <div
+                                        className={
+                                            mtl?.assignTo.length > 3
+                                                ? 'hs-dropdown relative inline-flex [--placement:top-left]'
+                                                : 'hidden'
+                                        }
+                                    >
+                                        <div className="inline-flex items-center justify-center h-[35px] w-[35px] rounded-full bg-gray-200 border-2 border-white font-medium text-gray-700 shadow-sm align-middle">
+                                            <span className="font-medium leading-none text-[1.3rem]">
+                                                +{mtl?.assignTo.length - 3}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

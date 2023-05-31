@@ -60,8 +60,8 @@ const AdminTasks = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            setAllUsers(res.allUsers);
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
         };
         fetchApi();
     }, []);
@@ -278,13 +278,13 @@ const AdminTasks = () => {
                                                         </div>
                                                     </td>
                                                     <td title={tl?.dueDate} className="whitespace-nowrap px-6 py-4">
-                                                        {tl?.dueDate}
+                                                        {new Date(tl?.dueDate).toLocaleDateString()}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex -space-x-2">
                                                             {tl?.assignTo.slice(0, 3).map((at, index) => {
-                                                                const user = allUsers.find((user) => {
-                                                                    return user?._id === at.value;
+                                                                const user = allUsers?.find((user) => {
+                                                                    return user?._id === at?.value;
                                                                 });
                                                                 return (
                                                                     <img

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPenToSquare,
@@ -28,6 +28,7 @@ const AdminTaskDetail = () => {
     const [isSave, setIsSave] = useState(false);
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const onUpdateTab = (value) => {
         setTab(value);
@@ -59,8 +60,8 @@ const AdminTaskDetail = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            setAllUsers(res.allUsers);
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
         };
         fetchApi();
     }, []);
@@ -125,12 +126,24 @@ const AdminTaskDetail = () => {
         uploadFile();
     }, [attachFiles, id]);
 
+    const handleDelete = async (id) => {
+        const confirmMsg = 'Bạn có chắc muốn xóa công việc này không?';
+        if (!window.confirm(confirmMsg)) return;
+        const res = await taskServices.deleteTaskById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            navigate('/tasks');
+        } else {
+            errorNotify(res);
+        }
+    };
+
     return (
         <>
-            <ul class="flex flex-wrap text-[1.5rem] font-medium text-center text-gray-500">
-                <li onClick={() => onUpdateTab('detail')} class="mr-2 cursor-pointer">
+            <ul className="flex flex-wrap text-[1.5rem] font-medium text-center text-gray-500">
+                <li onClick={() => onUpdateTab('detail')} className="mr-2 cursor-pointer">
                     <h3
-                        class={
+                        className={
                             tab === 'detail'
                                 ? 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white activeTab'
                                 : 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white'
@@ -139,9 +152,9 @@ const AdminTaskDetail = () => {
                         Chi tiết
                     </h3>
                 </li>
-                <li onClick={() => onUpdateTab('resources')} class="mr-2 cursor-pointer">
+                <li onClick={() => onUpdateTab('resources')} className="mr-2 cursor-pointer">
                     <h3
-                        class={
+                        className={
                             tab === 'resources'
                                 ? 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white activeTab'
                                 : 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white'
@@ -163,11 +176,11 @@ const AdminTaskDetail = () => {
                             <div className="flex items-center mt-12">
                                 <div className="flex-1">
                                     <h3 className="text-[1.8rem] font-bold">Ngày bắt đầu:</h3>
-                                    <p className="text-[1.4rem]">{task?.createdAt}</p>
+                                    <p className="text-[1.4rem]">{new Date(task?.createdAt).toLocaleString()}</p>
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="text-[1.8rem] font-bold">Ngày kết thúc:</h3>
-                                    <p className="text-[1.4rem]">{task?.dueDate}</p>
+                                    <p className="text-[1.4rem]">{new Date(task?.dueDate).toLocaleString()}</p>
                                 </div>
                             </div>
                             <div className="mt-12">
@@ -182,8 +195,8 @@ const AdminTaskDetail = () => {
                                 <h3 className="text-[1.8rem] font-bold">Người thực hiện:</h3>
                                 <div className="flex -space-x-2">
                                     {task?.assignTo?.slice(0, 3).map((at, index) => {
-                                        const user = allUsers.find((user) => {
-                                            return user?._id === at.value;
+                                        const user = allUsers?.find((user) => {
+                                            return user?._id === at?.value;
                                         });
                                         return (
                                             <img
@@ -263,12 +276,15 @@ const AdminTaskDetail = () => {
                         </div>
                         <div className="block md:flex items-center gap-5 mt-12">
                             <NavLink
-                                to="/tasks/edit/123"
+                                to={`/tasks/edit/${task?._id}`}
                                 className="block w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                             >
                                 <FontAwesomeIcon icon={faPenToSquare} /> Chỉnh sửa
                             </NavLink>
-                            <button className="w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                            <button
+                                onClick={() => handleDelete(task?._id)}
+                                className="w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                            >
                                 <FontAwesomeIcon icon={faTrashCan} /> Xóa
                             </button>
                         </div>
@@ -278,7 +294,13 @@ const AdminTaskDetail = () => {
                 <div className="bg-white p-[16px] mb-5 shadow-lg flex-[2]">
                     <h3>Bình luận</h3>
                     <form>
-                        <InputField textarea className="default" rows="3" cols="50" placeholder="Viết gì đó..." />
+                        <InputField
+                            textarea
+                            className="default textarea"
+                            rows="3"
+                            cols="50"
+                            placeholder="Viết gì đó..."
+                        />
                         <button className="w-full md:w-fit text-[1.4rem] text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
                             Gửi
                         </button>

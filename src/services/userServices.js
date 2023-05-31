@@ -109,3 +109,13 @@ export const removeAvatar = async (fileName) => {
         return error.response.data.message;
     }
 };
+
+export const getPublicInfo = async () => {
+    try {
+        const res = await httpRequest.get(`/user/public-info`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
