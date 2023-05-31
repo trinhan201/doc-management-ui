@@ -1,9 +1,25 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faPlus,
+    faFileExcel,
+    faFilePowerpoint,
+    faFileWord,
+    faFilePdf,
+    faFile,
+} from '@fortawesome/free-solid-svg-icons';
 import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
+import * as taskServices from '~/services/taskServices';
+import * as documentServices from '~/services/documentServices';
 
 const MemberTaskDetail = () => {
+    const [allDocuments, setAllDocuments] = useState([]);
+    const [task, setTask] = useState({});
+
+    const { id } = useParams();
+
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
             return 'w-fit px-6 py-4 level priority';
@@ -13,56 +29,82 @@ const MemberTaskDetail = () => {
             return 'w-fit px-6 py-4 level normal';
         }
     };
+
+    const setFileIcon = (fileName) => {
+        if (fileName.includes('.xlsx') || fileName.includes('.csv')) {
+            return <FontAwesomeIcon className="w-full h-full text-green-700" icon={faFileExcel} />;
+        } else if (fileName.includes('.pptx') || fileName.includes('.ppt')) {
+            return <FontAwesomeIcon className="w-full h-full text-[#ff5722]" icon={faFilePowerpoint} />;
+        } else if (fileName.includes('.docx') || fileName.includes('.doc')) {
+            return <FontAwesomeIcon className="w-full h-full text-blue-700" icon={faFileWord} />;
+        } else if (fileName.includes('.pdf')) {
+            return <FontAwesomeIcon className="w-full h-full text-red-600" icon={faFilePdf} />;
+        } else {
+            return <FontAwesomeIcon className="w-full h-full text-black" icon={faFile} />;
+        }
+    };
+
+    const getRefLink = () => {
+        const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
+        return `http://localhost:3000/documents/detail/${refLink?._id}`;
+    };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
+            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
+            setAllDocuments(documentArray);
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await taskServices.getTaskById(id);
+            setTask(res.data);
+        };
+        fetchApi();
+    }, [id]);
+
     return (
         <div className="block lg:flex lg:items-start lg:gap-4">
             <div>
                 <div className="bg-white p-[16px] mb-5 shadow-4Way flex-[5]">
                     <div>
                         <h3 className="text-[2rem] font-bold">
-                            Lap ke hoach thanh lap khoa moi o benh vien Nha Be Lap ke hoach thanh lap khoa moi o benh
-                            vien Nha Be Lap ke hoach thanh lap khoa moi o benh vien Nha Be{' '}
+                            <span className="mr-2">{task?.taskName}</span>
                             <span className={setLevelColor('Khẩn cấp')}>Khẩn cấp</span>
                         </h3>
                         <p className="text-[1.3rem]">
-                            Đến <span>20/01/2023 2PM</span>
+                            Đến <span>{new Date(task?.dueDate).toLocaleString()}</span>
                         </p>
                         <hr className="my-7 border-[1.5px] border-black" />
-                        <p className="text-[1.4rem]">
-                            Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec
-                            Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec
-                            Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec
-                            Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec
-                            Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec Day la mo ta cong viec
-                            Day la mo ta cong viec Day la mo ta cong viec
-                        </p>
+                        <p className="text-[1.4rem]">{task?.desc}</p>
                         <div className="mt-12">
                             <h3 className="text-[1.8rem] font-bold">File đính kèm:</h3>
                             <ul>
-                                <li>Test.docx</li>
-                                <li>Test.docx</li>
-                                <li>Test.docx</li>
-                                {/* <li className={userRole === 'Member' ? 'pointer-events-none opacity-40' : ''}>
-                                                <label
-                                                    className="text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl cursor-pointer"
-                                                    htmlFor="upload"
-                                                >
-                                                    <FontAwesomeIcon icon={faPlusCircle} /> Thêm mới
-                                                </label>
-                                                <input
-                                                    id="upload"
-                                                    className="absolute opacity-0 z-[-1] rounded-3xl"
-                                                    type="file"
-                                                    name="myFile"
-                                                    onChange={(e) => setAttachFiles(e.target.files)}
-                                                    multiple
-                                                />
-                                            </li> */}
+                                {task?.attachFiles?.map((item, index) => (
+                                    <li key={index} className="mb-2">
+                                        <div className="flex items-center w-fit">
+                                            <div className="w-[24px] h-[24px] mr-3">{setFileIcon(item)}</div>
+                                            <a
+                                                className="text-blue-600 text-[1.4rem] flex-1"
+                                                href={item}
+                                                target="_blank"
+                                                rel="noreferrer noopener"
+                                            >
+                                                {item.replace('http://localhost:8080/static/', '')}
+                                            </a>
+                                        </div>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                         <div className="mt-12">
                             <h3 className="text-[1.8rem] font-bold">Liên kết liên quan:</h3>
-                            <a className="text-[1.4rem]" href="!#">
-                                DEN 2
+                            <a className="text-[1.4rem]" href={getRefLink()} target="_blank" rel="noreferrer noopener">
+                                {task?.refLink}
                             </a>
                         </div>
                     </div>

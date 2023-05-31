@@ -29,7 +29,9 @@ const AdminTasks = () => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('taskChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllTask')) || false);
 
-    // const userRole = JSON.parse(localStorage.getItem('userRole'));
+    const [fLevel, setFLevel] = useState('');
+
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const totalPage = Math.ceil(allTasks?.length / limit);
@@ -68,12 +70,29 @@ const AdminTasks = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await taskServices.getAllTask(page, limit);
-            setTaskLists(res.tasks);
-            setAllTasks(res.allTasks);
+            const res = await taskServices.getAllTask(page, limit, fLevel);
+            if (userRole === 'Admin' || userRole === 'Moderator') {
+                setTaskLists(res.tasks);
+                setAllTasks(res.allTasks);
+            } else {
+                setTaskLists(res.memberTasks);
+                setAllTasks(res.allMemberTasks);
+            }
         };
         fetchApi();
-    }, [isSave, page, limit]);
+    }, [isSave, userRole, page, limit, fLevel]);
+
+    const removeFilter = () => {
+        setFLevel('');
+    };
+
+    const isFilters = () => {
+        if (fLevel) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     useEffect(() => {
         if (!limit) return;
@@ -81,6 +100,13 @@ const AdminTasks = () => {
         setRowStart(1);
         setRowEnd(0);
     }, [limit]);
+
+    useEffect(() => {
+        if (!fLevel) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fLevel]);
 
     const handleCheck = (id) => {
         setChecked((prev) => {
@@ -183,18 +209,32 @@ const AdminTasks = () => {
                     </div>
                     <div className="flex-1">
                         <label className="text-[1.4rem]">Mức độ:</label>
-                        <DropList options={levelOptions} />
+                        <DropList
+                            selectedValue={fLevel}
+                            options={levelOptions}
+                            setValue={setFLevel}
+                            setId={() => undefined}
+                        />
                     </div>
                 </div>
-                <div className="flex justify-center">
-                    <button className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                <div className={isFilters() ? 'flex justify-center' : 'hidden'}>
+                    <button
+                        onClick={removeFilter}
+                        className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                    >
                         <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
                     </button>
                 </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách công việc</h1>
-                <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
+                <div
+                    className={
+                        userRole === 'Member'
+                            ? 'hidden'
+                            : 'flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0'
+                    }
+                >
                     <button
                         onClick={handleDeleteMany}
                         className={
@@ -220,7 +260,7 @@ const AdminTasks = () => {
                             <table className="min-w-full text-left text-[1.4rem] font-light">
                                 <thead className="border-b font-medium dark:border-neutral-500">
                                     <tr>
-                                        <th scope="col" className="px-6 py-4">
+                                        <th scope="col" className={userRole === 'Member' ? 'hidden' : 'px-6 py-4'}>
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
@@ -254,7 +294,13 @@ const AdminTasks = () => {
                                         taskLists?.map((tl, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
-                                                    <td className="whitespace-nowrap px-6 py-4">
+                                                    <td
+                                                        className={
+                                                            userRole === 'Member'
+                                                                ? 'hidden'
+                                                                : 'whitespace-nowrap px-6 py-4'
+                                                        }
+                                                    >
                                                         <div className="flex items-center">
                                                             <input
                                                                 type="checkbox"
@@ -321,7 +367,13 @@ const AdminTasks = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <NavLink to={`/tasks/edit/${tl?._id}`}>
-                                                                <div className="flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary">
+                                                                <div
+                                                                    className={
+                                                                        userRole === 'Member'
+                                                                            ? 'hidden'
+                                                                            : 'flex w-[30px] h-[30px] bg-green-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary'
+                                                                    }
+                                                                >
                                                                     <FontAwesomeIcon
                                                                         className="m-auto"
                                                                         icon={faPenToSquare}
@@ -330,7 +382,11 @@ const AdminTasks = () => {
                                                             </NavLink>
                                                             <div
                                                                 onClick={() => handleDelete(tl?._id)}
-                                                                className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
+                                                                className={
+                                                                    userRole === 'Member'
+                                                                        ? 'hidden'
+                                                                        : 'flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary'
+                                                                }
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
                                                             </div>

@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 const TaskCard = (props) => {
     const [showAction, setShowAction] = useState(false);
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const toggle = (e) => {
         e.stopPropagation();
@@ -30,7 +31,7 @@ const TaskCard = (props) => {
                                 <span className="ml-3">Chi tiết</span>
                             </NavLink>
                         </li>
-                        <li className="hover:bg-[#dddddd] cursor-pointer">
+                        <li className={userRole === 'Member' ? 'hidden' : 'hover:bg-[#dddddd] cursor-pointer'}>
                             <NavLink className="block p-[8px] text-left" to={`/tasks/edit/${props.taskId}`}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span className="ml-3">Sửa</span>
@@ -38,7 +39,11 @@ const TaskCard = (props) => {
                         </li>
                         <li
                             onClick={props.handleDelete}
-                            className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
+                            className={
+                                userRole === 'Member'
+                                    ? 'hidden'
+                                    : 'w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer'
+                            }
                         >
                             <FontAwesomeIcon icon={faTrashCan} />
                             <span className="ml-3">Xóa</span>

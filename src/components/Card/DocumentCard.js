@@ -7,6 +7,7 @@ import DropList from '../DropList';
 const DocumentCard = (props) => {
     const [showAction, setShowAction] = useState(false);
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const toggle = (e) => {
         e.stopPropagation();
@@ -32,7 +33,7 @@ const DocumentCard = (props) => {
                                 <span className="ml-3">Chi tiết</span>
                             </NavLink>
                         </li>
-                        <li className="hover:bg-[#dddddd] cursor-pointer">
+                        <li className={userRole === 'Member' ? 'hidden' : 'hover:bg-[#dddddd] cursor-pointer'}>
                             <NavLink
                                 className="block p-[8px] text-left"
                                 to={`/documents/${props.path}/${props.documentId}`}
@@ -43,7 +44,11 @@ const DocumentCard = (props) => {
                         </li>
                         <li
                             onClick={props.handleDelete}
-                            className="w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer"
+                            className={
+                                userRole === 'Member'
+                                    ? 'hidden'
+                                    : 'w-full text-left p-[8px] hover:bg-[#dddddd] cursor-pointer'
+                            }
                         >
                             <FontAwesomeIcon icon={faTrashCan} />
                             <span className="ml-3">Xóa</span>

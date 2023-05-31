@@ -60,9 +60,9 @@ export const deleteManyTask = async (data = {}) => {
     }
 };
 
-export const getAllTask = async (page, limit) => {
+export const getAllTask = async (page, limit, level) => {
     try {
-        const res = await httpRequest.get(`/task/get-all?page=${page}&limit=${limit}`);
+        const res = await httpRequest.get(`/task/get-all?page=${page}&limit=${limit}&level=${level}`);
         return res.data;
     } catch (error) {
         console.log(error);

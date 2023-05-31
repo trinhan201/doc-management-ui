@@ -15,8 +15,7 @@ import CreateDocumentType from './DocumentTypes/CreateDocumentType';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import CreateUser from './Users/CreateUser';
 import CreateDocument from './Documents/CreateDocument';
-import AdminTasks from './Tasks/AdminTasks';
-import MemberTask from './Tasks/MemberTask';
+import Task from './Tasks/Task';
 import CreateTask from './Tasks/CreateTask';
 import AdminTaskDetail from './Tasks/AdminTaskDetail';
 import MemberTaskDetail from './Tasks/MemberTaskDetail';
@@ -39,8 +38,7 @@ export {
     DefaultLayout,
     CreateUser,
     CreateDocument,
-    AdminTasks,
-    MemberTask,
+    Task,
     CreateTask,
     AdminTaskDetail,
     MemberTaskDetail,

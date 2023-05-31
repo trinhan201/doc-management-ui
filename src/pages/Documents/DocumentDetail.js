@@ -160,14 +160,18 @@ const DocumentDetail = () => {
                                     </a>
                                     <div
                                         onClick={() => handleDeleteFile(item)}
-                                        className="flex items-center leading-6 text-[1.7rem] text-red-600 ml-3 cursor-pointer"
+                                        className={
+                                            userRole === 'Member'
+                                                ? 'hidden'
+                                                : 'flex items-center leading-6 text-[1.7rem] text-red-600 ml-3 cursor-pointer'
+                                        }
                                     >
                                         <FontAwesomeIcon icon={faXmark} />
                                     </div>
                                 </div>
                             </li>
                         ))}
-                        <li className={userRole === 'Member' ? 'pointer-events-none opacity-40' : ''}>
+                        <li className={userRole === 'Member' ? 'hidden' : ''}>
                             <label
                                 className="text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl cursor-pointer"
                                 htmlFor="upload"

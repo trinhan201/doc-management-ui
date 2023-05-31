@@ -19,8 +19,7 @@ import {
     DefaultLayout,
     CreateUser,
     CreateDocument,
-    AdminTasks,
-    MemberTask,
+    Task,
     CreateTask,
     AdminTaskDetail,
     MemberTaskDetail,
@@ -301,15 +300,9 @@ const App = () => {
                                 <Route
                                     path="/tasks"
                                     element={
-                                        userRole === 'Moderator' || userRole === 'Admin' ? (
-                                            <DefaultLayout>
-                                                <AdminTasks />
-                                            </DefaultLayout>
-                                        ) : (
-                                            <DefaultLayout>
-                                                <MemberTask />
-                                            </DefaultLayout>
-                                        )
+                                        <DefaultLayout>
+                                            <Task />
+                                        </DefaultLayout>
                                     }
                                 />
                                 <Route

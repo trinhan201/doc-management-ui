@@ -16,9 +16,11 @@ import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
+import * as documentServices from '~/services/documentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const AdminTaskDetail = () => {
+    const [allDocuments, setAllDocuments] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [percent, setPercent] = useState('');
     const [progressStyle, setProgressStyle] = useState('');
@@ -58,6 +60,20 @@ const AdminTaskDetail = () => {
         }
     };
 
+    const getRefLink = () => {
+        const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
+        return `http://localhost:3000/documents/detail/${refLink?._id}`;
+    };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
+            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
+            setAllDocuments(documentArray);
+        };
+        fetchApi();
+    }, []);
+
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getPublicInfo();
@@ -68,13 +84,13 @@ const AdminTaskDetail = () => {
 
     useEffect(() => {
         const setStatusPercentage = () => {
-            if (task.progress === 'Hoàn thành') {
+            if (task?.progress === 'Hoàn thành') {
                 setPercent('100%');
                 setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar full');
-            } else if (task.progress === 'Chờ duyệt') {
+            } else if (task?.progress === 'Chờ duyệt') {
                 setPercent('75%');
                 setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent75');
-            } else if (task.progress === 'Đang xử lý') {
+            } else if (task?.progress === 'Đang xử lý') {
                 setPercent('50%');
                 setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent50');
             } else {
@@ -83,7 +99,7 @@ const AdminTaskDetail = () => {
             }
         };
         setStatusPercentage();
-    }, [task.progress]);
+    }, [task?.progress]);
 
     useEffect(() => {
         if (!id) return;
@@ -269,8 +285,13 @@ const AdminTaskDetail = () => {
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">Liên kết liên quan:</h3>
-                                <a className="text-[1.4rem]" href="!#">
-                                    DEN 2
+                                <a
+                                    className="text-[1.4rem]"
+                                    href={getRefLink()}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                >
+                                    {task?.refLink}
                                 </a>
                             </div>
                         </div>
