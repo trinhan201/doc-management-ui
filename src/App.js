@@ -34,6 +34,7 @@ export const AvatarContext = createContext();
 const App = () => {
     const [activeFlag, setActiveFlag] = useState(JSON.parse(localStorage.getItem('activeFlag')) || true);
     const [userRole, setUserRole] = useState(JSON.parse(localStorage.getItem('userRole')) || '');
+    const [userId, setUserId] = useState(JSON.parse(localStorage.getItem('userId')) || '');
     const [isSuccess, setIsSuccess] = useState(false);
     const [isChangeAvatar, setIsChangeAvatar] = useState(false);
 
@@ -42,11 +43,16 @@ const App = () => {
         if (!accessToken) return;
         const decodedToken = jwt_decode(accessToken);
         setUserRole(decodedToken.role);
+        setUserId(decodedToken._id);
     }, [isSuccess]);
 
     useEffect(() => {
         localStorage.setItem('userRole', JSON.stringify(userRole));
     }, [userRole, isSuccess]);
+
+    useEffect(() => {
+        localStorage.setItem('userId', JSON.stringify(userId));
+    }, [userId, isSuccess]);
 
     useEffect(() => {
         const refreshToken = localStorage.getItem('refreshToken');

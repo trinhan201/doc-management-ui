@@ -39,6 +39,15 @@ const CreateTask = ({ title }) => {
         return options;
     };
 
+    const setUserResource = () => {
+        const options = assignTo?.map((item) => {
+            return { userId: item.value, resources: [] };
+        });
+        return options;
+    };
+
+    setUserResource();
+
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getAllUser(1, 1, '');
@@ -74,6 +83,7 @@ const CreateTask = ({ title }) => {
             refLink: document,
             desc: desc,
             assignTo: assignTo,
+            resources: setUserResource(),
         };
         let res;
         if (id) {

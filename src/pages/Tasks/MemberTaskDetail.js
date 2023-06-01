@@ -13,11 +13,16 @@ import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as documentServices from '~/services/documentServices';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const MemberTaskDetail = () => {
     const [allDocuments, setAllDocuments] = useState([]);
     const [task, setTask] = useState({});
+    const [attachFiles, setAttachFiles] = useState([]);
+    const [displayFile, setDisplayFile] = useState([]);
+    const [isSave, setIsSave] = useState(false);
 
+    const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
 
     const setLevelColor = (level) => {
@@ -54,6 +59,20 @@ const MemberTaskDetail = () => {
         }
     };
 
+    const getTypeFile = (fileName) => {
+        if (fileName.includes('.xlsx') || fileName.includes('.csv')) {
+            return 'Excel';
+        } else if (fileName.includes('.pptx') || fileName.includes('.ppt')) {
+            return 'Powerpoint';
+        } else if (fileName.includes('.docx') || fileName.includes('.doc')) {
+            return 'Word';
+        } else if (fileName.includes('.pdf')) {
+            return 'PDF';
+        } else {
+            return 'Unknown';
+        }
+    };
+
     const getRefLink = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
         return `http://localhost:3000/documents/detail/${refLink?._id}`;
@@ -75,7 +94,45 @@ const MemberTaskDetail = () => {
             setTask(res.data);
         };
         fetchApi();
-    }, [id]);
+    }, [id, isSave]);
+
+    useEffect(() => {
+        const getResources = () => {
+            const resources = task?.resources?.find((item) => {
+                return item.userId === userId;
+            });
+
+            const finalResources = resources?.resources?.map((item) => {
+                return item.replace('http://localhost:8080/static/', '');
+            });
+
+            setDisplayFile(finalResources);
+        };
+        getResources();
+    }, [task?.resources, userId]);
+
+    const handleSubmit = async () => {
+        if (!attachFiles) return;
+        const data = new FormData();
+        for (let i = 0; i < attachFiles.length; i++) {
+            data.append('myFile', attachFiles[i]);
+        }
+        const res = await taskServices.submitResource(id, data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res.message);
+        }
+    };
+
+    useEffect(() => {
+        const getAttachFilesName = () => {
+            const arr = Array.from(attachFiles)?.map((item) => item.name);
+            setDisplayFile((prev) => prev?.concat(arr));
+        };
+        getAttachFilesName();
+    }, [attachFiles]);
 
     return (
         <div className="block lg:flex lg:items-start lg:gap-4">
@@ -161,20 +218,20 @@ const MemberTaskDetail = () => {
                     <p className="text-[1.4rem]">Đã nộp</p>
                 </div>
                 <div className="mt-7">
-                    <a href="!#" className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border">
-                        <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">
-                            TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest.docx
-                        </span>
-                        <span>Docx</span>
-                    </a>
-                    <a href="!#" className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border">
-                        <span className="w-[200px] xl:w-[250px] truncate font-semibold">Test.docx</span>
-                        <span>Docx</span>
-                    </a>
-                    <a href="!#" className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border">
-                        <span className="w-[200px] xl:w-[250px] truncate font-semibold">Test.docx</span>
-                        <span>Docx</span>
-                    </a>
+                    {displayFile?.map((item, index) => {
+                        return (
+                            <a
+                                key={index}
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                href={`http://localhost:8080/static/${item}`}
+                                className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border"
+                            >
+                                <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">{item}</span>
+                                <span>{getTypeFile(item)}</span>
+                            </a>
+                        );
+                    })}
                     <div className="w-full">
                         <label
                             className="block w-full text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl border border-dashed border-blue-700 cursor-pointer"
@@ -187,12 +244,15 @@ const MemberTaskDetail = () => {
                             className="absolute opacity-0 z-[-1] rounded-3xl"
                             type="file"
                             name="myFile"
-                            // onChange={(e) => setAttachFiles(e.target.files)}
-                            // multiple
+                            onChange={(e) => setAttachFiles(e.target.files)}
+                            multiple
                         />
                     </div>
                 </div>
-                <button className="w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                <button
+                    onClick={handleSubmit}
+                    className="w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                >
                     Nộp
                 </button>
             </div>

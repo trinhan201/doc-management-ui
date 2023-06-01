@@ -79,3 +79,13 @@ export const getTaskById = async (taskId) => {
         return error.response.data.message;
     }
 };
+
+export const submitResource = async (taskId, data) => {
+    try {
+        const res = await httpRequest.post(`/task/submit/${taskId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
