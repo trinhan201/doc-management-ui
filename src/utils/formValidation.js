@@ -64,7 +64,7 @@ export const passwordValidator = (password, confirmPassword, setIsPasswordErr, s
 export const disabledPastDate = () => {
     let today, dd, mm, yyyy, hh, minu;
     today = new Date();
-    dd = today.getDate();
+    dd = ('0' + today.getDate()).slice(-2);
     mm = ('0' + (today.getMonth() + 1)).slice(-2);
     yyyy = today.getFullYear();
     hh = ('0' + today.getHours()).slice(-2);

@@ -9,7 +9,7 @@ import FileInput from '~/components/FileInput';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
 import * as documentServices from '~/services/documentServices';
-import { fullNameValidator } from '~/utils/formValidation';
+import { fullNameValidator, dateValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const CreateDocument = ({ title, documentIn, path }) => {
@@ -31,6 +31,8 @@ const CreateDocument = ({ title, documentIn, path }) => {
     const [isCodeErr, setIsCodeErr] = useState(false);
     const [senderErrMsg, setSenderErrMsg] = useState({});
     const [isSenderErr, setIsSenderErr] = useState(false);
+    const [sendDateErrMsg, setSendDateErrMsg] = useState({});
+    const [isSendDateErr, setIsSendDateErr] = useState(false);
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -80,7 +82,8 @@ const CreateDocument = ({ title, documentIn, path }) => {
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         const isCodeValid = fullNameValidator(code, setIsCodeErr, setCodeErrMsg);
         const isSenderValid = fullNameValidator(sender, setIsSenderErr, setSenderErrMsg);
-        if (!isfullNameValid || !isCodeValid || !isSenderValid) return;
+        const isDateValid = dateValidator(sendDate, setIsSendDateErr, setSendDateErrMsg);
+        if (!isfullNameValid || !isCodeValid || !isSenderValid || !isDateValid) return;
         const data = {
             documentName: fullName,
             type: type,
@@ -159,7 +162,14 @@ const CreateDocument = ({ title, documentIn, path }) => {
                 <div className="flex flex-col md:flex-row gap-6 mt-7">
                     <div className="flex-1">
                         <label className="font-bold">Ngày ban hành:</label>
-                        <InputField name="date" className="default" value={sendDate} setValue={setSendDate} />
+                        <InputField
+                            name="date"
+                            className={isSendDateErr ? 'invalid' : 'default'}
+                            value={sendDate}
+                            setValue={setSendDate}
+                            onBlur={() => dateValidator(sendDate, setIsSendDateErr, setSendDateErrMsg)}
+                        />
+                        <p className="text-red-600 text-[1.3rem]">{sendDateErrMsg.date}</p>
                     </div>
                     <div className="flex-1">
                         <label className="font-bold">Nơi ban hành:</label>

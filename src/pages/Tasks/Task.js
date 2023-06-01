@@ -48,6 +48,16 @@ const AdminTasks = () => {
         }
     };
 
+    const setStatusColor = (status) => {
+        if (status === 'Sắp đến hạn') {
+            return 'w-fit ml-2 status warning';
+        } else if (status === 'Quá hạn') {
+            return 'w-fit ml-2 status emergency';
+        } else {
+            return 'w-fit ml-2 status normal';
+        }
+    };
+
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
@@ -282,6 +292,9 @@ const AdminTasks = () => {
                                             Đến hạn
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
+                                            Trạng thái
+                                        </th>
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Người thực hiện
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
@@ -325,6 +338,9 @@ const AdminTasks = () => {
                                                     </td>
                                                     <td title={tl?.dueDate} className="whitespace-nowrap px-6 py-4">
                                                         {new Date(tl?.dueDate).toLocaleDateString()}
+                                                    </td>
+                                                    <td title={tl?.status} className="whitespace-nowrap px-6 py-4">
+                                                        <div className={setStatusColor(tl?.status)}>{tl?.status}</div>
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex -space-x-2">

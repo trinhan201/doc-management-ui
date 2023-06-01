@@ -52,11 +52,11 @@ const DocumentOut = () => {
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
-            return 'level priority';
+            return 'w-fit level priority';
         } else if (level === 'Khẩn cấp') {
-            return 'level emergency';
+            return 'w-fit level emergency';
         } else {
-            return 'level normal';
+            return 'w-fit level normal';
         }
     };
 

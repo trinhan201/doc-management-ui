@@ -42,7 +42,8 @@ body {
     border-radius: 8px;
 }
 
-.level {
+.level,
+.status {
     color: white;
     font-size: 1.3rem;
     font-weight: 600;
@@ -60,6 +61,18 @@ body {
 }
 
 .level.emergency {
+    background-color: #dc2626;
+}
+
+.status.normal {
+    background-color: #27a243;
+}
+
+.status.warning {
+    background-color: #f7bb07;
+}
+
+.status.emergency {
     background-color: #dc2626;
 }
 

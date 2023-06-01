@@ -22,11 +22,21 @@ const MemberTaskDetail = () => {
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
-            return 'w-fit px-6 py-4 level priority';
+            return 'w-fit level priority';
         } else if (level === 'Khẩn cấp') {
-            return 'w-fit px-6 py-4 level emergency';
+            return 'w-fit level emergency';
         } else {
-            return 'w-fit px-6 py-4 level normal';
+            return 'w-fit level normal';
+        }
+    };
+
+    const setStatusColor = (status) => {
+        if (status === 'Sắp đến hạn') {
+            return 'w-fit ml-2 status warning';
+        } else if (status === 'Quá hạn') {
+            return 'w-fit ml-2 status emergency';
+        } else {
+            return 'w-fit ml-2 status normal';
         }
     };
 
@@ -69,15 +79,15 @@ const MemberTaskDetail = () => {
 
     return (
         <div className="block lg:flex lg:items-start lg:gap-4">
-            <div>
-                <div className="bg-white p-[16px] mb-5 shadow-4Way flex-[5]">
+            <div className="flex-[5]">
+                <div className="bg-white p-[16px] mb-5 shadow-4Way">
                     <div>
                         <h3 className="text-[2rem] font-bold">
-                            <span className="mr-2">{task?.taskName}</span>
-                            <span className={setLevelColor('Khẩn cấp')}>Khẩn cấp</span>
+                            {task?.taskName} <span className={setLevelColor(task?.level)}>{task?.level}</span>
                         </h3>
                         <p className="text-[1.3rem]">
                             Đến <span>{new Date(task?.dueDate).toLocaleString()}</span>
+                            <span className={setStatusColor(task?.status)}>{task?.status}</span>
                         </p>
                         <hr className="my-7 border-[1.5px] border-black" />
                         <p className="text-[1.4rem]">{task?.desc}</p>
@@ -109,7 +119,7 @@ const MemberTaskDetail = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-[16px] mb-5 shadow-4Way flex-[2]">
+                <div className="bg-white p-[16px] mb-5 shadow-4Way">
                     <h3>Bình luận</h3>
                     <form>
                         <InputField

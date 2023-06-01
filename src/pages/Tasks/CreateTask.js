@@ -20,7 +20,6 @@ const CreateTask = ({ title }) => {
     const [deadline, setDeadline] = useState('');
     const [level, setLevel] = useState('');
     const [document, setDocument] = useState('');
-    const [progress, setProgress] = useState('');
     const [attachFiles, setAttachFiles] = useState([]);
     const [assignTo, setAssignTo] = useState([]);
     const [desc, setDesc] = useState('');
@@ -32,7 +31,6 @@ const CreateTask = ({ title }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
-    const progressOptions = ['Khởi tạo', 'Đang xử lý', 'Chờ duyệt', 'Hoàn thành'];
 
     const getUserOptions = () => {
         const options = allUsers?.map((item) => {
@@ -57,7 +55,6 @@ const CreateTask = ({ title }) => {
             setDeadline(res.data.dueDate);
             setLevel(res.data.level);
             setDocument(res.data.refLink);
-            setProgress(res.data.progress);
             setDesc(res.data.desc);
             setAssignTo(res.data.assignTo);
         };
@@ -67,13 +64,13 @@ const CreateTask = ({ title }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
-        if (!isfullNameValid) return;
+        const isDateValid = dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg);
+        if (!isfullNameValid || !isDateValid) return;
 
         const data = {
             taskName: fullName,
             dueDate: deadline,
             level: level,
-            progress: progress || 'Khởi tạo',
             refLink: document,
             desc: desc,
             assignTo: assignTo,
@@ -150,15 +147,6 @@ const CreateTask = ({ title }) => {
                             setId={() => undefined}
                         />
                     </div>
-                </div>
-                <div className={title.includes('Chỉnh sửa') ? 'mt-7' : 'hidden'}>
-                    <label className="font-bold">Tiến trình:</label>
-                    <DropList
-                        selectedValue={progress}
-                        options={progressOptions}
-                        setValue={setProgress}
-                        setId={() => undefined}
-                    />
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Dựa trên văn bản:</label>
