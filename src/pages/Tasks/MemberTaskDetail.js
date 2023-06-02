@@ -27,11 +27,11 @@ const MemberTaskDetail = () => {
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
-            return 'w-fit level priority';
+            return 'inline-block align-text-top w-fit level priority';
         } else if (level === 'Khẩn cấp') {
-            return 'w-fit level emergency';
+            return 'inline-block align-text-top w-fit level emergency';
         } else {
-            return 'w-fit level normal';
+            return 'inline-block align-text-top w-fit level normal';
         }
     };
 
@@ -139,7 +139,7 @@ const MemberTaskDetail = () => {
             <div className="flex-[5]">
                 <div className="bg-white p-[16px] mb-5 shadow-4Way">
                     <div>
-                        <h3 className="text-[2rem] font-bold">
+                        <h3 className="inline-block text-[2rem] font-bold">
                             {task?.taskName} <span className={setLevelColor(task?.level)}>{task?.level}</span>
                         </h3>
                         <p className="text-[1.3rem]">

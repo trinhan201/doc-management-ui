@@ -150,24 +150,26 @@ const DocumentDetail = () => {
                             <li key={index} className="mb-2">
                                 <div className="flex items-center w-fit">
                                     <div className="w-[24px] h-[24px] mr-3">{setFileIcon(item)}</div>
-                                    <a
-                                        className="text-blue-600 text-[1.4rem] flex-1"
-                                        href={item}
-                                        target="_blank"
-                                        rel="noreferrer noopener"
-                                    >
-                                        {item.replace('http://localhost:8080/static/', '')}
-                                    </a>
-                                    <div
-                                        onClick={() => handleDeleteFile(item)}
-                                        className={
-                                            userRole === 'Member'
-                                                ? 'hidden'
-                                                : 'flex items-center leading-6 text-[1.7rem] text-red-600 ml-3 cursor-pointer'
-                                        }
-                                    >
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </div>
+                                    <span className="flex-1">
+                                        <a
+                                            className="text-blue-600 text-[1.4rem]"
+                                            href={item}
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                        >
+                                            {item.replace('http://localhost:8080/static/', '')}
+                                        </a>
+                                        <span
+                                            onClick={() => handleDeleteFile(item)}
+                                            className={
+                                                userRole === 'Member'
+                                                    ? 'hidden'
+                                                    : 'inline-block align-middle text-[1.7rem] text-red-600 ml-3 cursor-pointer'
+                                            }
+                                        >
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>
+                                    </span>
                                 </div>
                             </li>
                         ))}

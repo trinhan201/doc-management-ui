@@ -52,11 +52,11 @@ const AdminTaskDetail = () => {
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
-            return 'w-fit px-6 py-4 level priority';
+            return 'inline-block align-text-top w-fit px-6 py-4 level priority';
         } else if (level === 'Khẩn cấp') {
-            return 'w-fit px-6 py-4 level emergency';
+            return 'inline-block align-text-top w-fit px-6 py-4 level emergency';
         } else {
-            return 'w-fit px-6 py-4 level normal';
+            return 'inline-block align-text-top w-fit px-6 py-4 level normal';
         }
     };
 
@@ -184,9 +184,8 @@ const AdminTaskDetail = () => {
                 <div className="bg-white p-[16px] mb-5 shadow-lg flex-[5]">
                     <div className={tab === 'detail' ? '' : 'hidden'}>
                         <div>
-                            <h3 className="text-[2rem] font-bold">
-                                <span className="mr-2">{task?.taskName}</span>
-                                <span className={setLevelColor(task?.level)}>{task?.level}</span>
+                            <h3 className="inline-block text-[2rem] font-bold">
+                                {task?.taskName} <span className={setLevelColor(task?.level)}>{task?.level}</span>
                             </h3>
                             <p className="text-[1.4rem] mt-6">{task?.desc}</p>
                             <div className="flex items-center mt-12">
@@ -248,20 +247,22 @@ const AdminTaskDetail = () => {
                                         <li key={index} className="mb-2">
                                             <div className="flex items-center w-fit">
                                                 <div className="w-[24px] h-[24px] mr-3">{setFileIcon(item)}</div>
-                                                <a
-                                                    className="text-blue-600 text-[1.4rem] flex-1"
-                                                    href={item}
-                                                    target="_blank"
-                                                    rel="noreferrer noopener"
-                                                >
-                                                    {item.replace('http://localhost:8080/static/', '')}
-                                                </a>
-                                                <div
-                                                    onClick={() => handleDeleteFile(item)}
-                                                    className="flex items-center leading-6 text-[1.7rem] text-red-600 ml-3 cursor-pointer"
-                                                >
-                                                    <FontAwesomeIcon icon={faXmark} />
-                                                </div>
+                                                <span className="flex-1">
+                                                    <a
+                                                        className="text-blue-600 text-[1.4rem]"
+                                                        href={item}
+                                                        target="_blank"
+                                                        rel="noreferrer noopener"
+                                                    >
+                                                        {item.replace('http://localhost:8080/static/', '')}
+                                                    </a>
+                                                    <span
+                                                        onClick={() => handleDeleteFile(item)}
+                                                        className="inline-block align-middle text-[1.7rem] text-red-600 ml-3 cursor-pointer"
+                                                    >
+                                                        <FontAwesomeIcon icon={faXmark} />
+                                                    </span>
+                                                </span>
                                             </div>
                                         </li>
                                     ))}
