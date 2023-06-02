@@ -95,7 +95,7 @@ const Profile = () => {
                                         }
                                     >
                                         <img
-                                            src={currUser.avatar}
+                                            src={currUser?.avatar}
                                             className="absolute top-0 w-full h-full box-border rounded-full border-2 border-solid border-[#ccc] shadow-md transition-all hover:shadow-xl"
                                             alt="avatar"
                                         />

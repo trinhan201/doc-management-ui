@@ -89,3 +89,23 @@ export const submitResource = async (taskId, data) => {
         return error.response.data.message;
     }
 };
+
+export const changeAssignRole = async (taskId, data) => {
+    try {
+        const res = await httpRequest.patch(`/task/change-assign-role/${taskId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
+export const deleteSubmitFileUrl = async (taskId, data) => {
+    try {
+        const res = await httpRequest.patch(`/task/delete-submit-file-url/${taskId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

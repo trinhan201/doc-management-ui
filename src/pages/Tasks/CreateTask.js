@@ -20,6 +20,8 @@ const CreateTask = ({ title }) => {
     const [deadline, setDeadline] = useState('');
     const [level, setLevel] = useState('');
     const [document, setDocument] = useState('');
+    const [type, setType] = useState('');
+    const [leader, setLeader] = useState();
     const [attachFiles, setAttachFiles] = useState([]);
     const [assignTo, setAssignTo] = useState([]);
     const [desc, setDesc] = useState('');
@@ -31,10 +33,11 @@ const CreateTask = ({ title }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
+    const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
 
     const getUserOptions = () => {
         const options = allUsers?.map((item) => {
-            return { value: item._id, label: item.fullName };
+            return { value: item._id, label: item.fullName, flag: 'Support' };
         });
         return options;
     };
@@ -45,8 +48,6 @@ const CreateTask = ({ title }) => {
         });
         return options;
     };
-
-    setUserResource();
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -61,11 +62,13 @@ const CreateTask = ({ title }) => {
         const fetchApi = async () => {
             const res = await taskServices.getTaskById(id);
             setFullName(res.data.taskName);
+            setType(res.data.type);
             setDeadline(res.data.dueDate);
             setLevel(res.data.level);
             setDocument(res.data.refLink);
             setDesc(res.data.desc);
             setAssignTo(res.data.assignTo);
+            setLeader(res.data.leader);
         };
         fetchApi();
     }, [id]);
@@ -78,10 +81,12 @@ const CreateTask = ({ title }) => {
 
         const data = {
             taskName: fullName,
+            type: type,
             dueDate: deadline,
             level: level,
             refLink: document,
             desc: desc,
+            leader: leader,
             assignTo: assignTo,
             resources: setUserResource(),
         };
@@ -92,18 +97,23 @@ const CreateTask = ({ title }) => {
             res = await taskServices.createTask(data);
         }
         if (res.code === 200) {
-            if (!attachFiles) {
-                successNotify(res.message);
-                navigate(`/tasks`);
-            } else {
+            if (attachFiles) {
                 const data = new FormData();
                 for (let i = 0; i < attachFiles.length; i++) {
                     data.append('myFile', attachFiles[i]);
                 }
                 await taskServices.uploadFile(res.data._id, data);
-                successNotify(res.message);
-                navigate(-1);
             }
+
+            if (leader) {
+                const data = {
+                    userId: leader.value,
+                    flag: 'Leader',
+                };
+                await taskServices.changeAssignRole(res.data._id, data);
+            }
+            successNotify(res.message);
+            navigate(-1);
         } else {
             errorNotify(res);
         }
@@ -166,6 +176,26 @@ const CreateTask = ({ title }) => {
                         setValue={setDocument}
                         setId={() => undefined}
                     />
+                </div>
+                <div className="flex flex-col md:flex-row mt-7 gap-6">
+                    <div className="flex-1">
+                        <label className="font-bold">Nhóm trưởng:</label>
+                        <Select
+                            placeholder="--Vui lòng chọn--"
+                            options={getUserOptions()}
+                            onChange={setLeader}
+                            value={leader}
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <label className="font-bold">Loại:</label>
+                        <DropList
+                            selectedValue={type}
+                            options={typeOptions}
+                            setValue={setType}
+                            setId={() => undefined}
+                        />
+                    </div>
                 </div>
                 <div className="mt-7">
                     <label className="font-bold">Người thực hiện:</label>

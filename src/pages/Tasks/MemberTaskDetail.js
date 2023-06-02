@@ -8,6 +8,7 @@ import {
     faFileWord,
     faFilePdf,
     faFile,
+    faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
@@ -21,6 +22,7 @@ const MemberTaskDetail = () => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [displayFile, setDisplayFile] = useState([]);
     const [isSave, setIsSave] = useState(false);
+    const [isSubmit, setIsSubmit] = useState(JSON.parse(localStorage.getItem('isSubmit')) || false);
 
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
@@ -119,12 +121,18 @@ const MemberTaskDetail = () => {
         }
         const res = await taskServices.submitResource(id, data);
         if (res.code === 200) {
+            setAttachFiles([]);
             successNotify(res.message);
             setIsSave((isSave) => !isSave);
+            setIsSubmit(true);
         } else {
             errorNotify(res.message);
         }
     };
+
+    useEffect(() => {
+        localStorage.setItem('isSubmit', JSON.stringify(isSubmit));
+    }, [isSubmit]);
 
     useEffect(() => {
         const getAttachFilesName = () => {
@@ -133,6 +141,20 @@ const MemberTaskDetail = () => {
         };
         getAttachFilesName();
     }, [attachFiles]);
+
+    const handleDeleteSubmitFile = async (fileName) => {
+        const data = {
+            filename: `http://localhost:8080/static/${fileName}`,
+        };
+        const res = await taskServices.deleteSubmitFileUrl(id, data);
+        if (res.code === 200) {
+            setAttachFiles([]);
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res.message);
+        }
+    };
 
     return (
         <div className="block lg:flex lg:items-start lg:gap-4">
@@ -220,19 +242,28 @@ const MemberTaskDetail = () => {
                 <div className="mt-7">
                     {displayFile?.map((item, index) => {
                         return (
-                            <a
-                                key={index}
-                                target="_blank"
-                                rel="noreferrer noopener"
-                                href={`http://localhost:8080/static/${item}`}
-                                className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border"
-                            >
-                                <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">{item}</span>
-                                <span>{getTypeFile(item)}</span>
-                            </a>
+                            <div key={index} className="flex items-center">
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    href={`http://localhost:8080/static/${item}`}
+                                    className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border"
+                                >
+                                    <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">
+                                        {item}
+                                    </span>
+                                    <span>{getTypeFile(item)}</span>
+                                </a>
+                                <span
+                                    onClick={() => handleDeleteSubmitFile(item)}
+                                    className={isSubmit ? 'hidden' : 'text-[1.7rem] text-red-600 ml-3 cursor-pointer'}
+                                >
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>
+                            </div>
                         );
                     })}
-                    <div className="w-full">
+                    <div className={isSubmit ? 'hidden' : 'w-full'}>
                         <label
                             className="block w-full text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl border border-dashed border-blue-700 cursor-pointer"
                             htmlFor="upload"
@@ -249,12 +280,29 @@ const MemberTaskDetail = () => {
                         />
                     </div>
                 </div>
-                <button
-                    onClick={handleSubmit}
-                    className="w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                >
-                    Nộp
-                </button>
+                {isSubmit ? (
+                    <button
+                        onClick={() => setIsSubmit(false)}
+                        className={
+                            isSubmit
+                                ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'
+                                : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                        }
+                    >
+                        Hủy nộp
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleSubmit}
+                        className={
+                            isSubmit
+                                ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'
+                                : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                        }
+                    >
+                        Nộp
+                    </button>
+                )}
             </div>
         </div>
     );
