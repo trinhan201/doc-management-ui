@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -21,9 +21,11 @@ const MemberTaskDetail = () => {
     const [task, setTask] = useState({});
     const [attachFiles, setAttachFiles] = useState([]);
     const [displayFile, setDisplayFile] = useState([]);
+    const [finalList, setFinalList] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [isSubmit, setIsSubmit] = useState(JSON.parse(localStorage.getItem('isSubmit')) || false);
 
+    const ref = useRef();
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
 
@@ -122,6 +124,7 @@ const MemberTaskDetail = () => {
         const res = await taskServices.submitResource(id, data);
         if (res.code === 200) {
             setAttachFiles([]);
+            ref.current.value = '';
             successNotify(res.message);
             setIsSave((isSave) => !isSave);
             setIsSubmit(true);
@@ -137,22 +140,30 @@ const MemberTaskDetail = () => {
     useEffect(() => {
         const getAttachFilesName = () => {
             const arr = Array.from(attachFiles)?.map((item) => item.name);
-            setDisplayFile((prev) => prev?.concat(arr));
+            // setDisplayFile((prev) => prev?.concat(arr));
+            setFinalList(displayFile?.concat(arr));
         };
         getAttachFilesName();
-    }, [attachFiles]);
+    }, [displayFile, attachFiles]);
 
     const handleDeleteSubmitFile = async (fileName) => {
-        const data = {
-            filename: `http://localhost:8080/static/${fileName}`,
-        };
-        const res = await taskServices.deleteSubmitFileUrl(id, data);
-        if (res.code === 200) {
-            setAttachFiles([]);
-            successNotify(res.message);
-            setIsSave((isSave) => !isSave);
+        const resources = task?.resources?.find((item) => item.userId === userId);
+        if (resources?.resources?.includes(`http://localhost:8080/static/${fileName}`)) {
+            const data = {
+                filename: `http://localhost:8080/static/${fileName}`,
+            };
+            const res = await taskServices.deleteSubmitFileUrl(id, data);
+            if (res.code === 200) {
+                // setAttachFiles([]);
+                // ref.current.value = '';
+                successNotify(res.message);
+                setIsSave((isSave) => !isSave);
+            } else {
+                errorNotify(res.message);
+            }
         } else {
-            errorNotify(res.message);
+            const arr = Array.from(attachFiles)?.filter((item) => item.name !== fileName);
+            setAttachFiles(arr);
         }
     };
 
@@ -240,14 +251,14 @@ const MemberTaskDetail = () => {
                     <p className="text-[1.4rem]">Đã nộp</p>
                 </div>
                 <div className="mt-7">
-                    {displayFile?.map((item, index) => {
+                    {finalList?.map((item, index) => {
                         return (
-                            <div key={index} className="flex items-center">
+                            <div key={index} className="flex items-center mb-5">
                                 <a
                                     target="_blank"
                                     rel="noreferrer noopener"
                                     href={`http://localhost:8080/static/${item}`}
-                                    className="flex flex-col text-[1.4rem] px-[16px] py-[6px] mb-3 rounded-md border"
+                                    className="flex flex-col text-[1.4rem] px-[16px] py-[6px] rounded-md border"
                                 >
                                     <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">
                                         {item}
@@ -277,6 +288,7 @@ const MemberTaskDetail = () => {
                             name="myFile"
                             onChange={(e) => setAttachFiles(e.target.files)}
                             multiple
+                            ref={ref}
                         />
                     </div>
                 </div>

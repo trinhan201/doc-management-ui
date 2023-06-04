@@ -1,6 +1,6 @@
 import { faPlusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as documentServices from '~/services/documentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
@@ -15,6 +15,8 @@ const DocumentDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
+
+    const ref = useRef();
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
@@ -46,6 +48,7 @@ const DocumentDetail = () => {
         };
         const res = await documentServices.deleteFileUrl(id, data);
         if (res.code === 200) {
+            ref.current.value = '';
             successNotify(res.message);
             setIsSave((isSave) => !isSave);
         } else {
@@ -62,9 +65,10 @@ const DocumentDetail = () => {
             }
             const res = await documentServices.uploadFile(id, data);
             if (res.code === 200) {
+                setAttachFiles([]);
+                ref.current.value = '';
                 successNotify(res.message);
                 setIsSave((isSave) => !isSave);
-                setAttachFiles([]);
             } else {
                 errorNotify(res.message);
             }
@@ -187,6 +191,7 @@ const DocumentDetail = () => {
                                 name="myFile"
                                 onChange={(e) => setAttachFiles(e.target.files)}
                                 multiple
+                                ref={ref}
                             />
                         </li>
                     </ul>
