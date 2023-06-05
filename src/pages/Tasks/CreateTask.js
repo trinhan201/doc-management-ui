@@ -45,7 +45,7 @@ const CreateTask = ({ title }) => {
 
     const setUserResource = () => {
         const options = assignTo?.map((item) => {
-            return { userId: item.value, resources: [] };
+            return { userId: item.value, resources: [], isSubmit: false };
         });
         return options;
     };

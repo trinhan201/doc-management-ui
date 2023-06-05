@@ -26,7 +26,7 @@ const MemberTaskDetail = () => {
     const [displayFile, setDisplayFile] = useState([]);
     const [finalList, setFinalList] = useState([]);
     const [isSave, setIsSave] = useState(false);
-    const [isSubmit, setIsSubmit] = useState(JSON.parse(localStorage.getItem('isSubmit')) || false);
+    const [isSubmit, setIsSubmit] = useState(false);
 
     const ref = useRef();
     const userId = JSON.parse(localStorage.getItem('userId'));
@@ -148,9 +148,9 @@ const MemberTaskDetail = () => {
         }
     };
 
-    useEffect(() => {
-        localStorage.setItem('isSubmit', JSON.stringify(isSubmit));
-    }, [isSubmit]);
+    // useEffect(() => {
+    //     localStorage.setItem('isSubmit', JSON.stringify(isSubmit));
+    // }, [isSubmit]);
 
     useEffect(() => {
         const getAttachFilesName = () => {
@@ -179,6 +179,7 @@ const MemberTaskDetail = () => {
         } else {
             const arr = Array.from(attachFiles)?.filter((item) => item.name !== fileName);
             setAttachFiles(arr);
+            successNotify('Hủy nộp file thành công');
         }
     };
 
@@ -187,6 +188,14 @@ const MemberTaskDetail = () => {
         return allMemberResources;
     };
 
+    useEffect(() => {
+        const getCurrentResources = () => {
+            const resource = task?.resources?.find((item) => item.userId === userId);
+            setIsSubmit(resource?.isSubmit);
+        };
+        getCurrentResources();
+    }, [task?.resources, userId]);
+
     const getLeader = () => {
         // const leader = task?.assignTo?.find((item) => item?.flag === 'Leader');
         const leader = task?.leader?.value;
@@ -194,6 +203,16 @@ const MemberTaskDetail = () => {
             return true;
         } else {
             return false;
+        }
+    };
+
+    const handleUnsubmit = async () => {
+        const res = await taskServices.unsubmitResource(id);
+        if (res.code === 200) {
+            setIsSave((isSave) => !isSave);
+            successNotify(res.message);
+        } else {
+            errorNotify(res.message);
         }
     };
 
@@ -403,7 +422,7 @@ const MemberTaskDetail = () => {
                 </div>
                 {isSubmit ? (
                     <button
-                        onClick={() => setIsSubmit(false)}
+                        onClick={handleUnsubmit}
                         className={
                             isSubmit
                                 ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'

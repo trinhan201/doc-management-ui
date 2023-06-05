@@ -109,3 +109,13 @@ export const deleteSubmitFileUrl = async (taskId, data) => {
         return error.response.data.message;
     }
 };
+
+export const unsubmitResource = async (taskId) => {
+    try {
+        const res = await httpRequest.patch(`/task/unsubmit/${taskId}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

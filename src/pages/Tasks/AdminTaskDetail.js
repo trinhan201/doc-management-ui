@@ -323,7 +323,7 @@ const AdminTaskDetail = () => {
                     <div className={tab === 'resources' ? '' : 'hidden'}>
                         <div className="border border-dashed border-[#cccccc] p-5">
                             <p className="text-[1.4rem] font-bold">
-                                Người nộp: <span className="font-normal">{task?.leader.label}</span>
+                                Người nộp: <span className="font-normal">{task?.leader?.label}</span>
                             </p>
                             <div>
                                 <p className="text-[1.4rem] font-bold">Tài nguyên:</p>

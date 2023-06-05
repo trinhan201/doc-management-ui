@@ -74,7 +74,7 @@ const TaskCard = (props) => {
                 <div className="flex -space-x-2">
                     {props.assignTo.slice(0, 3).map((at, index) => {
                         const user = props.allUsers.find((user) => {
-                            return user?._id === at;
+                            return user?._id === at.value;
                         });
                         return (
                             <img
