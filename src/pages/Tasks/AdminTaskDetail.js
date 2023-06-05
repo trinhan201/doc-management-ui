@@ -154,6 +154,11 @@ const AdminTaskDetail = () => {
         }
     };
 
+    const getLeaderResources = () => {
+        const leaderResources = task?.resources?.find((item) => item.userId === task?.leader?.value);
+        return leaderResources;
+    };
+
     return (
         <>
             <ul className="flex flex-wrap text-[1.5rem] font-medium text-center text-gray-500">
@@ -185,7 +190,11 @@ const AdminTaskDetail = () => {
                     <div className={tab === 'detail' ? '' : 'hidden'}>
                         <div>
                             <h3 className="inline-block text-[2rem] font-bold">
-                                {task?.taskName} <span className={setLevelColor(task?.level)}>{task?.level}</span>
+                                {task?.taskName}{' '}
+                                <span className="inline-block align-text-top w-fit text-white text-[1.3rem] font-semibold text-center p-1 rounded-lg bg-blue-500">
+                                    {task?.type}
+                                </span>{' '}
+                                <span className={setLevelColor(task?.level)}>{task?.level}</span>
                             </h3>
                             <p className="text-[1.4rem] mt-6">{task?.desc}</p>
                             <div className="flex items-center mt-12">
@@ -311,7 +320,37 @@ const AdminTaskDetail = () => {
                             </button>
                         </div>
                     </div>
-                    <div className={tab === 'resources' ? '' : 'hidden'}>Tài nguyên tab</div>
+                    <div className={tab === 'resources' ? '' : 'hidden'}>
+                        <div className="border border-dashed border-[#cccccc] p-5">
+                            <p className="text-[1.4rem] font-bold">
+                                Người nộp: <span className="font-normal">{task?.leader.label}</span>
+                            </p>
+                            <div>
+                                <p className="text-[1.4rem] font-bold">Tài nguyên:</p>
+                                <ul>
+                                    {getLeaderResources()?.resources?.map((fileName, index) => {
+                                        return (
+                                            <li key={index} className="mb-2">
+                                                <div className="flex items-center w-fit">
+                                                    <div className="w-[24px] h-[24px] mr-3">
+                                                        {setFileIcon(fileName)}
+                                                    </div>
+                                                    <a
+                                                        className="text-blue-600 text-[1.4rem] flex-1"
+                                                        href={fileName}
+                                                        target="_blank"
+                                                        rel="noreferrer noopener"
+                                                    >
+                                                        {fileName.replace('http://localhost:8080/static/', '')}
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="bg-white p-[16px] mb-5 shadow-lg flex-[2]">
                     <h3>Bình luận</h3>

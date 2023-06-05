@@ -25,6 +25,7 @@ const CreateTask = ({ title }) => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [assignTo, setAssignTo] = useState([]);
     const [desc, setDesc] = useState('');
+    const [resources, setResources] = useState([]);
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
@@ -49,6 +50,12 @@ const CreateTask = ({ title }) => {
         return options;
     };
 
+    const mergeUserResources = () => {
+        const ids = new Set(resources.map((d) => d.userId));
+        const merged = [...resources, ...setUserResource().filter((d) => !ids.has(d.userId))];
+        return merged;
+    };
+
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getAllUser(1, 1, '');
@@ -69,6 +76,7 @@ const CreateTask = ({ title }) => {
             setDesc(res.data.desc);
             setAssignTo(res.data.assignTo);
             setLeader(res.data.leader);
+            setResources(res.data.resources);
         };
         fetchApi();
     }, [id]);
@@ -88,7 +96,7 @@ const CreateTask = ({ title }) => {
             desc: desc,
             leader: leader,
             assignTo: assignTo,
-            resources: setUserResource(),
+            resources: mergeUserResources(),
         };
         let res;
         if (id) {

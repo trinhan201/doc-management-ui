@@ -14,9 +14,12 @@ import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as documentServices from '~/services/documentServices';
+import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const MemberTaskDetail = () => {
+    const [tab, setTab] = useState('detail');
+    const [allUsers, setAllUsers] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [task, setTask] = useState({});
     const [attachFiles, setAttachFiles] = useState([]);
@@ -28,6 +31,10 @@ const MemberTaskDetail = () => {
     const ref = useRef();
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
+
+    const onUpdateTab = (value) => {
+        setTab(value);
+    };
 
     const setLevelColor = (level) => {
         if (level === 'Ưu tiên') {
@@ -81,6 +88,14 @@ const MemberTaskDetail = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
         return `http://localhost:3000/documents/detail/${refLink?._id}`;
     };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
+        };
+        fetchApi();
+    }, []);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -167,13 +182,60 @@ const MemberTaskDetail = () => {
         }
     };
 
+    const getMemberResources = () => {
+        const allMemberResources = task?.resources?.filter((item) => item.userId !== task?.leader?.value);
+        return allMemberResources;
+    };
+
+    const getLeader = () => {
+        // const leader = task?.assignTo?.find((item) => item?.flag === 'Leader');
+        const leader = task?.leader?.value;
+        if (leader === userId) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     return (
         <div className="block lg:flex lg:items-start lg:gap-4">
             <div className="flex-[5]">
-                <div className="bg-white p-[16px] mb-5 shadow-4Way">
+                <ul
+                    className={
+                        getLeader() ? 'flex flex-wrap text-[1.5rem] font-medium text-center text-gray-500' : 'hidden'
+                    }
+                >
+                    <li onClick={() => onUpdateTab('detail')} className="mr-2 cursor-pointer">
+                        <h3
+                            className={
+                                tab === 'detail'
+                                    ? 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white activeTab'
+                                    : 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white'
+                            }
+                        >
+                            Chi tiết
+                        </h3>
+                    </li>
+                    <li onClick={() => onUpdateTab('resources')} className="mr-2 cursor-pointer">
+                        <h3
+                            className={
+                                tab === 'resources'
+                                    ? 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white activeTab'
+                                    : 'inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-white'
+                            }
+                        >
+                            Tài nguyên
+                        </h3>
+                    </li>
+                </ul>
+                <div className={tab === 'detail' ? 'bg-white p-[16px] mb-5 shadow-4Way' : 'hidden'}>
                     <div>
                         <h3 className="inline-block text-[2rem] font-bold">
-                            {task?.taskName} <span className={setLevelColor(task?.level)}>{task?.level}</span>
+                            {task?.taskName}{' '}
+                            <span className="inline-block align-text-top w-fit text-white text-[1.3rem] font-semibold text-center p-1 rounded-lg bg-blue-500">
+                                {task?.type}
+                            </span>{' '}
+                            <span className={setLevelColor(task?.level)}>{task?.level}</span>
                         </h3>
                         <p className="text-[1.3rem]">
                             Đến <span>{new Date(task?.dueDate).toLocaleString()}</span>
@@ -208,6 +270,44 @@ const MemberTaskDetail = () => {
                             </a>
                         </div>
                     </div>
+                </div>
+                <div className={tab === 'resources' ? 'bg-white p-[16px] mb-5 shadow-4Way' : 'hidden'}>
+                    {getMemberResources()?.map((mrs, index) => {
+                        const user = allUsers?.find((user) => {
+                            return user?._id === mrs?.userId;
+                        });
+                        return (
+                            <div key={index} className="border border-dashed border-[#cccccc] p-5">
+                                <p className="text-[1.4rem] font-bold">
+                                    Người nộp: <span className="font-normal">{user?.fullName}</span>
+                                </p>
+                                <div>
+                                    <p className="text-[1.4rem] font-bold">Tài nguyên:</p>
+                                    <ul>
+                                        {mrs?.resources?.map((fileName, index) => {
+                                            return (
+                                                <li key={index} className="mb-2">
+                                                    <div className="flex items-center w-fit">
+                                                        <div className="w-[24px] h-[24px] mr-3">
+                                                            {setFileIcon(fileName)}
+                                                        </div>
+                                                        <a
+                                                            className="text-blue-600 text-[1.4rem] flex-1"
+                                                            href={fileName}
+                                                            target="_blank"
+                                                            rel="noreferrer noopener"
+                                                        >
+                                                            {fileName.replace('http://localhost:8080/static/', '')}
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className="bg-white p-[16px] mb-5 shadow-4Way">
                     <h3>Bình luận</h3>
@@ -247,7 +347,16 @@ const MemberTaskDetail = () => {
             </div>
             <div className="bg-white p-[16px] mb-5 shadow-4Way flex-[2]">
                 <div className="flex items-center justify-between font-semibold">
-                    <h3 className="text-[2rem]">Việc của bạn</h3>
+                    <h3 className="text-[2rem]">
+                        Việc của bạn{' '}
+                        <span className={getLeader() ? '' : 'hidden'}>
+                            (
+                            <span className="inline-block align-middle w-fit text-white text-[1.3rem] font-semibold text-center px-1 rounded-lg bg-yellow-600">
+                                Leader
+                            </span>
+                            )
+                        </span>
+                    </h3>
                     <p className="text-[1.4rem]">Đã nộp</p>
                 </div>
                 <div className="mt-7">

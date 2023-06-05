@@ -286,6 +286,9 @@ const AdminTasks = () => {
                                             Tên công việc
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
+                                            Loại công việc
+                                        </th>
+                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
                                             Tiến trình
                                         </th>
                                         <th scope="col" className="whitespace-nowrap px-6 py-4">
@@ -330,6 +333,12 @@ const AdminTasks = () => {
                                                         className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate"
                                                     >
                                                         {tl?.taskName}
+                                                    </td>
+                                                    <td
+                                                        title={tl?.type}
+                                                        className="whitespace-nowrap px-6 py-4 max-w-[1px] truncate"
+                                                    >
+                                                        {tl?.type}
                                                     </td>
                                                     <td title={tl?.progress} className="whitespace-nowrap px-6 py-4">
                                                         <div className="bg-gray-200 rounded-full">
