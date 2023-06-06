@@ -119,3 +119,13 @@ export const unsubmitResource = async (taskId) => {
         return error.response.data.message;
     }
 };
+
+export const updateStatus = async (taskId, data) => {
+    try {
+        const res = await httpRequest.patch(`/task/update-deadline/${taskId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

@@ -193,6 +193,25 @@ const AdminTasks = () => {
         }
     };
 
+    useEffect(() => {
+        allTasks?.map(async (item) => {
+            const currDate = new Date();
+            const startDate = new Date(item?.createdAt);
+            const endDate = new Date(item?.dueDate);
+            const allDateToDo = endDate.getTime() - startDate.getTime();
+            const datesWerePassed = currDate.getTime() - startDate.getTime();
+            if (currDate.getTime() <= endDate.getTime()) {
+                if (datesWerePassed >= (allDateToDo / 3) * 2) {
+                    return await taskServices.updateStatus(item?._id, { status: 'Sắp đến hạn' });
+                } else {
+                    return await taskServices.updateStatus(item?._id, { status: 'Còn hạn' });
+                }
+            } else {
+                return await taskServices.updateStatus(item?._id, { status: 'Quá hạn' });
+            }
+        });
+    }, [allTasks]);
+
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
