@@ -13,7 +13,7 @@ import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
-const CreateTask = ({ title }) => {
+const CreateTask = ({ title, socket }) => {
     const [allUsers, setAllUsers] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [fullName, setFullName] = useState('');
@@ -30,11 +30,17 @@ const CreateTask = ({ title }) => {
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
     const [isDeadlineErr, setIsDeadlineErr] = useState(false);
+    const [userId, setUserId] = useState('');
 
     const { id } = useParams();
     const navigate = useNavigate();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
+
+    useEffect(() => {
+        const uid = JSON.parse(localStorage.getItem('userId'));
+        setUserId(uid);
+    }, []);
 
     const getUserOptions = () => {
         const options = allUsers?.map((item) => {
@@ -81,6 +87,11 @@ const CreateTask = ({ title }) => {
         fetchApi();
     }, [id]);
 
+    const getAssignToIds = (assignTo) => {
+        const array = assignTo.map((item) => item.value);
+        return array;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
@@ -98,6 +109,7 @@ const CreateTask = ({ title }) => {
             assignTo: assignTo,
             resources: mergeUserResources(),
         };
+
         let res;
         if (id) {
             res = await taskServices.updateTask(id, data);
@@ -120,6 +132,12 @@ const CreateTask = ({ title }) => {
                 };
                 await taskServices.changeAssignRole(res.data._id, data);
             }
+            console.log();
+            socket.current?.emit('sendNotification', {
+                senderId: userId,
+                receiverId: getAssignToIds(res.data.assignTo),
+                text: `Nhiệm vụ ${res.data.taskName} được giao cho bạn`,
+            });
             successNotify(res.message);
             navigate(-1);
         } else {
@@ -137,6 +155,7 @@ const CreateTask = ({ title }) => {
         };
         fetchApi();
     }, []);
+
     return (
         <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
             <h1 className="text-[2rem] font-bold">{title}</h1>

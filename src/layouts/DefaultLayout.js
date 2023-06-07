@@ -3,7 +3,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 
-const DefaultLayout = ({ children }) => {
+const DefaultLayout = ({ children, socket }) => {
     const [toggleSidebar, setToggleSidebar] = useState(false);
 
     return (
@@ -31,7 +31,7 @@ const DefaultLayout = ({ children }) => {
                             : 'fixed top-0 left-0 lg:left-[256px] right-0 transition-all duration-[1s] z-30'
                     }
                 >
-                    <Header setToggle={setToggleSidebar} />
+                    <Header setToggle={setToggleSidebar} socket={socket} />
                 </div>
                 <div className="flex flex-col pt-[64px] h-full">
                     <div className="flex-1 bg-[#ebedef] p-[16px]">{children}</div>

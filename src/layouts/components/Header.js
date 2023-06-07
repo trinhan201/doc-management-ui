@@ -8,7 +8,9 @@ import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { AvatarContext } from '~/App';
 
-const Header = ({ setToggle }) => {
+const Header = ({ setToggle, socket }) => {
+    const [notification, setNotification] = useState(null);
+    const [notifications, setNotifications] = useState([]);
     const [toggleSidebar, setToggleSidebar] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userAvatar, setUserAvatar] = useState('');
@@ -43,6 +45,26 @@ const Header = ({ setToggle }) => {
         fetchApi();
     }, [isChangeAvatar]);
 
+    //Start------------------------------------------------------------------//
+    useEffect(() => {
+        socket.current?.on('getNotification', (data) => {
+            setNotification({
+                senderId: data.senderId,
+                text: data.text,
+                createdAt: Date.now(),
+            });
+        });
+    }, [socket]);
+
+    useEffect(() => {
+        if (!notification) return;
+        setNotifications((prev) => prev.concat(notification));
+    }, [notification]);
+
+    console.log(notifications);
+
+    //End------------------------------------------------------------------//
+
     return (
         <>
             <div className="flex items-center justify-between w-full h-[64px] bg-white text-[#9fa9ae] pl-[16px] pr-[24px] border-b-[1px] border-solid border-[#cccccc]">
@@ -54,8 +76,32 @@ const Header = ({ setToggle }) => {
                 </div>
                 <div className="flex items-center">
                     <ul className="flex items-center text-[2.2rem]">
-                        <li className="p-[8px] hover:text-black cursor-pointer">
+                        <li className="group relative p-[8px] hover:text-black cursor-pointer">
                             <FontAwesomeIcon icon={faBell} />
+                            <p className="absolute block top-0 right-0 text-center min-w-[18px] text-[1rem] font-semibold text-[white] bg-red-600 p-1.5 rounded-full leading-none">
+                                {notifications?.length}
+                            </p>
+                            <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block z-50">
+                                <ul className="w-[240px]">
+                                    {notifications?.length > 0 ? (
+                                        notifications?.map((notification, index) => {
+                                            return (
+                                                <li
+                                                    key={index}
+                                                    className="w-full truncate p-[12px] text-[1.3rem] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]"
+                                                >
+                                                    <p>{notification?.text}</p>
+                                                    <p className="text-[1rem]">{notification?.createdAt}</p>
+                                                </li>
+                                            );
+                                        })
+                                    ) : (
+                                        <li className="w-full truncate p-[12px] text-[1.3rem] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]">
+                                            <span className="ml-3">Khong co thong bao</span>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
                         </li>
                         <li className="p-[8px] hover:text-black cursor-pointer">
                             <FontAwesomeIcon icon={faEnvelopeOpen} />
