@@ -11,9 +11,11 @@ import { disabledPastDate, fullNameValidator, dateValidator } from '~/utils/form
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
+import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
 const CreateTask = ({ title, socket }) => {
+    const [prevAssignTo, setPrevAssignTo] = useState(JSON.parse(localStorage.getItem('prevAssignTo')) || []);
     const [allUsers, setAllUsers] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [fullName, setFullName] = useState('');
@@ -83,6 +85,7 @@ const CreateTask = ({ title, socket }) => {
             setAssignTo(res.data.assignTo);
             setLeader(res.data.leader);
             setResources(res.data.resources);
+            setPrevAssignTo(res.data.assignTo);
         };
         fetchApi();
     }, [id]);
@@ -91,6 +94,10 @@ const CreateTask = ({ title, socket }) => {
         const array = assignTo.map((item) => item.value);
         return array;
     };
+
+    useEffect(() => {
+        localStorage.setItem('prevAssignTo', JSON.stringify(prevAssignTo));
+    }, [prevAssignTo]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -132,12 +139,42 @@ const CreateTask = ({ title, socket }) => {
                 };
                 await taskServices.changeAssignRole(res.data._id, data);
             }
-            console.log();
-            socket.current?.emit('sendNotification', {
-                senderId: userId,
-                receiverId: getAssignToIds(res.data.assignTo),
-                text: `Nhiệm vụ ${res.data.taskName} được giao cho bạn`,
-            });
+            if (!id) {
+                setPrevAssignTo(res.newTask.assignTo);
+                socket.current?.emit('sendNotification', {
+                    senderId: userId,
+                    receiverId: getAssignToIds(res.data.assignTo),
+                    text: 'Bạn có nhiệm vụ mới',
+                    linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                    isRead: false,
+                });
+                getAssignToIds(res.data.assignTo)?.map(async (userId) => {
+                    return await notificationServices.createNotification({
+                        notification: 'Bạn có nhiệm vụ mới',
+                        userId: userId,
+                        linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                    });
+                });
+            } else {
+                const others = getAssignToIds(res.data.assignTo);
+                const prev = getAssignToIds(prevAssignTo);
+                const final = others.filter((item) => !prev.includes(item));
+                setPrevAssignTo(res.data.assignTo);
+                socket.current?.emit('sendNotification', {
+                    senderId: userId,
+                    receiverId: final,
+                    text: 'Bạn có nhiệm vụ mới',
+                    linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                    isRead: false,
+                });
+                final?.map(async (userId) => {
+                    return await notificationServices.createNotification({
+                        notification: 'Bạn có nhiệm vụ mới',
+                        userId: userId,
+                        linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                    });
+                });
+            }
             successNotify(res.message);
             navigate(-1);
         } else {

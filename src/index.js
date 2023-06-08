@@ -6,6 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import TimeAgo from 'javascript-time-ago';
+import vi from 'javascript-time-ago/locale/vi';
+
+TimeAgo.addDefaultLocale(vi);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>

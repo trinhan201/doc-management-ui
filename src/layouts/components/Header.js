@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ChangePasswordForm from '~/components/Form/ChangePasswordForm';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as authServices from '~/services/authServices';
+import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { AvatarContext } from '~/App';
+import TimeAgo from 'javascript-time-ago';
 
 const Header = ({ setToggle, socket }) => {
     const [notification, setNotification] = useState(null);
@@ -16,6 +18,7 @@ const Header = ({ setToggle, socket }) => {
     const [userAvatar, setUserAvatar] = useState('');
     const { isChangeAvatar } = useContext(AvatarContext);
     const navigate = useNavigate();
+    const timeAgo = new TimeAgo();
 
     const handleSignOut = async () => {
         const refreshToken = localStorage.getItem('refreshToken');
@@ -49,8 +52,10 @@ const Header = ({ setToggle, socket }) => {
     useEffect(() => {
         socket.current?.on('getNotification', (data) => {
             setNotification({
-                senderId: data.senderId,
-                text: data.text,
+                notification: data.text,
+                userId: data.receiverId,
+                linkTask: data.linkTask,
+                isRead: data.isRead,
                 createdAt: Date.now(),
             });
         });
@@ -61,9 +66,25 @@ const Header = ({ setToggle, socket }) => {
         setNotifications((prev) => prev.concat(notification));
     }, [notification]);
 
-    console.log(notifications);
+    const handleChangeNotificationStatus = async (id) => {
+        // setNotification({ ...notification, isRead: true });
+        await notificationServices.changeNotificationStatus(id);
+    };
+
+    const notificationNotReadLength = (notifications) => {
+        const length = notifications?.filter((item) => item.isRead === false).length;
+        return length;
+    };
 
     //End------------------------------------------------------------------//
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await notificationServices.getAllNotification();
+            setNotifications(res.data);
+        };
+        fetchApi();
+    }, []);
 
     return (
         <>
@@ -78,23 +99,46 @@ const Header = ({ setToggle, socket }) => {
                     <ul className="flex items-center text-[2.2rem]">
                         <li className="group relative p-[8px] hover:text-black cursor-pointer">
                             <FontAwesomeIcon icon={faBell} />
-                            <p className="absolute block top-0 right-0 text-center min-w-[18px] text-[1rem] font-semibold text-[white] bg-red-600 p-1.5 rounded-full leading-none">
-                                {notifications?.length}
+                            <p
+                                className={
+                                    notificationNotReadLength(notifications) > 0
+                                        ? 'absolute block top-0 right-0 text-center min-w-[18px] text-[1rem] font-semibold text-[white] bg-red-600 p-1.5 rounded-full leading-none'
+                                        : 'hidden'
+                                }
+                            >
+                                {notificationNotReadLength(notifications)}
                             </p>
                             <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block z-50">
                                 <ul className="w-[240px]">
                                     {notifications?.length > 0 ? (
-                                        notifications?.map((notification, index) => {
-                                            return (
-                                                <li
-                                                    key={index}
-                                                    className="w-full truncate p-[12px] text-[1.3rem] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]"
-                                                >
-                                                    <p>{notification?.text}</p>
-                                                    <p className="text-[1rem]">{notification?.createdAt}</p>
-                                                </li>
-                                            );
-                                        })
+                                        notifications
+                                            ?.sort(function (a, b) {
+                                                return new Date(b.createdAt) - new Date(a.createdAt);
+                                            })
+                                            .map((notification, index) => {
+                                                return (
+                                                    <li
+                                                        onClick={() =>
+                                                            handleChangeNotificationStatus(notification?._id)
+                                                        }
+                                                        key={index}
+                                                        className={
+                                                            notification.isRead
+                                                                ? 'w-full p-[12px] text-[1.3rem] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]'
+                                                                : 'w-full p-[12px] text-[1.3rem] cursor-pointer bg-slate-400 hover:text-[#321fdb] hover:bg-[#eeeeee]'
+                                                        }
+                                                    >
+                                                        <a href={notification?.linkTask}>
+                                                            <p className="w-full truncate">
+                                                                {notification?.notification}
+                                                            </p>
+                                                            <p className="text-[1rem]">
+                                                                {timeAgo.format(new Date(notification?.createdAt))}
+                                                            </p>
+                                                        </a>
+                                                    </li>
+                                                );
+                                            })
                                     ) : (
                                         <li className="w-full truncate p-[12px] text-[1.3rem] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]">
                                             <span className="ml-3">Khong co thong bao</span>
@@ -136,7 +180,7 @@ const Header = ({ setToggle, socket }) => {
                                 </li>
                                 <li
                                     onClick={handleSignOut}
-                                    className="p-[12px] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]"
+                                    className="p-[12px] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee] border-t"
                                 >
                                     <FontAwesomeIcon icon={faRightFromBracket} />
                                     <span className="ml-3">Đăng xuất</span>
