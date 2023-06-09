@@ -141,38 +141,46 @@ const CreateTask = ({ title, socket }) => {
             }
             if (!id) {
                 setPrevAssignTo(res.newTask.assignTo);
+                const newNotiId = await Promise.all(
+                    getAssignToIds(res.data.assignTo)?.map(async (userId) => {
+                        const noti = await notificationServices.createNotification({
+                            notification: 'Bạn có nhiệm vụ mới',
+                            userId: userId,
+                            linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                        });
+                        return noti.data._id;
+                    }),
+                );
                 socket.current?.emit('sendNotification', {
                     senderId: userId,
+                    _id: newNotiId[0],
                     receiverId: getAssignToIds(res.data.assignTo),
                     text: 'Bạn có nhiệm vụ mới',
                     linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
                     isRead: false,
-                });
-                getAssignToIds(res.data.assignTo)?.map(async (userId) => {
-                    return await notificationServices.createNotification({
-                        notification: 'Bạn có nhiệm vụ mới',
-                        userId: userId,
-                        linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
-                    });
                 });
             } else {
                 const others = getAssignToIds(res.data.assignTo);
                 const prev = getAssignToIds(prevAssignTo);
                 const final = others.filter((item) => !prev.includes(item));
                 setPrevAssignTo(res.data.assignTo);
+                const newNotiId = await Promise.all(
+                    final?.map(async (userId) => {
+                        const noti = await notificationServices.createNotification({
+                            notification: 'Bạn có nhiệm vụ mới',
+                            userId: userId,
+                            linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                        });
+                        return noti.data._id;
+                    }),
+                );
                 socket.current?.emit('sendNotification', {
                     senderId: userId,
+                    _id: newNotiId[0],
                     receiverId: final,
                     text: 'Bạn có nhiệm vụ mới',
                     linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
                     isRead: false,
-                });
-                final?.map(async (userId) => {
-                    return await notificationServices.createNotification({
-                        notification: 'Bạn có nhiệm vụ mới',
-                        userId: userId,
-                        linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
-                    });
                 });
             }
             successNotify(res.message);

@@ -13,8 +13,8 @@ const Page404 = () => {
                             Đã xảy ra lỗi.
                         </p>
                         <p className="mb-4 text-[1.5rem] md:text-[1.8rem] font-light text-gray-500">
-                            Xin lỗi, chúng tôi không thể tìm thấy trang. Bạn sẽ tìm thấy nhiều thứ để khám phá trên
-                            trang chủ.{' '}
+                            Xin lỗi, chúng tôi không thể tìm thấy trang. Có thể trang bạn tìm đã bị xóa hoặc không tồn
+                            tại.{' '}
                         </p>
                         <NavLink to="/dashboard">
                             <div className="inline-block text-white bg-[#321fdb] hover:bg-[#1b2e4b] font-medium rounded-lg text-[1.5rem] md:text-[1.8rem] px-6 py-3 text-center mt-8 transition-all duration-[1s] cursor-pointer">

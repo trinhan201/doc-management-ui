@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPlus,
@@ -28,6 +28,7 @@ const MemberTaskDetail = () => {
     const [isSave, setIsSave] = useState(false);
     const [isSubmit, setIsSubmit] = useState(false);
 
+    const navigate = useNavigate();
     const ref = useRef();
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
@@ -110,10 +111,14 @@ const MemberTaskDetail = () => {
         if (!id) return;
         const fetchApi = async () => {
             const res = await taskServices.getTaskById(id);
-            setTask(res.data);
+            if (res.code === 200) {
+                setTask(res.data);
+            } else {
+                navigate('/error');
+            }
         };
         fetchApi();
-    }, [id, isSave]);
+    }, [id, isSave, navigate]);
 
     useEffect(() => {
         const getResources = () => {

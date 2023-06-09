@@ -52,6 +52,7 @@ const Header = ({ setToggle, socket }) => {
     useEffect(() => {
         socket.current?.on('getNotification', (data) => {
             setNotification({
+                _id: data._id,
                 notification: data.text,
                 userId: data.receiverId,
                 linkTask: data.linkTask,
@@ -60,6 +61,8 @@ const Header = ({ setToggle, socket }) => {
             });
         });
     }, [socket]);
+
+    console.log(notification);
 
     useEffect(() => {
         if (!notification) return;

@@ -105,10 +105,14 @@ const AdminTaskDetail = () => {
         if (!id) return;
         const fetchApi = async () => {
             const res = await taskServices.getTaskById(id);
-            setTask(res.data);
+            if (res.code === 200) {
+                setTask(res.data);
+            } else {
+                navigate('/error');
+            }
         };
         fetchApi();
-    }, [id, isSave]);
+    }, [id, isSave, navigate]);
 
     const handleDeleteFile = async (fileName) => {
         const data = {
