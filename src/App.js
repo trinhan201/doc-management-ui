@@ -337,11 +337,11 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <AdminTaskDetail />
+                                                <AdminTaskDetail socket={socket} />
                                             </DefaultLayout>
                                         ) : (
                                             <DefaultLayout socket={socket}>
-                                                <MemberTaskDetail />
+                                                <MemberTaskDetail socket={socket} />
                                             </DefaultLayout>
                                         )
                                     }

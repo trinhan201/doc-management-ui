@@ -15,9 +15,10 @@ import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
+import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
-const MemberTaskDetail = () => {
+const MemberTaskDetail = ({ socket }) => {
     const [tab, setTab] = useState('detail');
     const [allUsers, setAllUsers] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
@@ -233,6 +234,29 @@ const MemberTaskDetail = () => {
         }
     };
 
+    const handleChangeProgress = async () => {
+        const res = await taskServices.updateProgress(id, { taskProgress: 'Chờ duyệt' });
+        if (res.code === 200) {
+            successNotify('Nhiệm vụ đang chờ duyệt');
+            setIsSave((isSave) => !isSave);
+            const newNotiId = await notificationServices.createNotification({
+                notification: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
+                userId: allUsers?.find((item) => item.role === 'Admin')._id,
+                linkTask: `http://localhost:3000/tasks/detail/${id}`,
+            });
+            socket.current?.emit('sendNotification', {
+                senderId: userId,
+                _id: [{ notiId: newNotiId.data._id, userId: newNotiId.data.userId }],
+                receiverId: [allUsers?.find((item) => item.role === 'Admin')._id],
+                text: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
+                linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                isRead: false,
+            });
+        } else {
+            errorNotify(res.message);
+        }
+    };
+
     return (
         <div className="block lg:flex lg:items-start lg:gap-4">
             <div className="flex-[5]">
@@ -441,9 +465,9 @@ const MemberTaskDetail = () => {
                     <button
                         onClick={handleUnsubmit}
                         className={
-                            isSubmit
-                                ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'
-                                : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                            task?.progress === 'Hoàn thành' || task?.progress === 'Chờ duyệt'
+                                ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s] pointer-events-none opacity-50'
+                                : 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'
                         }
                     >
                         Hủy nộp
@@ -452,14 +476,26 @@ const MemberTaskDetail = () => {
                     <button
                         onClick={handleSubmit}
                         className={
-                            isSubmit
-                                ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'
+                            task?.progress === 'Hoàn thành' || task?.progress === 'Chờ duyệt'
+                                ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] pointer-events-none opacity-50'
                                 : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
                         }
                     >
                         Nộp
                     </button>
                 )}
+                <button
+                    onClick={handleChangeProgress}
+                    className={
+                        getLeader()
+                            ? task?.progress === 'Hoàn thành' || task?.progress === 'Chờ duyệt'
+                                ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] pointer-events-none opacity-50'
+                                : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                            : 'hidden'
+                    }
+                >
+                    Đánh dấu hoàn tất
+                </button>
             </div>
         </div>
     );

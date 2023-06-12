@@ -47,11 +47,9 @@ const Task = ({ socket }) => {
         if (progress === 'Hoàn thành') {
             return 'progress-bar full';
         } else if (progress === 'Chờ duyệt') {
-            return 'progress-bar percent75';
+            return 'progress-bar percent60';
         } else if (progress === 'Đang xử lý') {
-            return 'progress-bar percent50';
-        } else {
-            return 'progress-bar percent25';
+            return 'progress-bar percent30';
         }
     };
 
@@ -582,7 +580,9 @@ const Task = ({ socket }) => {
                                 taskId={tl?._id}
                                 taskName={tl?.taskName}
                                 progress={tl?.progress}
-                                dueDate={tl?.dueDate}
+                                dueDate={new Date(tl?.dueDate).toLocaleDateString()}
+                                status={tl?.status}
+                                statusClass={setStatusColor(tl?.status)}
                                 progressClass={setProgressPercentage(tl?.progress)}
                                 assignTo={tl?.assignTo}
                                 allUsers={allUsers}

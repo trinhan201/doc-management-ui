@@ -70,6 +70,12 @@ const TaskCard = (props) => {
                 <p className="flex-1 truncate">{props.dueDate}</p>
             </div>
             <div className="flex items-center mb-3">
+                <p className="font-bold w-[120px]">Trạng thái:</p>
+                <div className="ml-[-0.5rem]">
+                    <p className={props.statusClass}>{props.status}</p>
+                </div>
+            </div>
+            <div className="flex items-center mb-3">
                 <p className="font-bold w-[120px]">Người thực hiện:</p>
                 <div className="flex -space-x-2">
                     {props.assignTo.slice(0, 3).map((at, index) => {

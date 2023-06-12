@@ -11,15 +11,18 @@ import {
     faFile,
     faXmark,
     faPlusCircle,
+    faCheckCircle,
+    faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
 import * as documentServices from '~/services/documentServices';
+import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
-const AdminTaskDetail = () => {
+const AdminTaskDetail = ({ socket }) => {
     const [allDocuments, setAllDocuments] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [percent, setPercent] = useState('');
@@ -29,6 +32,7 @@ const AdminTaskDetail = () => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [isSave, setIsSave] = useState(false);
 
+    const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -88,14 +92,11 @@ const AdminTaskDetail = () => {
                 setPercent('100%');
                 setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar full');
             } else if (task?.progress === 'Chờ duyệt') {
-                setPercent('75%');
-                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent75');
+                setPercent('60%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent60');
             } else if (task?.progress === 'Đang xử lý') {
-                setPercent('50%');
-                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent50');
-            } else {
-                setPercent('25%');
-                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent25');
+                setPercent('30%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent30');
             }
         };
         setStatusPercentage();
@@ -161,6 +162,44 @@ const AdminTaskDetail = () => {
     const getLeaderResources = () => {
         const leaderResources = task?.resources?.find((item) => item.userId === task?.leader?.value);
         return leaderResources;
+    };
+
+    const handleChangeProgress = async (value) => {
+        const res = await taskServices.updateProgress(id, { taskProgress: value });
+        if (res.code === 200) {
+            successNotify(value === 'Hoàn thành' ? 'Nhiệm vụ đã hoàn thành' : 'Nhiệm vụ chưa hoàn thành');
+            setIsSave((isSave) => !isSave);
+
+            const newNotiId = await Promise.all(
+                getAssignToIds(task?.assignTo)?.map(async (userId) => {
+                    const noti = await notificationServices.createNotification({
+                        notification: `Nhiệm vụ ${task?.taskName} ${
+                            value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp thuận'
+                        }`,
+                        userId: userId,
+                        linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                    });
+                    return { notiId: noti.data._id, userId: noti.data.userId };
+                }),
+            );
+            socket.current?.emit('sendNotification', {
+                senderId: userId,
+                _id: newNotiId,
+                receiverId: getAssignToIds(task?.assignTo),
+                text: `Nhiệm vụ ${task?.taskName} ${
+                    value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp thuận'
+                }`,
+                linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                isRead: false,
+            });
+        } else {
+            errorNotify(res.message);
+        }
+    };
+
+    const getAssignToIds = (arr) => {
+        const final = arr.map((item) => item.value);
+        return final;
     };
 
     return (
@@ -310,6 +349,26 @@ const AdminTaskDetail = () => {
                             </div>
                         </div>
                         <div className="block md:flex items-center gap-5 mt-12">
+                            <button
+                                onClick={() => handleChangeProgress('Hoàn thành')}
+                                className={
+                                    task?.progress === 'Chờ duyệt'
+                                        ? 'w-full md:w-fit text-center text-[white] bg-[#27a243] mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                                        : 'hidden'
+                                }
+                            >
+                                <FontAwesomeIcon icon={faCheckCircle} /> Hoàn thành
+                            </button>
+                            <button
+                                onClick={() => handleChangeProgress('Đang xử lý')}
+                                className={
+                                    task?.progress === 'Chờ duyệt'
+                                        ? 'w-full md:w-fit text-center text-[white] bg-[#f7bb07] my-4 md:my-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                                        : 'hidden'
+                                }
+                            >
+                                <FontAwesomeIcon icon={faCircleXmark} /> Chưa hoàn thành
+                            </button>
                             <NavLink
                                 to={`/tasks/edit/${task?._id}`}
                                 className="block w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"

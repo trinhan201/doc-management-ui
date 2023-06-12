@@ -40,6 +40,16 @@ export const updateTask = async (taskId, data = {}) => {
     }
 };
 
+export const updateProgress = async (taskId, data = {}) => {
+    try {
+        const res = await httpRequest.patch(`/task/update-progress/${taskId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
 export const deleteTaskById = async (taskId) => {
     try {
         const res = await httpRequest.delete(`/task/delete/${taskId}`);

@@ -90,28 +90,13 @@ body {
     background-color: #0077f7;
 }
 
-.progress-bar.percent75 {
-    width: 75%;
-    background-color: #27a243;
-}
-
 .progress-bar.percent60 {
     width: 60%;
     background-color: #f7bb07;
 }
 
-.progress-bar.percent50 {
-    width: 50%;
-    background-color: #f7bb07;
-}
-
 .progress-bar.percent30 {
     width: 30%;
-    background-color: #d53343;
-}
-
-.progress-bar.percent25 {
-    width: 25%;
     background-color: #d53343;
 }
 
