@@ -328,7 +328,7 @@ const App = () => {
                                     path="/tasks"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <Task />
+                                            <Task socket={socket} />
                                         </DefaultLayout>
                                     }
                                 />

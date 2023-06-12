@@ -14,10 +14,12 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
+import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import TaskCard from '~/components/Card/TaskCard';
 
-const AdminTasks = () => {
+const Task = ({ socket }) => {
+    const [userId, setUserId] = useState('');
     const [allUsers, setAllUsers] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const [taskLists, setTaskLists] = useState([]);
@@ -35,6 +37,11 @@ const AdminTasks = () => {
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const totalPage = Math.ceil(allTasks?.length / limit);
+
+    useEffect(() => {
+        const uid = JSON.parse(localStorage.getItem('userId'));
+        setUserId(uid);
+    }, []);
 
     const setProgressPercentage = (progress) => {
         if (progress === 'Hoàn thành') {
@@ -193,24 +200,78 @@ const AdminTasks = () => {
         }
     };
 
+    const getAssignToIds = (arr) => {
+        const final = arr.map((item) => item.value);
+        return final;
+    };
+
     useEffect(() => {
-        allTasks?.map(async (item) => {
-            const currDate = new Date();
-            const startDate = new Date(item?.createdAt);
-            const endDate = new Date(item?.dueDate);
-            const allDateToDo = endDate.getTime() - startDate.getTime();
-            const datesWerePassed = currDate.getTime() - startDate.getTime();
-            if (currDate.getTime() <= endDate.getTime()) {
-                if (datesWerePassed >= (allDateToDo / 3) * 2) {
-                    return await taskServices.updateStatus(item?._id, { status: 'Sắp đến hạn' });
+        if (allTasks?.length === 0) return;
+        const timer = setInterval(async () => {
+            allTasks?.map(async (item) => {
+                const currDate = new Date();
+                const startDate = new Date(item?.createdAt);
+                const endDate = new Date(item?.dueDate);
+                const allDateToDo = endDate.getTime() - startDate.getTime();
+                const datesWerePassed = currDate.getTime() - startDate.getTime();
+                if (currDate.getTime() <= endDate.getTime()) {
+                    if (datesWerePassed >= (allDateToDo / 3) * 2) {
+                        if (item?.status === 'Sắp đến hạn') return;
+                        await taskServices.updateStatus(item?._id, { status: 'Sắp đến hạn' });
+                        setIsSave((isSave) => !isSave);
+
+                        const newNotiId = await Promise.all(
+                            getAssignToIds(item?.assignTo)?.map(async (userId) => {
+                                const noti = await notificationServices.createNotification({
+                                    notification: `Nhiệm vụ ${item.taskName} sắp đến hạn`,
+                                    userId: userId,
+                                    linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                                });
+                                return noti.data._id;
+                            }),
+                        );
+                        socket.current?.emit('sendNotification', {
+                            senderId: userId,
+                            _id: newNotiId[0],
+                            receiverId: getAssignToIds(item?.assignTo),
+                            text: `Nhiệm vụ ${item?.taskName} sắp đến hạn`,
+                            linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                            isRead: false,
+                        });
+                    } else {
+                        await taskServices.updateStatus(item?._id, { status: 'Còn hạn' });
+                        setIsSave((isSave) => !isSave);
+                    }
                 } else {
-                    return await taskServices.updateStatus(item?._id, { status: 'Còn hạn' });
+                    if (item?.status === 'Quá hạn') return;
+                    await taskServices.updateStatus(item?._id, { status: 'Quá hạn' });
+                    setIsSave((isSave) => !isSave);
+
+                    const newNotiId = await Promise.all(
+                        getAssignToIds(item?.assignTo)?.map(async (userId) => {
+                            const noti = await notificationServices.createNotification({
+                                notification: `Nhiệm vụ ${item.taskName} đã quá hạn`,
+                                userId: userId,
+                                linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                            });
+                            return noti.data._id;
+                        }),
+                    );
+                    socket.current?.emit('sendNotification', {
+                        senderId: userId,
+                        _id: newNotiId[0],
+                        receiverId: getAssignToIds(item?.assignTo),
+                        text: `Nhiệm vụ ${item?.taskName} đã quá hạn`,
+                        linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                        isRead: false,
+                    });
                 }
-            } else {
-                return await taskServices.updateStatus(item?._id, { status: 'Quá hạn' });
-            }
-        });
-    }, [allTasks]);
+            });
+        }, 60000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [allTasks, socket, userId]);
 
     return (
         <>
@@ -562,4 +623,4 @@ const AdminTasks = () => {
     );
 };
 
-export default AdminTasks;
+export default Task;

@@ -111,6 +111,7 @@ const Header = ({ setToggle, socket }) => {
                             >
                                 {notificationNotReadLength(notifications)}
                             </p>
+                            <div className="hidden absolute bottom-[-12px] right-0 bg-transparent w-[100px] h-[24px] group-hover:block"></div>
                             <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block z-50">
                                 <ul className="w-[240px]">
                                     {notifications?.length > 0 ? (
@@ -127,11 +128,11 @@ const Header = ({ setToggle, socket }) => {
                                                         key={index}
                                                         className={
                                                             notification.isRead
-                                                                ? 'w-full p-[12px] text-[1.3rem] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]'
-                                                                : 'w-full p-[12px] text-[1.3rem] cursor-pointer bg-slate-400 hover:text-[#321fdb] hover:bg-[#eeeeee]'
+                                                                ? 'w-full p-[12px] text-[1.3rem] cursor-pointer hover:bg-[#eeeeee] transition-all duration-[0.5s]'
+                                                                : 'w-full p-[12px] text-[1.3rem] cursor-pointer bg-[#d8dbe0] hover:bg-[#eeeeee] transition-all duration-[0.5s]'
                                                         }
                                                     >
-                                                        <a href={notification?.linkTask}>
+                                                        <a className="w-full" href={notification?.linkTask}>
                                                             <p className="w-full truncate">
                                                                 {notification?.notification}
                                                             </p>
