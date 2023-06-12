@@ -3,18 +3,22 @@ import FormData from 'form-data';
 import ProfileForm from '~/components/Form/ProfileForm';
 import * as authServices from '~/services/authServices';
 import * as userServices from '~/services/userServices';
+import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { AvatarContext } from '~/App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const Profile = () => {
+    const [allTasks, setAllTasks] = useState([]);
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
     const [fileName, setFileName] = useState(JSON.parse(localStorage.getItem('imageName')));
     const [isSave, setIsSave] = useState(false);
     const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
     const { isChangeAvatar, setIsChangeAvatar } = useContext(AvatarContext);
+
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const changeAvatar = async (e) => {
         const data = new FormData();
@@ -31,6 +35,18 @@ const Profile = () => {
             errorNotify(res);
         }
     };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskServices.getAllTask(1, 1, '');
+            if (userRole === 'Admin' || userRole === 'Moderator') {
+                setAllTasks(res.allTasks);
+            } else {
+                setAllTasks(res.allMemberTasks);
+            }
+        };
+        fetchApi();
+    }, [isSave, userRole]);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -61,6 +77,15 @@ const Profile = () => {
     useEffect(() => {
         localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
     }, [isRemove]);
+
+    const getCompleteTaskQty = () => {
+        const qty = allTasks?.filter((item) => item?.progress === 'Hoàn thành');
+        return qty;
+    };
+
+    const getPercentProgress = () => {
+        return `${(getCompleteTaskQty().length / allTasks.length) * 100}%`;
+    };
 
     return (
         <>
@@ -115,26 +140,35 @@ const Profile = () => {
                             <h1 className="text-[2.2rem] font-bold mb-7">Tất cả nhiệm vụ</h1>
                             <h3 className="text-[1.4rem] font-semibold">Mức độ hoàn thành</h3>
                             <div className="w-full bg-gray-200 rounded-full mt-3">
-                                <div className="w-[45%] bg-blue-600 text-[1.4rem] font-medium text-blue-100 text-center p-1.5 leading-none rounded-full">
-                                    45%
+                                <div
+                                    style={{ width: getPercentProgress() }}
+                                    className={`bg-blue-600 text-[1.4rem] font-medium text-blue-100 text-center p-1.5 leading-none rounded-full`}
+                                >
+                                    {getPercentProgress()}
                                 </div>
                             </div>
                             <div className="flex justify-between mt-9">
                                 <div>
-                                    <h3 className="text-[1.4rem] text-white px-2 rounded-xl bg-[#cccccc]">Được giao</h3>
-                                    <p className="font-semibold text-[#cccccc] text-center">6</p>
+                                    <h3 className="text-[1.4rem] text-white px-2 rounded-xl bg-[#cccccc]">
+                                        {userRole === 'Member' ? 'Được giao' : 'Đã tạo'}
+                                    </h3>
+                                    <p className="font-semibold text-[#cccccc] text-center">{allTasks.length}</p>
                                 </div>
                                 <div>
                                     <h3 className="text-[1.4rem] text-white px-2 rounded-xl bg-green-600">
                                         Hoàn thành
                                     </h3>
-                                    <p className="font-semibold text-green-600 text-center">1</p>
+                                    <p className="font-semibold text-green-600 text-center">
+                                        {getCompleteTaskQty().length}
+                                    </p>
                                 </div>
                                 <div>
                                     <h3 className="text-[1.4rem] text-white px-2 rounded-xl bg-red-600">
                                         Chưa hoàn thành
                                     </h3>
-                                    <p className="font-semibold text-red-600 text-center">5</p>
+                                    <p className="font-semibold text-red-600 text-center">
+                                        {allTasks.length - getCompleteTaskQty().length}
+                                    </p>
                                 </div>
                             </div>
                         </div>
