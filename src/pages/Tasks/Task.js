@@ -227,12 +227,12 @@ const Task = ({ socket }) => {
                                     userId: userId,
                                     linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
                                 });
-                                return noti.data._id;
+                                return { notiId: noti.data._id, userId: noti.data.userId };
                             }),
                         );
                         socket.current?.emit('sendNotification', {
                             senderId: userId,
-                            _id: newNotiId[0],
+                            _id: newNotiId,
                             receiverId: getAssignToIds(item?.assignTo),
                             text: `Nhiệm vụ ${item?.taskName} sắp đến hạn`,
                             linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
@@ -254,12 +254,12 @@ const Task = ({ socket }) => {
                                 userId: userId,
                                 linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
                             });
-                            return noti.data._id;
+                            return { notiId: noti.data._id, userId: noti.data.userId };
                         }),
                     );
                     socket.current?.emit('sendNotification', {
                         senderId: userId,
-                        _id: newNotiId[0],
+                        _id: newNotiId,
                         receiverId: getAssignToIds(item?.assignTo),
                         text: `Nhiệm vụ ${item?.taskName} đã quá hạn`,
                         linkTask: `http://localhost:3000/tasks/detail/${item._id}`,

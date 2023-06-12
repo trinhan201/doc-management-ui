@@ -27,6 +27,7 @@ const MemberTaskDetail = () => {
     const [finalList, setFinalList] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [isSubmit, setIsSubmit] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState('');
 
     const navigate = useNavigate();
     const ref = useRef();
@@ -54,6 +55,16 @@ const MemberTaskDetail = () => {
             return 'w-fit ml-2 status emergency';
         } else {
             return 'w-fit ml-2 status normal';
+        }
+    };
+
+    const setSubmitTextColor = (status) => {
+        if (status === 'Trễ') {
+            return 'text-[#dc2626] text-[1.4rem]';
+        } else if (status === 'Chưa nộp') {
+            return 'text-[#27a243] text-[1.4rem]';
+        } else {
+            return 'text-black text-[1.4rem]';
         }
     };
 
@@ -197,6 +208,7 @@ const MemberTaskDetail = () => {
         const getCurrentResources = () => {
             const resource = task?.resources?.find((item) => item.userId === userId);
             setIsSubmit(resource?.isSubmit);
+            setSubmitStatus(resource?.status);
         };
         getCurrentResources();
     }, [task?.resources, userId]);
@@ -381,17 +393,17 @@ const MemberTaskDetail = () => {
                             )
                         </span>
                     </h3>
-                    <p className="text-[1.4rem]">Đã nộp</p>
+                    <p className={setSubmitTextColor(submitStatus)}>{submitStatus}</p>
                 </div>
-                <div className="mt-7">
+                <div className="mt-7 w-full">
                     {finalList?.map((item, index) => {
                         return (
-                            <div key={index} className="flex items-center mb-5">
+                            <div key={index} className="flex items-center mb-5 w-full">
                                 <a
                                     target="_blank"
                                     rel="noreferrer noopener"
                                     href={`http://localhost:8080/static/${item}`}
-                                    className="flex flex-col text-[1.4rem] px-[16px] py-[6px] rounded-md border"
+                                    className="w-full flex flex-col text-[1.4rem] px-[16px] py-[6px] rounded-md border"
                                 >
                                     <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">
                                         {item}

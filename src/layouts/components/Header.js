@@ -52,7 +52,7 @@ const Header = ({ setToggle, socket }) => {
     useEffect(() => {
         socket.current?.on('getNotification', (data) => {
             setNotification({
-                _id: data._id,
+                _id: data._id.find((item) => item.userId === data.receiverId)?.notiId,
                 notification: data.text,
                 userId: data.receiverId,
                 linkTask: data.linkTask,

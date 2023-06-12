@@ -53,7 +53,7 @@ const CreateTask = ({ title, socket }) => {
 
     const setUserResource = () => {
         const options = assignTo?.map((item) => {
-            return { userId: item.value, resources: [], isSubmit: false };
+            return { userId: item.value, status: 'Chưa nộp', resources: [], isSubmit: false };
         });
         return options;
     };
@@ -148,12 +148,13 @@ const CreateTask = ({ title, socket }) => {
                             userId: userId,
                             linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
                         });
-                        return noti.data._id;
+                        return { notiId: noti.data._id, userId: noti.data.userId };
                     }),
                 );
+                console.log(newNotiId);
                 socket.current?.emit('sendNotification', {
                     senderId: userId,
-                    _id: newNotiId[0],
+                    _id: newNotiId,
                     receiverId: getAssignToIds(res.data.assignTo),
                     text: 'Bạn có nhiệm vụ mới',
                     linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
