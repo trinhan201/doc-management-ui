@@ -1,13 +1,202 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook, faBookmark, faCircleArrowRight, faListCheck, faUsers } from '@fortawesome/free-solid-svg-icons';
+import BarChart from '~/components/Chart/BarChart';
+import PieChart from '~/components/Chart/PieChart';
+import Select from 'react-select';
+import * as userServices from '~/services/userServices';
+import * as documentServices from '~/services/documentServices';
+import * as taskServices from '~/services/taskServices';
 
 const Dashboard = () => {
     const [role, setRole] = useState('');
+    const [allUsers, setAllUsers] = useState([]);
+    const [allDocuments, setAllDocuments] = useState([]);
+    const [allDocumentIns, setAllDocumentIns] = useState([]);
+    const [allDocumentOuts, setAllDocumentOuts] = useState([]);
+    const [allTasks, setAllTasks] = useState([]);
+    const [barOption, setBarOption] = useState({
+        label: 'Theo loại',
+        value: 'type',
+    });
+    const [pieOption, setPieOption] = useState({
+        label: 'Theo loại',
+        value: 'type',
+    });
+
+    const barOptions = [
+        {
+            label: 'Theo loại',
+            value: 'type',
+        },
+        {
+            label: 'Theo nơi ban hành',
+            value: 'sender',
+        },
+        {
+            label: 'Theo trạng thái',
+            value: 'status',
+        },
+        {
+            label: 'Theo mức độ',
+            value: 'level',
+        },
+    ];
+
+    const pieOptions = [
+        {
+            label: 'Theo loại',
+            value: 'type',
+        },
+        {
+            label: 'Theo tiến trình',
+            value: 'progress',
+        },
+        {
+            label: 'Theo trạng thái',
+            value: 'status',
+        },
+        {
+            label: 'Theo mức độ',
+            value: 'level',
+        },
+    ];
+
     useEffect(() => {
         const userRole = JSON.parse(localStorage.getItem('userRole'));
         setRole(userRole);
     }, []);
-    console.log(role);
-    return <div>Dashboard page</div>;
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getAllUser(1, 1, '');
+            if (res.code === 200) {
+                setAllUsers(res.allUsers);
+            } else {
+                console.log(res.message);
+            }
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '');
+            if (res.code === 200) {
+                setAllDocuments(res.allDocuments);
+                setAllDocumentIns(res.allDocumentIn);
+                setAllDocumentOuts(res.allDocumentOut);
+            } else {
+                console.log(res.message);
+            }
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskServices.getAllTask(1, 1, '');
+            if (res.code === 200) {
+                setAllTasks(res.allTasks);
+            } else {
+                console.log(res.message);
+            }
+        };
+        fetchApi();
+    }, []);
+
+    return (
+        <>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                <div className="text-white bg-[#2417ab] rounded-lg">
+                    <div className="flex items-center justify-between p-[18px]">
+                        <div>
+                            <p className="font-bold text-[3rem]">{allUsers?.length}</p>
+                            <p className="text-[1.4rem]">Người dùng</p>
+                        </div>
+                        <div className="text-[5.6rem] text-[#000000]/[0.3]">
+                            <FontAwesomeIcon icon={faUsers} />
+                        </div>
+                    </div>
+                    <NavLink
+                        to="/users"
+                        className="block text-[1.4rem] text-center bg-[#000000]/[0.3] py-1 cursor-pointer"
+                    >
+                        Xem chi tiết <FontAwesomeIcon icon={faCircleArrowRight} />
+                    </NavLink>
+                </div>
+                <div className="text-white bg-[#2f8fe9] rounded-lg">
+                    <div className="flex items-center justify-between p-[18px]">
+                        <div>
+                            <p className="font-bold text-[3rem]">{allDocumentIns?.length}</p>
+                            <p className="text-[1.4rem]">Văn bản đến</p>
+                        </div>
+                        <div className="text-[5.6rem] text-[#000000]/[0.3]">
+                            <FontAwesomeIcon icon={faBook} />
+                        </div>
+                    </div>
+                    <NavLink
+                        to="/documents/documents-in"
+                        className="block text-[1.4rem] text-center bg-[#000000]/[0.3] py-1 cursor-pointer"
+                    >
+                        Xem chi tiết <FontAwesomeIcon icon={faCircleArrowRight} />
+                    </NavLink>
+                </div>
+                <div className="text-white bg-[#f7a10f] rounded-lg">
+                    <div className="flex items-center justify-between p-[18px]">
+                        <div>
+                            <p className="font-bold text-[3rem]">{allDocumentOuts?.length}</p>
+                            <p className="text-[1.4rem]">Văn bản đi</p>
+                        </div>
+                        <div className="text-[5.6rem] text-[#000000]/[0.3]">
+                            <FontAwesomeIcon icon={faBookmark} />
+                        </div>
+                    </div>
+                    <NavLink
+                        to="/documents/documents-out"
+                        className="block text-[1.4rem] text-center bg-[#000000]/[0.3] py-1 cursor-pointer"
+                    >
+                        Xem chi tiết <FontAwesomeIcon icon={faCircleArrowRight} />
+                    </NavLink>
+                </div>
+                <div className="text-white bg-[#df4545] rounded-lg">
+                    <div className="flex items-center justify-between p-[18px]">
+                        <div>
+                            <p className="font-bold text-[3rem]">{allTasks?.length}</p>
+                            <p className="text-[1.4rem]">Công việc</p>
+                        </div>
+                        <div className="text-[5.6rem] text-[#000000]/[0.3]">
+                            <FontAwesomeIcon icon={faListCheck} />
+                        </div>
+                    </div>
+                    <NavLink
+                        to="/tasks"
+                        className="block text-[1.4rem] text-center bg-[#000000]/[0.3] py-1 cursor-pointer"
+                    >
+                        Xem chi tiết <FontAwesomeIcon icon={faCircleArrowRight} />
+                    </NavLink>
+                </div>
+            </div>
+            <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600 mt-6">
+                <div className="w-[50%]">
+                    <Select options={barOptions} onChange={setBarOption} value={barOption} />
+                </div>
+                <BarChart
+                    typeOption={barOption}
+                    allDocuments={allDocuments}
+                    allDocumentIns={allDocumentIns}
+                    allDocumentOuts={allDocumentOuts}
+                />
+            </div>
+            <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-red-600 mt-6">
+                <div className="w-[50%]">
+                    <Select options={pieOptions} onChange={setPieOption} value={pieOption} />
+                </div>
+                <PieChart typeOption={pieOption} allTasks={allTasks} />
+            </div>
+        </>
+    );
 };
 
 export default Dashboard;

@@ -18,7 +18,7 @@ const CreateDocument = ({ title, documentIn, path }) => {
     const [code, setCode] = useState('');
     const [sender, setSender] = useState('');
     const [sendDate, setSendDate] = useState('');
-    const [level, setLevel] = useState('');
+    const [level, setLevel] = useState('Bình thường');
     const [note, setNote] = useState('');
     const [currentLocation, setCurrentLocation] = useState('');
     const [attachFiles, setAttachFiles] = useState([]);

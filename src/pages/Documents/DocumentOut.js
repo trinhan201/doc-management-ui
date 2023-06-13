@@ -113,9 +113,6 @@ const DocumentOut = () => {
         fetchApi();
     }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
 
-    console.log(documentLists);
-    console.log(allDocuments);
-
     const removeFilter = () => {
         setFName('');
         setFCode('');

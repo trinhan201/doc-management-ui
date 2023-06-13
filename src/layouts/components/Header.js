@@ -62,8 +62,6 @@ const Header = ({ setToggle, socket }) => {
         });
     }, [socket]);
 
-    console.log(notification);
-
     useEffect(() => {
         if (!notification) return;
         setNotifications((prev) => prev.concat(notification));

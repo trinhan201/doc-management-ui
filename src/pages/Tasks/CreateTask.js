@@ -20,7 +20,7 @@ const CreateTask = ({ title, socket }) => {
     const [documents, setDocuments] = useState([]);
     const [fullName, setFullName] = useState('');
     const [deadline, setDeadline] = useState('');
-    const [level, setLevel] = useState('');
+    const [level, setLevel] = useState('Bình thường');
     const [document, setDocument] = useState('');
     const [type, setType] = useState('');
     const [leader, setLeader] = useState();
