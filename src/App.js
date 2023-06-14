@@ -115,7 +115,7 @@ const App = () => {
                                     path="/dashboard"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <Dashboard />
+                                            <Dashboard socket={socket} />
                                         </DefaultLayout>
                                     }
                                 />
@@ -124,7 +124,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <Department />
+                                                <Department socket={socket} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -160,7 +160,7 @@ const App = () => {
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <User />
+                                                <User socket={socket} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -196,7 +196,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <DocumentType />
+                                                <DocumentType socket={socket} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -240,7 +240,7 @@ const App = () => {
                                     path="/documents/documents-out"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <DocumentOut />
+                                            <DocumentOut socket={socket} />
                                         </DefaultLayout>
                                     }
                                 />
@@ -280,7 +280,7 @@ const App = () => {
                                     path="/documents/documents-in"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <DocumentIn />
+                                            <DocumentIn socket={socket} />
                                         </DefaultLayout>
                                     }
                                 />
