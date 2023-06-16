@@ -23,6 +23,9 @@ import {
     CreateTask,
     AdminTaskDetail,
     MemberTaskDetail,
+    DocumentStatistics,
+    TaskStatistics,
+    SystemStatistics,
 } from './pages';
 import ProtectedRoutes from './pages/Others/ProtectedRoutes';
 import PublicRoutes from './pages/Others/PublicRoutes';
@@ -368,6 +371,31 @@ const App = () => {
                                         ) : (
                                             <Page404 />
                                         )
+                                    }
+                                />
+                                <Route path="/statistics" element={<Navigate to="/statistics/documents" />} />
+                                <Route
+                                    path="/statistics/documents"
+                                    element={
+                                        <DefaultLayout socket={socket}>
+                                            <DocumentStatistics socket={socket} />
+                                        </DefaultLayout>
+                                    }
+                                />
+                                <Route
+                                    path="/statistics/tasks"
+                                    element={
+                                        <DefaultLayout socket={socket}>
+                                            <TaskStatistics socket={socket} />
+                                        </DefaultLayout>
+                                    }
+                                />
+                                <Route
+                                    path="/statistics/systems"
+                                    element={
+                                        <DefaultLayout socket={socket}>
+                                            <SystemStatistics socket={socket} />
+                                        </DefaultLayout>
                                     }
                                 />
                             </>

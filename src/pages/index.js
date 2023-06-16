@@ -19,6 +19,9 @@ import Task from './Tasks/Task';
 import CreateTask from './Tasks/CreateTask';
 import AdminTaskDetail from './Tasks/AdminTaskDetail';
 import MemberTaskDetail from './Tasks/MemberTaskDetail';
+import DocumentStatistics from './Statistics/DocumentStatistics';
+import TaskStatistics from './Statistics/TaskStatistics';
+import SystemStatistics from './Statistics/SystemStatistics';
 
 export {
     Signin,
@@ -42,4 +45,7 @@ export {
     CreateTask,
     AdminTaskDetail,
     MemberTaskDetail,
+    DocumentStatistics,
+    TaskStatistics,
+    SystemStatistics,
 };

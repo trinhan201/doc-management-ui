@@ -44,6 +44,10 @@ const Dashboard = ({ socket }) => {
             label: 'Theo mức độ',
             value: 'level',
         },
+        {
+            label: 'Theo vị trí hiện tại',
+            value: 'currentLocation',
+        },
     ];
 
     const pieOptions = [
@@ -64,6 +68,8 @@ const Dashboard = ({ socket }) => {
             value: 'level',
         },
     ];
+
+    console.log(role);
 
     useEffect(() => {
         const userRole = JSON.parse(localStorage.getItem('userRole'));

@@ -388,10 +388,10 @@ const DocumentIn = ({ socket }) => {
                     </div>
                     <div className="flex-1">
                         <label className="text-[1.4rem]">Số ký hiệu:</label>
-                        <InputField className="default" placeholder="Mã văn bản" value={fCode} setValue={setFCode} />
+                        <InputField className="default" placeholder="Số ký hiệu" value={fCode} setValue={setFCode} />
                     </div>
                     <div className="flex-1">
-                        <label className="text-[1.4rem]">Ngày tạo:</label>
+                        <label className="text-[1.4rem]">Ngày ban hành:</label>
                         <InputField
                             name="date"
                             className="default leading-[1.3]"
