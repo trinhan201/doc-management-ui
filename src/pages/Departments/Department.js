@@ -165,7 +165,7 @@ const Department = ({ socket }) => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '');
+            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
             if (res.code === 200) {
                 setAllTasks(res.allTasks);
             } else {

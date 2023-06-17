@@ -34,9 +34,9 @@ const ExportExcel = (props) => {
         const title = [{ A: 'Báo cáo thống kê văn bản năm 2023' }, {}];
         const subTitle = [
             {
-                A: `Tổng hợp văn bản theo Sổ: ${props.flag} - ${props.fType || '?'} - ${props.fStatus || '?'} - ${
-                    props.fLevel || '?'
-                } - ${`Từ ngày ${props.fFrom || '?'} đến ngày ${props.fTo || '?'}`}`,
+                A: `Tổng hợp văn bản theo Sổ: ${props.flag || '?'} - ${props.fType || '?'} - ${
+                    props.fStatus || '?'
+                } - ${props.fLevel || '?'} - ${`Từ ngày ${props.fFrom || '?'} đến ngày ${props.fTo || '?'}`}`,
             },
             {},
         ];
@@ -54,7 +54,6 @@ const ExportExcel = (props) => {
                 G: 'Mức độ',
                 H: 'Trạng thái',
                 I: 'Trích yêu',
-                K: 'Vị trí hiện tại',
             },
         ];
 
@@ -69,7 +68,6 @@ const ExportExcel = (props) => {
                 G: row.level,
                 H: row.status,
                 I: row.note,
-                K: row.currentLocation,
             });
         });
 
@@ -89,11 +87,12 @@ const ExportExcel = (props) => {
         finalData.forEach((data, index) => (data['A'] === 'STT' ? headerIndexes.push(index) : null));
 
         const dataInfo = {
-            titleRange: 'A1:J2',
-            subTitleRange: 'A3:J3',
-            tbodyRange: `A4:J${finalData.length}`,
-            theadRange: headerIndexes?.length >= 1 ? `A${headerIndexes[0] + 1}:J${headerIndexes[0] + 1}` : null,
-            totalRange: `A${finalData.length}:J${finalData.length}`,
+            titleRange: 'A1:I2',
+            subTitleRange: 'A3:I3',
+            tbodyRange: `A4:I${finalData.length}`,
+            tbodyRangeBorder: `A5:I${finalData.length - 2}`,
+            theadRange: headerIndexes?.length >= 1 ? `A${headerIndexes[0] + 1}:I${headerIndexes[0] + 1}` : null,
+            totalRange: `A${finalData.length}:I${finalData.length}`,
         };
 
         return addStyle(workbookBlob, dataInfo);
@@ -107,6 +106,8 @@ const ExportExcel = (props) => {
                     fontSize: 10,
                     verticalAlignment: 'top',
                 });
+
+                sheet.gridLinesVisible(false);
 
                 sheet.column('A').width(5).style({ horizontalAlignment: 'center', bold: true });
                 sheet.column('B').width(15);
@@ -123,7 +124,7 @@ const ExportExcel = (props) => {
                     bold: true,
                     horizontalAlignment: 'center',
                     verticalAlignment: 'center',
-                    fontSize: 16,
+                    fontSize: 18,
                 });
 
                 sheet.range(dataInfo.subTitleRange).merged(true).style({
@@ -143,6 +144,12 @@ const ExportExcel = (props) => {
                 if (dataInfo.tbodyRange) {
                     sheet.range(dataInfo.tbodyRange).style({
                         wrapText: true,
+                    });
+                }
+
+                if (dataInfo.tbodyRangeBorder) {
+                    sheet.range(dataInfo.tbodyRangeBorder).style({
+                        border: 'thin',
                     });
                 }
 

@@ -139,7 +139,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDepartment title={'Chỉnh sửa phòng ban'} />
+                                                <CreateDepartment socket={socket} title={'Chỉnh sửa phòng ban'} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -151,7 +151,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDepartment title={'Thêm phòng ban mới'} />
+                                                <CreateDepartment socket={socket} title={'Thêm phòng ban mới'} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -175,7 +175,7 @@ const App = () => {
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateUser title="Chỉnh sửa thành viên" />
+                                                <CreateUser socket={socket} title="Chỉnh sửa thành viên" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -187,7 +187,7 @@ const App = () => {
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateUser title="Thêm thành viên mới" />
+                                                <CreateUser socket={socket} title="Thêm thành viên mới" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -211,7 +211,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDocumentType title="Chỉnh sửa loại văn bản" />
+                                                <CreateDocumentType socket={socket} title="Chỉnh sửa loại văn bản" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -223,7 +223,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDocumentType title="Thêm loại văn bản mới" />
+                                                <CreateDocumentType socket={socket} title="Thêm loại văn bản mới" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -235,7 +235,7 @@ const App = () => {
                                     path="/documents/detail/:id"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <DocumentDetail />
+                                            <DocumentDetail socket={socket} />
                                         </DefaultLayout>
                                     }
                                 />
@@ -253,6 +253,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    socket={socket}
                                                     title="Sửa văn bản đi"
                                                     documentIn={false}
                                                     path="documents-out"
@@ -269,6 +270,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    socket={socket}
                                                     title="Thêm văn bản đi mới"
                                                     documentIn={false}
                                                     path="documents-out"
@@ -293,6 +295,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    socket={socket}
                                                     title="Sửa văn bản đến"
                                                     documentIn={true}
                                                     path="documents-in"
@@ -309,6 +312,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    socket={socket}
                                                     title="Thêm văn bản đến mới"
                                                     documentIn={true}
                                                     path="documents-in"
@@ -323,7 +327,7 @@ const App = () => {
                                     path="/profile"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <Profile />
+                                            <Profile socket={socket} />
                                         </DefaultLayout>
                                     }
                                 />

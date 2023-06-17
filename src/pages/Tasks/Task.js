@@ -31,11 +31,17 @@ const Task = ({ socket }) => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('taskChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllTask')) || false);
 
+    const [fName, setFName] = useState('');
+    const [fCreatedAt, setFCreatedAt] = useState('');
+    const [fDueDate, setFDueDate] = useState('');
+    const [fType, setFType] = useState('');
+    const [fStatus, setFStatus] = useState('');
     const [fLevel, setFLevel] = useState('');
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
+    const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
     const totalPage = Math.ceil(allTasks?.length / limit);
 
     useEffect(() => {
@@ -85,7 +91,7 @@ const Task = ({ socket }) => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await taskServices.getAllTask(page, limit, fLevel);
+            const res = await taskServices.getAllTask(page, limit, fName, fCreatedAt, fDueDate, fType, fStatus, fLevel);
             if (userRole === 'Admin' || userRole === 'Moderator') {
                 setTaskLists(res.tasks);
                 setAllTasks(res.allTasks);
@@ -95,14 +101,14 @@ const Task = ({ socket }) => {
             }
         };
         fetchApi();
-    }, [isSave, userRole, page, limit, fLevel]);
+    }, [isSave, userRole, page, limit, fName, fCreatedAt, fDueDate, fType, fStatus, fLevel]);
 
     const removeFilter = () => {
         setFLevel('');
     };
 
     const isFilters = () => {
-        if (fLevel) {
+        if (fName || fCreatedAt || fDueDate || fType || fStatus || fLevel) {
             return true;
         } else {
             return false;
@@ -115,6 +121,34 @@ const Task = ({ socket }) => {
         setRowStart(1);
         setRowEnd(0);
     }, [limit]);
+
+    useEffect(() => {
+        if (!fName) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fName]);
+
+    useEffect(() => {
+        if (!fCreatedAt) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fCreatedAt]);
+
+    useEffect(() => {
+        if (!fDueDate) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fDueDate]);
+
+    useEffect(() => {
+        if (!fStatus) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [fStatus]);
 
     useEffect(() => {
         if (!fLevel) return;
@@ -279,21 +313,45 @@ const Task = ({ socket }) => {
                 <div className="flex flex-col md:flex-row gap-5 mt-5">
                     <div className="flex-1">
                         <label className="text-[1.4rem]">Tên công việc:</label>
-                        <InputField className="default" placeholder="Tên công việc" />
+                        <InputField className="default" placeholder="Tên công việc" value={fName} setValue={setFName} />
                     </div>
                     <div className="flex-1">
                         <label className="text-[1.4rem]">Ngày bắt đầu:</label>
-                        <InputField name="date" className="default leading-[1.3]" />
+                        <InputField
+                            name="date"
+                            className="default leading-[1.3]"
+                            value={fCreatedAt}
+                            setValue={setFCreatedAt}
+                        />
                     </div>
                     <div className="flex-1">
                         <label className="text-[1.4rem]">Ngày kết thúc:</label>
-                        <InputField name="date" className="default leading-[1.3]" />
+                        <InputField
+                            name="datetime-local"
+                            className="default leading-[1.3]"
+                            value={fDueDate}
+                            setValue={setFDueDate}
+                        />
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-5 mt-[12.5px]">
                     <div className="flex-1">
+                        <label className="text-[1.4rem]">Loại:</label>
+                        <DropList
+                            selectedValue={fType}
+                            options={typeOptions}
+                            setValue={setFType}
+                            setId={() => undefined}
+                        />
+                    </div>
+                    <div className="flex-1">
                         <label className="text-[1.4rem]">Trạng thái:</label>
-                        <DropList options={statusOptions} />
+                        <DropList
+                            selectedValue={fStatus}
+                            options={statusOptions}
+                            setValue={setFStatus}
+                            setId={() => undefined}
+                        />
                     </div>
                     <div className="flex-1">
                         <label className="text-[1.4rem]">Mức độ:</label>

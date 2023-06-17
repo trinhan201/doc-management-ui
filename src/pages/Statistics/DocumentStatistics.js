@@ -6,9 +6,16 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
+import * as taskServices from '~/services/taskServices';
+import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/ExportExcel';
+import ExportWord from '~/components/ExportFile/ExportWord';
+import { errorNotify, successNotify } from '~/components/ToastMessage';
 
-const DocumentStatistics = () => {
+const DocumentStatistics = ({ socket }) => {
+    const [allTasks, setAllTasks] = useState([]);
+    const [isSave, setIsSave] = useState(false);
+    const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentTypes, setDocumentTypes] = useState([]);
@@ -21,6 +28,7 @@ const DocumentStatistics = () => {
 
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
+    const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     const flagOptions = [
         { label: 'Tất cả', value: '' },
         { label: 'Văn bản đến', value: true },
@@ -39,35 +47,135 @@ const DocumentStatistics = () => {
     }, []);
 
     const handleStatistic = async () => {
-        const res = await documentServices.getAllDocument(1, 1, flag?.value, '', '', fType, fStatus, fLevel, '');
-        if (res.code === 200) {
-            if (fFrom && fTo) {
-                const finalData = res?.allDocuments?.filter((d) => {
-                    return (
-                        new Date(d.sendDate).getTime() <= new Date(fTo).getTime() &&
-                        new Date(d.sendDate).getTime() >= new Date(fFrom).getTime()
-                    );
-                });
-                setAllDocuments(finalData);
+        if (flag || fType || fStatus || fLevel || (fFrom && fTo)) {
+            const res = await documentServices.getAllDocument(
+                1,
+                1,
+                flag?.value || '',
+                '',
+                '',
+                fType || '',
+                fStatus || '',
+                fLevel || '',
+                '',
+            );
+            if (res.code === 200) {
+                if (fFrom && fTo) {
+                    const finalData = res?.allDocuments?.filter((d) => {
+                        return (
+                            new Date(d.sendDate).getTime() <= new Date(fTo).getTime() &&
+                            new Date(d.sendDate).getTime() >= new Date(fFrom).getTime()
+                        );
+                    });
+                    setAllDocuments(finalData);
+                } else {
+                    setAllDocuments(res.allDocuments);
+                }
+                setPreview(true);
+                successNotify('Thống kê thành công');
             } else {
-                setAllDocuments(res.allDocuments);
+                console.log(res.message);
             }
-            setPreview(true);
         } else {
-            console.log(res.message);
+            errorNotify('Hãy chọn ít nhất 1 trường');
         }
     };
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
+            if (res.code === 200) {
+                setAllTasks(res.allTasks);
+            } else {
+                console.log(res.message);
+            }
+        };
+        fetchApi();
+    }, [isSave]);
+
+    const getAssignToIds = (arr) => {
+        const final = arr.map((item) => item.value);
+        return final;
+    };
+
+    useEffect(() => {
+        if (allTasks?.length === 0) return;
+        const timer = setInterval(async () => {
+            allTasks?.map(async (item) => {
+                const currDate = new Date();
+                const startDate = new Date(item?.createdAt);
+                const endDate = new Date(item?.dueDate);
+                const allDateToDo = endDate.getTime() - startDate.getTime();
+                const datesWerePassed = currDate.getTime() - startDate.getTime();
+                if (currDate.getTime() <= endDate.getTime()) {
+                    if (datesWerePassed >= (allDateToDo / 3) * 2) {
+                        if (item?.status === 'Sắp đến hạn') return;
+                        await taskServices.updateStatus(item?._id, { status: 'Sắp đến hạn' });
+                        setIsSave((isSave) => !isSave);
+
+                        const newNotiId = await Promise.all(
+                            getAssignToIds(item?.assignTo)?.map(async (userId) => {
+                                const noti = await notificationServices.createNotification({
+                                    notification: `Nhiệm vụ ${item.taskName} sắp đến hạn`,
+                                    userId: userId,
+                                    linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                                });
+                                return { notiId: noti.data._id, userId: noti.data.userId };
+                            }),
+                        );
+                        socket.current?.emit('sendNotification', {
+                            senderId: '',
+                            _id: newNotiId,
+                            receiverId: getAssignToIds(item?.assignTo),
+                            text: `Nhiệm vụ ${item?.taskName} sắp đến hạn`,
+                            linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                            isRead: false,
+                        });
+                    } else {
+                        await taskServices.updateStatus(item?._id, { status: 'Còn hạn' });
+                        setIsSave((isSave) => !isSave);
+                    }
+                } else {
+                    if (item?.status === 'Quá hạn') return;
+                    await taskServices.updateStatus(item?._id, { status: 'Quá hạn' });
+                    setIsSave((isSave) => !isSave);
+
+                    const newNotiId = await Promise.all(
+                        getAssignToIds(item?.assignTo)?.map(async (userId) => {
+                            const noti = await notificationServices.createNotification({
+                                notification: `Nhiệm vụ ${item.taskName} đã quá hạn`,
+                                userId: userId,
+                                linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                            });
+                            return { notiId: noti.data._id, userId: noti.data.userId };
+                        }),
+                    );
+                    socket.current?.emit('sendNotification', {
+                        senderId: '',
+                        _id: newNotiId,
+                        receiverId: getAssignToIds(item?.assignTo),
+                        text: `Nhiệm vụ ${item?.taskName} đã quá hạn`,
+                        linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                        isRead: false,
+                    });
+                }
+            });
+        }, 60000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [allTasks, socket]);
 
     console.log(allDocuments);
 
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way border-t-[3px] border-blue-600">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-center justify-between">
                     <h1 className="text-[2rem] md:text-[2.4rem] font-bold">Thống kê văn bản</h1>
                     <button
                         onClick={handleStatistic}
-                        className="text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-blue-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap"
+                        className="text-[1.3rem] w-fit md:text-[1.6rem] text-[white] bg-blue-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap"
                     >
                         <FontAwesomeIcon icon={faChartColumn} /> Thống kê
                     </button>
@@ -129,15 +237,35 @@ const DocumentStatistics = () => {
                 </div>
             </div>
             <div className={preview ? 'bg-white p-[16px] mb-5 shadow-4Way border-t-[3px] border-blue-600' : 'hidden'}>
-                <ExportExcel
-                    allDocuments={allDocuments}
-                    flag={flag?.label}
-                    fType={fType}
-                    fStatus={fStatus}
-                    fLevel={fLevel}
-                    fFrom={fFrom}
-                    fTo={fTo}
-                />
+                <div className="flex items-center gap-5 w-full md:w-[50%]">
+                    <DropList
+                        selectedValue={exportType}
+                        options={exportOptions}
+                        setValue={setExportType}
+                        setId={() => undefined}
+                    />
+                    {exportType === 'Excel(.xlsx)' ? (
+                        <ExportExcel
+                            allDocuments={allDocuments}
+                            flag={flag?.label}
+                            fType={fType}
+                            fStatus={fStatus}
+                            fLevel={fLevel}
+                            fFrom={fFrom}
+                            fTo={fTo}
+                        />
+                    ) : (
+                        <ExportWord
+                            allDocuments={allDocuments}
+                            flag={flag?.label}
+                            fType={fType}
+                            fStatus={fStatus}
+                            fLevel={fLevel}
+                            fFrom={fFrom}
+                            fTo={fTo}
+                        />
+                    )}
+                </div>
             </div>
         </>
     );
