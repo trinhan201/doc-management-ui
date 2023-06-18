@@ -8,8 +8,8 @@ import * as documentServices from '~/services/documentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
-import ExportExcel from '~/components/ExportFile/ExportExcel';
-import ExportWord from '~/components/ExportFile/ExportWord';
+import ExportExcel from '~/components/ExportFile/Document/ExportExcel';
+import ExportWord from '~/components/ExportFile/Document/ExportWord';
 import { errorNotify, successNotify } from '~/components/ToastMessage';
 
 const DocumentStatistics = ({ socket }) => {
