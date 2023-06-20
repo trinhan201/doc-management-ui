@@ -1,12 +1,12 @@
-import { faPlusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { faFileExcel, faFileWord, faFilePowerpoint, faFilePdf, faFile } from '@fortawesome/free-regular-svg-icons';
+import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 
 const DocumentDetail = ({ socket }) => {
     const [allTasks, setAllTasks] = useState([]);
@@ -20,30 +20,6 @@ const DocumentDetail = ({ socket }) => {
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const ref = useRef();
-
-    const setLevelColor = (level) => {
-        if (level === 'Ưu tiên') {
-            return 'w-fit px-6 py-4 level priority';
-        } else if (level === 'Khẩn cấp') {
-            return 'w-fit px-6 py-4 level emergency';
-        } else {
-            return 'w-fit px-6 py-4 level normal';
-        }
-    };
-
-    const setFileIcon = (fileName) => {
-        if (fileName.includes('.xlsx') || fileName.includes('.csv')) {
-            return <FontAwesomeIcon className="w-full h-full text-green-700" icon={faFileExcel} />;
-        } else if (fileName.includes('.pptx') || fileName.includes('.ppt')) {
-            return <FontAwesomeIcon className="w-full h-full text-[#ff5722]" icon={faFilePowerpoint} />;
-        } else if (fileName.includes('.docx') || fileName.includes('.doc')) {
-            return <FontAwesomeIcon className="w-full h-full text-blue-700" icon={faFileWord} />;
-        } else if (fileName.includes('.pdf')) {
-            return <FontAwesomeIcon className="w-full h-full text-red-600" icon={faFilePdf} />;
-        } else {
-            return <FontAwesomeIcon className="w-full h-full text-black" icon={faFile} />;
-        }
-    };
 
     const handleDeleteFile = async (fileName) => {
         const data = {

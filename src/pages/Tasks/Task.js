@@ -15,8 +15,9 @@ import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
-import { successNotify, errorNotify } from '~/components/ToastMessage';
 import TaskCard from '~/components/Card/TaskCard';
+import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
+import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 
 const Task = ({ socket }) => {
     const [userId, setUserId] = useState('');
@@ -104,6 +105,11 @@ const Task = ({ socket }) => {
     }, [isSave, userRole, page, limit, fName, fCreatedAt, fDueDate, fType, fStatus, fLevel]);
 
     const removeFilter = () => {
+        setFName('');
+        setFCreatedAt('');
+        setFDueDate('');
+        setFType('');
+        setFStatus('');
         setFLevel('');
     };
 
@@ -157,21 +163,6 @@ const Task = ({ socket }) => {
         setRowEnd(0);
     }, [fLevel]);
 
-    const handleCheck = (id) => {
-        setChecked((prev) => {
-            const isChecked = checked?.includes(id);
-            if (isChecked) {
-                setCheckedAll(false);
-                return checked?.filter((item) => item !== id);
-            } else {
-                if ([...prev, id].length === allTasks?.length) {
-                    setCheckedAll(true);
-                }
-                return [...prev, id];
-            }
-        });
-    };
-
     useEffect(() => {
         localStorage.setItem('taskChecked', JSON.stringify(checked));
     }, [checked]);
@@ -185,52 +176,8 @@ const Task = ({ socket }) => {
     };
 
     useEffect(() => {
-        const handleCheckAll = () => {
-            const idsArray = [];
-            if (checkedAll === false) {
-                if (checked?.length === allTasks?.length) {
-                    return setChecked([]);
-                }
-                return setChecked((checked) => checked);
-            }
-            allTasks.map((item) => {
-                return idsArray.push(item._id);
-            });
-            setChecked(idsArray);
-        };
-        handleCheckAll();
+        handleCheckAll(checkedAll, checked?.length, allTasks, setChecked);
     }, [checkedAll, allTasks, checked?.length]);
-
-    const handleDelete = async (id) => {
-        const confirmMsg = 'Bạn có chắc muốn xóa công việc này không?';
-        if (!window.confirm(confirmMsg)) return;
-        const res = await taskServices.deleteTaskById(id);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res);
-        }
-    };
-
-    const handleDeleteMany = async () => {
-        const confirmMsg = 'Bạn có chắc muốn xóa những công việc này không?';
-        if (!window.confirm(confirmMsg)) return;
-        const data = {
-            arrayId: checked,
-        };
-        const res = await taskServices.deleteManyTask(data);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setChecked([]);
-            setPage(1);
-            setRowStart(1);
-            setRowEnd(0);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res);
-        }
-    };
 
     const getAssignToIds = (arr) => {
         const final = arr.map((item) => item.value);
@@ -382,7 +329,18 @@ const Task = ({ socket }) => {
                     }
                 >
                     <button
-                        onClick={handleDeleteMany}
+                        onClick={() =>
+                            handleDeleteMany(
+                                'công việc',
+                                checked,
+                                taskServices.deleteManyTask,
+                                setChecked,
+                                setPage,
+                                setRowStart,
+                                setRowEnd,
+                                setIsSave,
+                            )
+                        }
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -457,7 +415,15 @@ const Task = ({ socket }) => {
                                                             <input
                                                                 type="checkbox"
                                                                 checked={checked?.includes(tl?._id)}
-                                                                onChange={() => handleCheck(tl?._id)}
+                                                                onChange={() =>
+                                                                    handleCheck(
+                                                                        checked,
+                                                                        setChecked,
+                                                                        setCheckedAll,
+                                                                        tl?._id,
+                                                                        allTasks,
+                                                                    )
+                                                                }
                                                             />
                                                         </div>
                                                     </td>
@@ -542,7 +508,13 @@ const Task = ({ socket }) => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() => handleDelete(tl?._id)}
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        'công việc',
+                                                                        taskServices.deleteTaskById(tl?._id),
+                                                                        setIsSave,
+                                                                    )
+                                                                }
                                                                 className={
                                                                     userRole === 'Member'
                                                                         ? 'hidden'
@@ -644,9 +616,13 @@ const Task = ({ socket }) => {
                                 progressClass={setProgressPercentage(tl?.progress)}
                                 assignTo={tl?.assignTo}
                                 allUsers={allUsers}
-                                handleDelete={() => handleDelete(tl?._id)}
+                                handleDelete={() =>
+                                    handleDelete('công việc', taskServices.deleteTaskById(tl?._id), setIsSave)
+                                }
                                 checkBox={checked?.includes(tl?._id)}
-                                handleCheckBox={() => handleCheck(tl?._id)}
+                                handleCheckBox={() =>
+                                    handleCheck(checked, setChecked, setCheckedAll, tl?._id, allTasks)
+                                }
                             />
                         );
                     })

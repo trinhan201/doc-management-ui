@@ -17,6 +17,8 @@ import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 import { useDebounce } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
+import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 
 const DocumentType = ({ socket }) => {
     const [allTasks, setAllTasks] = useState([]);
@@ -88,21 +90,6 @@ const DocumentType = ({ socket }) => {
         handleActivateDocumentType();
     }, [activeId, isActived]);
 
-    const handleCheck = (id) => {
-        setChecked((prev) => {
-            const isChecked = checked?.includes(id);
-            if (isChecked) {
-                setCheckedAll(false);
-                return checked?.filter((item) => item !== id);
-            } else {
-                if ([...prev, id].length === allDocumentTypes.length) {
-                    setCheckedAll(true);
-                }
-                return [...prev, id];
-            }
-        });
-    };
-
     useEffect(() => {
         localStorage.setItem('documentTypeChecked', JSON.stringify(checked));
     }, [checked]);
@@ -116,52 +103,8 @@ const DocumentType = ({ socket }) => {
     };
 
     useEffect(() => {
-        const handleCheckAll = () => {
-            const idsArray = [];
-            if (checkedAll === false) {
-                if (checked?.length === allDocumentTypes?.length) {
-                    return setChecked([]);
-                }
-                return setChecked((checked) => checked);
-            }
-            allDocumentTypes.map((item) => {
-                return idsArray.push(item._id);
-            });
-            setChecked(idsArray);
-        };
-        handleCheckAll();
+        handleCheckAll(checkedAll, checked?.length, allDocumentTypes, setChecked);
     }, [checkedAll, allDocumentTypes, checked?.length]);
-
-    const handleDelete = async (id) => {
-        const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn loại văn bản không?';
-        if (!window.confirm(confirmMsg)) return;
-        const res = await documentTypeServices.deleteDocumentTypeById(id);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res);
-        }
-    };
-
-    const handleDeleteMany = async () => {
-        const confirmMsg = 'Bạn có chắc muốn xóa vĩnh viễn những loại văn bản này không không?';
-        if (!window.confirm(confirmMsg)) return;
-        const data = {
-            arrayId: checked,
-        };
-        const res = await documentTypeServices.deleteManyDocumentType(data);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setChecked([]);
-            setPage(1);
-            setRowStart(1);
-            setRowEnd(0);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res);
-        }
-    };
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -272,7 +215,18 @@ const DocumentType = ({ socket }) => {
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Các loại văn bản</h1>
                 <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
                     <button
-                        onClick={handleDeleteMany}
+                        onClick={() =>
+                            handleDeleteMany(
+                                'loại văn bản',
+                                checked,
+                                documentTypeServices.deleteManyDocumentType,
+                                setChecked,
+                                setPage,
+                                setRowStart,
+                                setRowEnd,
+                                setIsSave,
+                            )
+                        }
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -332,7 +286,15 @@ const DocumentType = ({ socket }) => {
                                                             <input
                                                                 type="checkbox"
                                                                 checked={checked?.includes(dtl?._id)}
-                                                                onChange={() => handleCheck(dtl?._id)}
+                                                                onChange={() =>
+                                                                    handleCheck(
+                                                                        checked,
+                                                                        setChecked,
+                                                                        setCheckedAll,
+                                                                        dtl?._id,
+                                                                        allDocumentTypes,
+                                                                    )
+                                                                }
                                                             />
                                                         </div>
                                                     </td>
@@ -369,7 +331,15 @@ const DocumentType = ({ socket }) => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() => handleDelete(dtl?._id)}
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        'loại văn bản',
+                                                                        documentTypeServices.deleteDocumentTypeById(
+                                                                            dtl?._id,
+                                                                        ),
+                                                                        setIsSave,
+                                                                    )
+                                                                }
                                                                 className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
@@ -466,9 +436,17 @@ const DocumentType = ({ socket }) => {
                                 activeChecked={dtl?.status}
                                 setIsActived={() => setIsActived(!dtl?.status)}
                                 setActiveId={() => setActiveId(dtl?._id)}
-                                handleDelete={() => handleDelete(dtl?._id)}
+                                handleDelete={() =>
+                                    handleDelete(
+                                        'loại văn bản',
+                                        documentTypeServices.deleteDocumentTypeById(dtl?._id),
+                                        setIsSave,
+                                    )
+                                }
                                 checkBox={checked?.includes(dtl?._id)}
-                                handleCheckBox={() => handleCheck(dtl?._id)}
+                                handleCheckBox={() =>
+                                    handleCheck(checked, setChecked, setCheckedAll, dtl?._id, allDocumentTypes)
+                                }
                             />
                         );
                     })

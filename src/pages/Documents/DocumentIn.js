@@ -20,6 +20,9 @@ import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useDebounce } from '~/hooks';
+import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
+import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
+import { setLevelColor } from '~/utils/setMultiConditions';
 
 const DocumentIn = ({ socket }) => {
     const [allTasks, setAllTasks] = useState([]);
@@ -52,16 +55,6 @@ const DocumentIn = ({ socket }) => {
     const nameValue = useDebounce(fName, 300);
     const codeValue = useDebounce(fCode, 300);
     const userRole = JSON.parse(localStorage.getItem('userRole'));
-
-    const setLevelColor = (level) => {
-        if (level === 'Ưu tiên') {
-            return 'w-fit level priority';
-        } else if (level === 'Khẩn cấp') {
-            return 'w-fit level emergency';
-        } else {
-            return 'w-fit level normal';
-        }
-    };
 
     const handleNextPage = () => {
         setPage(page + 1);
@@ -216,21 +209,6 @@ const DocumentIn = ({ socket }) => {
         handleChangeLocation();
     }, [locationId, documentLocation]);
 
-    const handleCheck = (id) => {
-        setChecked((prev) => {
-            const isChecked = checked?.includes(id);
-            if (isChecked) {
-                setCheckedAll(false);
-                return checked?.filter((item) => item !== id);
-            } else {
-                if ([...prev, id].length === allDocuments?.length) {
-                    setCheckedAll(true);
-                }
-                return [...prev, id];
-            }
-        });
-    };
-
     useEffect(() => {
         localStorage.setItem('documentInChecked', JSON.stringify(checked));
     }, [checked]);
@@ -244,52 +222,8 @@ const DocumentIn = ({ socket }) => {
     };
 
     useEffect(() => {
-        const handleCheckAll = () => {
-            const idsArray = [];
-            if (checkedAll === false) {
-                if (checked?.length === allDocuments?.length) {
-                    return setChecked([]);
-                }
-                return setChecked((checked) => checked);
-            }
-            allDocuments.map((item) => {
-                return idsArray.push(item._id);
-            });
-            setChecked(idsArray);
-        };
-        handleCheckAll();
+        handleCheckAll(checkedAll, checked?.length, allDocuments, setChecked);
     }, [checkedAll, allDocuments, checked?.length]);
-
-    const handleDelete = async (id) => {
-        const confirmMsg = 'Bạn có chắc muốn xóa văn bản này không?';
-        if (!window.confirm(confirmMsg)) return;
-        const res = await documentServices.deleteDocumentById(id);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res);
-        }
-    };
-
-    const handleDeleteMany = async () => {
-        const confirmMsg = 'Bạn có chắc muốn xóa những văn bản này không?';
-        if (!window.confirm(confirmMsg)) return;
-        const data = {
-            arrayId: checked,
-        };
-        const res = await documentServices.deleteManyDocument(data);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setChecked([]);
-            setPage(1);
-            setRowStart(1);
-            setRowEnd(0);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res);
-        }
-    };
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -448,7 +382,18 @@ const DocumentIn = ({ socket }) => {
                     }
                 >
                     <button
-                        onClick={handleDeleteMany}
+                        onClick={() =>
+                            handleDeleteMany(
+                                'văn bản đến',
+                                checked,
+                                documentServices.deleteManyDocument,
+                                setChecked,
+                                setPage,
+                                setRowStart,
+                                setRowEnd,
+                                setIsSave,
+                            )
+                        }
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -524,7 +469,15 @@ const DocumentIn = ({ socket }) => {
                                                             <input
                                                                 type="checkbox"
                                                                 checked={checked?.includes(dcl?._id)}
-                                                                onChange={() => handleCheck(dcl?._id)}
+                                                                onChange={() =>
+                                                                    handleCheck(
+                                                                        checked,
+                                                                        setChecked,
+                                                                        setCheckedAll,
+                                                                        dcl?._id,
+                                                                        allDocuments,
+                                                                    )
+                                                                }
                                                             />
                                                         </div>
                                                     </td>
@@ -599,7 +552,13 @@ const DocumentIn = ({ socket }) => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() => handleDelete(dcl?._id)}
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        'văn bản đến',
+                                                                        documentServices.deleteDocumentById(dcl?._id),
+                                                                        setIsSave,
+                                                                    )
+                                                                }
                                                                 className={
                                                                     userRole === 'Member'
                                                                         ? 'hidden'
@@ -705,9 +664,17 @@ const DocumentIn = ({ socket }) => {
                                 setLocationValue={setDocumentLocation}
                                 setLocationId={() => setLocationId(dcl?._id)}
                                 locationOptions={departments}
-                                handleDelete={() => handleDelete(dcl?._id)}
+                                handleDelete={() =>
+                                    handleDelete(
+                                        'văn bản đến',
+                                        documentServices.deleteDocumentById(dcl?._id),
+                                        setIsSave,
+                                    )
+                                }
                                 checkBox={checked?.includes(dcl?._id)}
-                                handleCheckBox={() => handleCheck(dcl?._id)}
+                                handleCheckBox={() =>
+                                    handleCheck(checked, setChecked, setCheckedAll, dcl?._id, allDocuments)
+                                }
                             />
                         );
                     })
