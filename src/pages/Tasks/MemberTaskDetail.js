@@ -11,9 +11,9 @@ import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const MemberTaskDetail = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [tab, setTab] = useState('detail');
     const [allUsers, setAllUsers] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
@@ -26,6 +26,7 @@ const MemberTaskDetail = ({ socket }) => {
     const [submitStatus, setSubmitStatus] = useState('');
 
     const navigate = useNavigate();
+    const allTasks = useFetchTasks({ isSave });
     const ref = useRef();
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
@@ -219,18 +220,6 @@ const MemberTaskDetail = ({ socket }) => {
             errorNotify(res.message);
         }
     };
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

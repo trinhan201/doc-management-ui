@@ -8,11 +8,11 @@ import ExportExcel from '~/components/ExportFile/Task/ExportExcel';
 import ExportWord from '~/components/ExportFile/Task/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const TaskStatistics = ({ socket }) => {
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
-    const [allTasks, setAllTasks] = useState([]);
     const [statisticTasks, setStatisticTasks] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [fType, setFType] = useState('');
@@ -22,23 +22,13 @@ const TaskStatistics = ({ socket }) => {
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
 
+    const allTasks = useFetchTasks({ isSave });
+
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const progressOptions = ['Đang xử lý', 'Chờ duyệt', 'Hoàn thành'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

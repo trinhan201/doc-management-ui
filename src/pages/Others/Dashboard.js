@@ -7,8 +7,8 @@ import PieChart from '~/components/Chart/PieChart';
 import Select from 'react-select';
 import * as userServices from '~/services/userServices';
 import * as documentServices from '~/services/documentServices';
-import * as taskServices from '~/services/taskServices';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const Dashboard = ({ socket }) => {
     const [isSave, setIsSave] = useState(false);
@@ -17,7 +17,8 @@ const Dashboard = ({ socket }) => {
     const [allDocuments, setAllDocuments] = useState([]);
     const [allDocumentIns, setAllDocumentIns] = useState([]);
     const [allDocumentOuts, setAllDocumentOuts] = useState([]);
-    const [allTasks, setAllTasks] = useState([]);
+
+    const allTasks = useFetchTasks({ isSave });
     const [barOption, setBarOption] = useState({
         label: 'Theo loại',
         value: 'type',
@@ -101,18 +102,6 @@ const Dashboard = ({ socket }) => {
         };
         fetchApi();
     }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

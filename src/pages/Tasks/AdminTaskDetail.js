@@ -18,9 +18,9 @@ import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const AdminTaskDetail = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [percent, setPercent] = useState('');
@@ -33,6 +33,7 @@ const AdminTaskDetail = ({ socket }) => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
     const navigate = useNavigate();
+    const allTasks = useFetchTasks({ isSave });
 
     const onUpdateTab = (value) => {
         setTab(value);
@@ -175,18 +176,6 @@ const AdminTaskDetail = ({ socket }) => {
         const final = arr.map((item) => item.value);
         return final;
     };
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

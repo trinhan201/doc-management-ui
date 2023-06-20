@@ -4,13 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InputField from '~/components/InputField';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 import * as departmentServices from '~/services/departmentServices';
-import * as taskServices from '~/services/taskServices';
 import { fullNameValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const CreateDepartment = ({ title, socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [fullName, setFullName] = useState('');
     const [note, setNote] = useState('');
@@ -19,6 +18,7 @@ const CreateDepartment = ({ title, socket }) => {
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
 
+    const allTasks = useFetchTasks({ isSave });
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -60,18 +60,6 @@ const CreateDepartment = ({ title, socket }) => {
             errorNotify(res);
         }
     };
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

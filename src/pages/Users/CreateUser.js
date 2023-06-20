@@ -6,13 +6,12 @@ import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
 import * as departmentServices from '~/services/departmentServices';
-import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const CreateUser = ({ title, socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [fullName, setFullName] = useState('');
     const [date, setDate] = useState('');
@@ -25,6 +24,8 @@ const CreateUser = ({ title, socket }) => {
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
     const [departments, setDepartments] = useState([]);
+
+    const allTasks = useFetchTasks({ isSave });
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -81,18 +82,6 @@ const CreateUser = ({ title, socket }) => {
             errorNotify(res);
         }
     };
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

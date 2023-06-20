@@ -13,9 +13,9 @@ import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
+import { useFetchTasks } from '~/hooks';
 
 const CreateTask = ({ title, socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [prevAssignTo, setPrevAssignTo] = useState(JSON.parse(localStorage.getItem('prevAssignTo')) || []);
     const [allUsers, setAllUsers] = useState([]);
@@ -38,6 +38,7 @@ const CreateTask = ({ title, socket }) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    const allTasks = useFetchTasks({ isSave });
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
 
@@ -203,18 +204,6 @@ const CreateTask = ({ title, socket }) => {
         };
         fetchApi();
     }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

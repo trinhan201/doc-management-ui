@@ -13,15 +13,13 @@ import SwitchButton from '~/components/SwitchButton';
 import DocumentTypeCard from '~/components/Card/DocumentTypeCard';
 import InputField from '~/components/InputField';
 import * as documentTypeServices from '~/services/documentTypeServices';
-import * as taskServices from '~/services/taskServices';
-import { useDebounce } from '~/hooks';
+import { useDebounce, useFetchTasks } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const DocumentType = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [allDocumentTypes, setAllDocumentTypes] = useState([]);
     const [documentTypeLists, setDocumentTypeLists] = useState([]);
@@ -37,6 +35,7 @@ const DocumentType = ({ socket }) => {
 
     const totalPage = Math.ceil(allDocumentTypes?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
+    const allTasks = useFetchTasks({ isSave });
 
     const handleNextPage = () => {
         setPage(page + 1);
@@ -105,18 +104,6 @@ const DocumentType = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDocumentTypes, setChecked);
     }, [checkedAll, allDocumentTypes, checked?.length]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

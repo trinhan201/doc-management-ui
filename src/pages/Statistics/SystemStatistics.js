@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
-import * as taskServices from '~/services/taskServices';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
@@ -11,12 +10,12 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const SystemStatistics = ({ socket }) => {
     const [allDocumentIns, setAllDocumentIns] = useState([]);
     const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
-    const [allTasks, setAllTasks] = useState([]);
     const [allDepartments, setAllDepartments] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [fFrom, setFFrom] = useState('');
@@ -25,19 +24,8 @@ const SystemStatistics = ({ socket }) => {
     const [preview, setPreview] = useState(false);
     const [filterData, setFilterData] = useState([]);
 
+    const allTasks = useFetchTasks({ isSave });
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

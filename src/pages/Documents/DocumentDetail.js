@@ -3,18 +3,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import * as documentServices from '~/services/documentServices';
-import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const DocumentDetail = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [document, setDocument] = useState({});
     const [percent, setPercent] = useState('');
     const [statusStyle, setStatusStyle] = useState('');
     const [attachFiles, setAttachFiles] = useState([]);
     const [isSave, setIsSave] = useState(false);
+
+    const allTasks = useFetchTasks({ isSave });
     const { id } = useParams();
     const navigate = useNavigate();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
@@ -79,18 +80,6 @@ const DocumentDetail = ({ socket }) => {
         };
         fetchApi();
     }, [id, isSave]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

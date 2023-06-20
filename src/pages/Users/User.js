@@ -15,16 +15,14 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
-import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useDebounce } from '~/hooks';
+import { useDebounce, useFetchTasks } from '~/hooks';
 import UserDetailCard from '~/components/Card/UserDetailCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const User = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [showUserDetail, setShowUserDetail] = useState(false);
     const [user, setUser] = useState({});
     const [searchValue, setSearchValue] = useState('');
@@ -46,6 +44,7 @@ const User = ({ socket }) => {
 
     const totalPage = Math.ceil(allUsers.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
+    const allTasks = useFetchTasks({ isSave });
 
     const handleNextPage = () => {
         setPage(page + 1);
@@ -142,18 +141,6 @@ const User = ({ socket }) => {
             return;
         }
     };
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

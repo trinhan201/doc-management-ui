@@ -16,16 +16,14 @@ import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
-import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useDebounce } from '~/hooks';
+import { useDebounce, useFetchTasks } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const DocumentOut = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [documentTypes, setDocumentTypes] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
@@ -54,6 +52,7 @@ const DocumentOut = ({ socket }) => {
     const totalPage = Math.ceil(allDocuments?.length / limit);
     const nameValue = useDebounce(fName, 300);
     const codeValue = useDebounce(fCode, 300);
+    const allTasks = useFetchTasks({ isSave });
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     const handleNextPage = () => {
@@ -224,18 +223,6 @@ const DocumentOut = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDocuments, setChecked);
     }, [checkedAll, allDocuments, checked?.length]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

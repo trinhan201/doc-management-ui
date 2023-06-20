@@ -13,15 +13,13 @@ import SwitchButton from '~/components/SwitchButton';
 import DepartmentCard from '~/components/Card/DepartmentCard';
 import InputField from '~/components/InputField';
 import * as departmentServices from '~/services/departmentServices';
-import * as taskServices from '~/services/taskServices';
-import { useDebounce } from '~/hooks';
+import { useDebounce, useFetchTasks } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const Department = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [allDepartments, setAllDepartments] = useState([]);
     const [departmentLists, setDepartmentLists] = useState([]);
@@ -35,6 +33,7 @@ const Department = ({ socket }) => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('departmentChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllDepartment')) || false);
 
+    const allTasks = useFetchTasks({ isSave });
     const totalPage = Math.ceil(allDepartments?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
 
@@ -105,18 +104,6 @@ const Department = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDepartments, setChecked);
     }, [checkedAll, allDepartments, checked?.length]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;

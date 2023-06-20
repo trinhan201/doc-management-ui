@@ -6,14 +6,13 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
-import * as taskServices from '~/services/taskServices';
 import ExportExcel from '~/components/ExportFile/Document/ExportExcel';
 import ExportWord from '~/components/ExportFile/Document/ExportWord';
 import { errorNotify, successNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchTasks } from '~/hooks';
 
 const DocumentStatistics = ({ socket }) => {
-    const [allTasks, setAllTasks] = useState([]);
     const [isSave, setIsSave] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
@@ -26,6 +25,7 @@ const DocumentStatistics = ({ socket }) => {
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
 
+    const allTasks = useFetchTasks({ isSave });
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
@@ -80,18 +80,6 @@ const DocumentStatistics = ({ socket }) => {
             errorNotify('Hãy chọn ít nhất 1 trường');
         }
     };
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllTasks(res.allTasks);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, [isSave]);
 
     useEffect(() => {
         if (allTasks?.length === 0) return;
