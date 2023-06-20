@@ -70,10 +70,10 @@ export const deleteManyTask = async (data = {}) => {
     }
 };
 
-export const getAllTask = async (page, limit, taskName, createdAt, dueDate, type, status, level) => {
+export const getAllTask = async (page, limit, taskName, createdAt, dueDate, type, status, level, progress) => {
     try {
         const res = await httpRequest.get(
-            `/task/get-all?page=${page}&limit=${limit}&taskName=${taskName}&createdAt=${createdAt}&dueDate=${dueDate}&type=${type}&status=${status}&level=${level}`,
+            `/task/get-all?page=${page}&limit=${limit}&taskName=${taskName}&createdAt=${createdAt}&dueDate=${dueDate}&type=${type}&status=${status}&level=${level}&progress=${progress}`,
         );
         return res.data;
     } catch (error) {

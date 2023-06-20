@@ -35,7 +35,7 @@ const ExportExcel = (props) => {
 
         const subTitle = [
             {
-                A: `Tổng hợp công việc: ${props.progress || '?'} - ${props.fType || '?'} - ${props.fStatus || '?'} - ${
+                A: `Tổng hợp công việc: ${props.fProgress || '?'} - ${props.fType || '?'} - ${props.fStatus || '?'} - ${
                     props.fLevel || '?'
                 } - ${`Từ ngày ${props.fFrom || '?'} đến ngày ${props.fTo || '?'}`}`,
             },

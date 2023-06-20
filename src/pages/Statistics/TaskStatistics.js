@@ -42,7 +42,17 @@ const TaskStatistics = ({ socket }) => {
 
     const handleStatistic = async () => {
         if (fProgress || fType || fStatus || fLevel || (fFrom && fTo)) {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', fType || '', fStatus || '', fLevel || '');
+            const res = await taskServices.getAllTask(
+                1,
+                1,
+                '',
+                '',
+                '',
+                fType || '',
+                fStatus || '',
+                fLevel || '',
+                fProgress || '',
+            );
             if (res.code === 200) {
                 let finalData;
                 if (fFrom && fTo) {
@@ -67,6 +77,8 @@ const TaskStatistics = ({ socket }) => {
             errorNotify('Hãy chọn ít nhất 1 trường');
         }
     };
+
+    console.log(statisticTasks);
 
     return (
         <>

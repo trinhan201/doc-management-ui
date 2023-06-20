@@ -18,6 +18,7 @@ import TaskCard from '~/components/Card/TaskCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useDebounce } from '~/hooks';
 
 const Task = ({ socket }) => {
     const [allUsers, setAllUsers] = useState([]);
@@ -38,6 +39,7 @@ const Task = ({ socket }) => {
     const [fStatus, setFStatus] = useState('');
     const [fLevel, setFLevel] = useState('');
 
+    const nameValue = useDebounce(fName, 300);
     const userRole = JSON.parse(localStorage.getItem('userRole'));
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
@@ -86,7 +88,17 @@ const Task = ({ socket }) => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await taskServices.getAllTask(page, limit, fName, fCreatedAt, fDueDate, fType, fStatus, fLevel);
+            const res = await taskServices.getAllTask(
+                page,
+                limit,
+                nameValue,
+                fCreatedAt,
+                fDueDate,
+                fType,
+                fStatus,
+                fLevel,
+                '',
+            );
             if (userRole === 'Admin' || userRole === 'Moderator') {
                 setTaskLists(res.tasks);
                 setAllTasks(res.allTasks);
@@ -96,7 +108,7 @@ const Task = ({ socket }) => {
             }
         };
         fetchApi();
-    }, [isSave, userRole, page, limit, fName, fCreatedAt, fDueDate, fType, fStatus, fLevel]);
+    }, [isSave, userRole, page, limit, nameValue, fCreatedAt, fDueDate, fType, fStatus, fLevel]);
 
     const removeFilter = () => {
         setFName('');
@@ -123,11 +135,11 @@ const Task = ({ socket }) => {
     }, [limit]);
 
     useEffect(() => {
-        if (!fName) return;
+        if (!nameValue) return;
         setPage(1);
         setRowStart(1);
         setRowEnd(0);
-    }, [fName]);
+    }, [nameValue]);
 
     useEffect(() => {
         if (!fCreatedAt) return;
