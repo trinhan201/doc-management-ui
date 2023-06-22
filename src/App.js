@@ -117,9 +117,13 @@ const App = () => {
                                 <Route
                                     path="/dashboard"
                                     element={
-                                        <DefaultLayout socket={socket}>
-                                            <Dashboard socket={socket} />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout socket={socket}>
+                                                <Dashboard socket={socket} />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
@@ -381,25 +385,37 @@ const App = () => {
                                 <Route
                                     path="/statistics/documents"
                                     element={
-                                        <DefaultLayout socket={socket}>
-                                            <DocumentStatistics socket={socket} />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout socket={socket}>
+                                                <DocumentStatistics socket={socket} />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/statistics/tasks"
                                     element={
-                                        <DefaultLayout socket={socket}>
-                                            <TaskStatistics socket={socket} />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout socket={socket}>
+                                                <TaskStatistics socket={socket} />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                                 <Route
                                     path="/statistics/systems"
                                     element={
-                                        <DefaultLayout socket={socket}>
-                                            <SystemStatistics socket={socket} />
-                                        </DefaultLayout>
+                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                            <DefaultLayout socket={socket}>
+                                                <SystemStatistics socket={socket} />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
                                     }
                                 />
                             </>

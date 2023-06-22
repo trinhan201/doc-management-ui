@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 import InputField from '~/components/InputField';
 import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
@@ -29,9 +30,10 @@ const Signin = ({ setIsSuccess }) => {
         if (res.code === 200) {
             localStorage.setItem('accessToken', res.accessToken);
             localStorage.setItem('refreshToken', res.refreshToken);
+            const decodedToken = jwt_decode(res.accessToken);
             successNotify(res.message);
             setIsSuccess(true);
-            navigate('/dashboard');
+            navigate(decodedToken.role === 'Member' ? '/documents/documents-in' : '/dashboard');
         } else {
             errorNotify(res);
         }

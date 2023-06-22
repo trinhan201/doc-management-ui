@@ -6,10 +6,13 @@ import {
     faArrowTurnUp,
     faChartColumn,
     faFile,
+    faFileLines,
     faFontAwesome,
     faGauge,
+    faGear,
     faLayerGroup,
     faListCheck,
+    faTableList,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,7 +39,9 @@ const Sidebar = () => {
                 </h1>
             </div>
             <ul>
-                <SidebarItem path="/dashboard" icon={faGauge} title="Bảng điều khiển" />
+                <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
+                    <SidebarItem path="/dashboard" icon={faGauge} title="Bảng điều khiển" />
+                </div>
                 <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
                     <SidebarItem path="/document-types" icon={faFontAwesome} title="Loại văn bản" />
                 </div>
@@ -73,32 +78,34 @@ const Sidebar = () => {
                 <div className={userRole === 'Admin' ? '' : 'hidden'}>
                     <SidebarItem path="/users" icon={faUser} title="Thành viên" />
                 </div>
-                <SidebarItem
-                    onClick={() => setToggleSubMenu2(!toggleSubMenu2)}
-                    className="hello"
-                    path="/statistics"
-                    icon={faChartColumn}
-                    title="Báo cáo thống kê"
-                    firstElement={
-                        <FontAwesomeIcon
-                            className="absolute top-[50%] translate-y-[-50%] right-[16px] text-[#ffffff]/[0.3]"
-                            icon={toggleSubMenu2 ? faAngleDown : faAngleRight}
-                        />
-                    }
-                    secondElement={
-                        <ul
-                            className={
-                                !toggleSubMenu2
-                                    ? 'max-h-0 transition-height duration-[1s] overflow-hidden'
-                                    : 'max-h-[300px] transition-height duration-[1.5s] overflow-hidden'
-                            }
-                        >
-                            <SidebarItem path="/statistics/documents" icon={faArrowTurnDown} title="Thống kê văn bản" />
-                            <SidebarItem path="/statistics/tasks" icon={faArrowTurnUp} title="Thống kê công việc" />
-                            <SidebarItem path="/statistics/systems" icon={faArrowTurnUp} title="Thống kê hệ thống" />
-                        </ul>
-                    }
-                />
+                <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
+                    <SidebarItem
+                        onClick={() => setToggleSubMenu2(!toggleSubMenu2)}
+                        className="hello"
+                        path="/statistics"
+                        icon={faChartColumn}
+                        title="Báo cáo thống kê"
+                        firstElement={
+                            <FontAwesomeIcon
+                                className="absolute top-[50%] translate-y-[-50%] right-[16px] text-[#ffffff]/[0.3]"
+                                icon={toggleSubMenu2 ? faAngleDown : faAngleRight}
+                            />
+                        }
+                        secondElement={
+                            <ul
+                                className={
+                                    !toggleSubMenu2
+                                        ? 'max-h-0 transition-height duration-[1s] overflow-hidden'
+                                        : 'max-h-[300px] transition-height duration-[1.5s] overflow-hidden'
+                                }
+                            >
+                                <SidebarItem path="/statistics/documents" icon={faFileLines} title="Thống kê văn bản" />
+                                <SidebarItem path="/statistics/tasks" icon={faTableList} title="Thống kê công việc" />
+                                <SidebarItem path="/statistics/systems" icon={faGear} title="Thống kê hệ thống" />
+                            </ul>
+                        }
+                    />
+                </div>
             </ul>
         </div>
     );

@@ -1,5 +1,3 @@
-import { NavLink } from 'react-router-dom';
-
 const Page404 = () => {
     return (
         <div className="flex items-center justify-center h-screen">
@@ -16,11 +14,6 @@ const Page404 = () => {
                             Xin lỗi, chúng tôi không thể tìm thấy trang. Có thể trang bạn tìm đã bị xóa hoặc không tồn
                             tại.{' '}
                         </p>
-                        <NavLink to="/dashboard">
-                            <div className="inline-block text-white bg-[#321fdb] hover:bg-[#1b2e4b] font-medium rounded-lg text-[1.5rem] md:text-[1.8rem] px-6 py-3 text-center mt-8 transition-all duration-[1s] cursor-pointer">
-                                Trở về trang chủ
-                            </div>
-                        </NavLink>
                     </div>
                 </div>
             </section>

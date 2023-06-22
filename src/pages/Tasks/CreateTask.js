@@ -70,7 +70,8 @@ const CreateTask = ({ title, socket }) => {
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getAllUser(1, 1, '');
-            setAllUsers(res.allUsers);
+            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
+            setAllUsers(filterArray);
         };
         fetchApi();
     }, []);

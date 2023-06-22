@@ -68,7 +68,6 @@ const Header = ({ setToggle, socket }) => {
     }, [notification]);
 
     const handleChangeNotificationStatus = async (id) => {
-        // setNotification({ ...notification, isRead: true });
         await notificationServices.changeNotificationStatus(id);
     };
 
@@ -111,7 +110,7 @@ const Header = ({ setToggle, socket }) => {
                             </p>
                             <div className="hidden absolute bottom-[-12px] right-0 bg-transparent w-[100px] h-[24px] group-hover:block"></div>
                             <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block z-50">
-                                <ul className="w-[240px]">
+                                <ul className="w-[240px] max-h-[280px] overflow-y-auto">
                                     {notifications?.length > 0 ? (
                                         notifications
                                             ?.sort(function (a, b) {
