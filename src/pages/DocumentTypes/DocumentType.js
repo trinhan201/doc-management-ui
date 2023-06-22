@@ -21,57 +21,63 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const DocumentType = ({ socket }) => {
     const [searchValue, setSearchValue] = useState('');
+    const [isSave, setIsSave] = useState(false);
+    //Document type state
     const [allDocumentTypes, setAllDocumentTypes] = useState([]);
     const [documentTypeLists, setDocumentTypeLists] = useState([]);
+    // Activate document type state
     const [activeId, setActiveId] = useState('');
     const [isActived, setIsActived] = useState(false);
-    const [isSave, setIsSave] = useState(false);
+    // Pagination state
     const [limit, setLimit] = useState(5);
     const [page, setPage] = useState(1);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
+    // Checkbox state
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('documentTypeChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllDocumentType')) || false);
 
     const totalPage = Math.ceil(allDocumentTypes?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
     const allTasks = useFetchTasks({ isSave });
+    const tableHeader = ['STT', 'Loại văn bản', 'Trạng thái', 'Ghi chú', 'Thao tác'];
 
+    // Go to next page
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
         setRowEnd(rowEnd + 5);
     };
 
+    // Back to previous page
     const handlePrevPage = () => {
         setPage(page - 1);
         setRowStart(rowStart - 5);
         setRowEnd(rowEnd - 5);
     };
 
+    // Get document types from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await documentTypeServices.getAllDocumentType(page, limit, debouncedValue);
-            setAllDocumentTypes(res.allDocumentTypes);
-            setDocumentTypeLists(res.data);
+            setAllDocumentTypes(res.allDocumentTypes); // all document types
+            setDocumentTypeLists(res.data); // document types with filter and pagination
         };
         fetchApi();
     }, [isSave, page, limit, debouncedValue]);
 
+    // Set pagination state to default when have filter
     useEffect(() => {
-        if (!debouncedValue) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [debouncedValue]);
+        if (debouncedValue || limit) {
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+        } else {
+            return;
+        }
+    }, [debouncedValue, limit]);
 
-    useEffect(() => {
-        if (!limit) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [limit]);
-
+    // Activate document type function
     useEffect(() => {
         if (!activeId) return;
         const handleActivateDocumentType = async () => {
@@ -89,22 +95,22 @@ const DocumentType = ({ socket }) => {
         handleActivateDocumentType();
     }, [activeId, isActived]);
 
+    // Save checked list in localstorage
     useEffect(() => {
         localStorage.setItem('documentTypeChecked', JSON.stringify(checked));
     }, [checked]);
 
+    // Save checkedAll boolean in localstorage
     useEffect(() => {
         localStorage.setItem('isCheckAllDocumentType', JSON.stringify(checkedAll));
     }, [checkedAll]);
 
-    const isCheckedAll = () => {
-        return checked?.length === allDocumentTypes?.length;
-    };
-
+    // Check all rows of document types function
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDocumentTypes, setChecked);
     }, [checkedAll, allDocumentTypes, checked?.length]);
 
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {
@@ -178,26 +184,18 @@ const DocumentType = ({ socket }) => {
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
-                                                    checked={isCheckedAll()}
+                                                    checked={checked?.length === allDocumentTypes?.length}
                                                     onChange={(e) => setCheckedAll(e.target.checked)}
                                                 />
                                             </div>
                                         </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            STT
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Loại văn bản
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Trạng thái
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Ghi chú
-                                        </th>
-                                        <th scope="col" className="px-6 py-4">
-                                            Thao tác
-                                        </th>
+                                        {tableHeader?.map((item, index) => {
+                                            return (
+                                                <th key={index} scope="col" className="px-6 py-4">
+                                                    {item}
+                                                </th>
+                                            );
+                                        })}
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
@@ -307,9 +305,7 @@ const DocumentType = ({ socket }) => {
                         <div
                             onClick={handlePrevPage}
                             className={
-                                page <= 1
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                page <= 1 ? 'md-page-btn hover:bg-[#dddddd] disabled' : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleLeft} />
@@ -318,8 +314,8 @@ const DocumentType = ({ socket }) => {
                             onClick={handleNextPage}
                             className={
                                 page >= totalPage
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                    ? 'md-page-btn hover:bg-[#dddddd] disabled'
+                                    : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleRight} />
@@ -332,7 +328,7 @@ const DocumentType = ({ socket }) => {
                     <label className="flex items-center">
                         <input
                             type="checkbox"
-                            checked={isCheckedAll()}
+                            checked={checked?.length === allDocumentTypes?.length}
                             onChange={(e) => setCheckedAll(e.target.checked)}
                         />{' '}
                         <p className="ml-3 mt-1">Chọn tất cả</p>
@@ -381,9 +377,7 @@ const DocumentType = ({ socket }) => {
                     <div
                         onClick={handlePrevPage}
                         className={
-                            page <= 1
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                            page <= 1 ? 'sm-page-btn hover:bg-[#bbbbbb] disabled' : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Trước
@@ -392,8 +386,8 @@ const DocumentType = ({ socket }) => {
                         onClick={handleNextPage}
                         className={
                             page >= totalPage
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                                ? 'sm-page-btn hover:bg-[#bbbbbb] disabled'
+                                : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Sau

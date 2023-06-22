@@ -1,58 +1,34 @@
 import { useState, useEffect, createContext, useRef } from 'react';
 import jwt_decode from 'jwt-decode';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import {
-    Signin,
-    ForgotPassword,
-    ResetPassword,
-    Dashboard,
-    Department,
-    User,
-    DocumentType,
-    DocumentIn,
-    DocumentOut,
-    DocumentDetail,
-    Page404,
-    Profile,
-    CreateDepartment,
-    CreateDocumentType,
-    DefaultLayout,
-    CreateUser,
-    CreateDocument,
-    Task,
-    CreateTask,
-    AdminTaskDetail,
-    MemberTaskDetail,
-    DocumentStatistics,
-    TaskStatistics,
-    SystemStatistics,
-} from './pages';
-import ProtectedRoutes from './pages/Others/ProtectedRoutes';
-import PublicRoutes from './pages/Others/PublicRoutes';
-import * as authServices from '~/services/authServices';
-import BlockPage from './pages/Others/BlockPage';
-
-//Start--------------------------------------------------------------------------//
-// Socket io
 import { io } from 'socket.io-client';
-//End--------------------------------------------------------------------------//
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Signin, ForgotPassword, ResetPassword } from './pages/Authentications';
+import { Department, CreateDepartment } from './pages/Departments';
+import { DocumentIn, DocumentOut, DocumentDetail, CreateDocument } from './pages/Documents';
+import { DocumentType, CreateDocumentType } from './pages/DocumentTypes';
+import { Task, AdminTaskDetail, MemberTaskDetail, CreateTask } from './pages/Tasks';
+import { User, CreateUser } from './pages/Users';
+import { DocumentStatistics, SystemStatistics, TaskStatistics } from './pages/Statistics';
+import { Dashboard, Profile, Page404, BlockPage, ProtectedRoutes, PublicRoutes } from './pages/Others';
+import DefaultLayout from './layouts/DefaultLayout';
+import * as authServices from '~/services/authServices';
 
 export const AvatarContext = createContext();
 
 const App = () => {
-    const [activeFlag, setActiveFlag] = useState(JSON.parse(localStorage.getItem('activeFlag')) || true);
     const [userRole, setUserRole] = useState(JSON.parse(localStorage.getItem('userRole')) || '');
     const [userId, setUserId] = useState(JSON.parse(localStorage.getItem('userId')) || '');
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [activeFlag, setActiveFlag] = useState(JSON.parse(localStorage.getItem('activeFlag')) || true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isChangeAvatar, setIsChangeAvatar] = useState(false);
 
-    //Start--------------------------------------------------------------------------//
-    // Socket io
+    // Init socket.io server
     const socket = useRef();
     useEffect(() => {
         socket.current = io('http://localhost:5000');
     }, []);
 
+    // Send info to socket.io server
     useEffect(() => {
         socket.current?.emit('addUser', userId);
         socket.current?.on('getUsers', (users) => {
@@ -60,24 +36,7 @@ const App = () => {
         });
     }, [userId]);
 
-    //End--------------------------------------------------------------------------//
-
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken) return;
-        const decodedToken = jwt_decode(accessToken);
-        setUserRole(decodedToken.role);
-        setUserId(decodedToken._id);
-    }, [isSuccess]);
-
-    useEffect(() => {
-        localStorage.setItem('userRole', JSON.stringify(userRole));
-    }, [userRole, isSuccess]);
-
-    useEffect(() => {
-        localStorage.setItem('userId', JSON.stringify(userId));
-    }, [userId, isSuccess]);
-
+    // Check exp of refresh to logout
     useEffect(() => {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return;
@@ -88,6 +47,16 @@ const App = () => {
         }
     }, []);
 
+    // Get userRole and userId from accessToken after sign in
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) return;
+        const decodedToken = jwt_decode(accessToken);
+        setUserRole(decodedToken.role);
+        setUserId(decodedToken._id);
+    }, [isLoggedIn]);
+
+    // Get isActived user from accessToken after sign in
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         if (!accessToken) return;
@@ -96,18 +65,29 @@ const App = () => {
             setActiveFlag(res.isActived);
         };
         fetchApi();
-    }, [isSuccess]);
+    }, [isLoggedIn]);
 
+    // Save userRole in localstorage after sign in
+    useEffect(() => {
+        localStorage.setItem('userRole', JSON.stringify(userRole));
+    }, [userRole, isLoggedIn]);
+
+    // Save userId in localstorage after sign in
+    useEffect(() => {
+        localStorage.setItem('userId', JSON.stringify(userId));
+    }, [userId, isLoggedIn]);
+
+    // Save isActived user in localstorage after sign in
     useEffect(() => {
         localStorage.setItem('activeFlag', JSON.stringify(activeFlag));
-    }, [activeFlag, isSuccess]);
+    }, [activeFlag, isLoggedIn]);
 
     return (
         <AvatarContext.Provider value={{ isChangeAvatar, setIsChangeAvatar }}>
             <Router>
                 <Routes>
                     <Route element={<PublicRoutes />}>
-                        <Route path="/signin" element={<Signin setIsSuccess={() => setIsSuccess(!isSuccess)} />} />
+                        <Route path="/signin" element={<Signin setIsLoggedIn={() => setIsLoggedIn(!isLoggedIn)} />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                     </Route>

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPlusCircle,
     faAngleLeft,
@@ -8,8 +10,6 @@ import {
     faEye,
     faFilterCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavLink } from 'react-router-dom';
 import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
@@ -24,22 +24,27 @@ import { setLevelColor } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const DocumentOut = ({ socket }) => {
+    const [isSave, setIsSave] = useState(false);
+    // List data state
     const [documentTypes, setDocumentTypes] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentLists, setDocumentLists] = useState([]);
+    // Change status state
     const [documentStatus, setDocumentStatus] = useState('');
     const [statusId, setStatusId] = useState('');
+    // Changen department state
     const [documentLocation, setDocumentLocation] = useState('');
     const [locationId, setLocationId] = useState('');
-    const [isSave, setIsSave] = useState(false);
+    // Pagination state
     const [limit, setLimit] = useState(5);
     const [page, setPage] = useState(1);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
+    // Checkbox state
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('documentOutChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAlldocumentOut')) || false);
-
+    // Filter input state
     const [fName, setFName] = useState('');
     const [fCode, setFCode] = useState('');
     const [fType, setFType] = useState('');
@@ -49,24 +54,56 @@ const DocumentOut = ({ socket }) => {
 
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
+    const tableHeader = [
+        'STT',
+        'Số ký hiệu',
+        'Tên văn bản',
+        'Loại văn bản',
+        'Mức độ',
+        'Trạng thái',
+        'Vị trí hiện tại',
+        'Thao tác',
+    ];
     const totalPage = Math.ceil(allDocuments?.length / limit);
     const nameValue = useDebounce(fName, 300);
     const codeValue = useDebounce(fCode, 300);
     const allTasks = useFetchTasks({ isSave });
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
+    // Go to the next page
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
         setRowEnd(rowEnd + 5);
     };
 
+    // Back to the previous page
     const handlePrevPage = () => {
         setPage(page - 1);
         setRowStart(rowStart - 5);
         setRowEnd(rowEnd - 5);
     };
 
+    // Remove filter function
+    const removeFilter = () => {
+        setFName('');
+        setFCode('');
+        setFType('');
+        setFStatus('');
+        setFLevel('');
+        setFSendDate('');
+    };
+
+    // isFilter boolean
+    const isFilters = () => {
+        if (fName || fCode || fType || fStatus || fLevel || fSendDate) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    // Get all document types from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await documentTypeServices.getAllDocumentType(1, 1, '');
@@ -78,6 +115,7 @@ const DocumentOut = ({ socket }) => {
         fetchApi();
     }, []);
 
+    // Get all departments from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await departmentServices.getAllDepartment(1, 1, '');
@@ -89,6 +127,7 @@ const DocumentOut = ({ socket }) => {
         fetchApi();
     }, []);
 
+    // Get all documents from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await documentServices.getAllDocument(
@@ -108,72 +147,18 @@ const DocumentOut = ({ socket }) => {
         fetchApi();
     }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
 
-    const removeFilter = () => {
-        setFName('');
-        setFCode('');
-        setFType('');
-        setFStatus('');
-        setFLevel('');
-        setFSendDate('');
-    };
-
-    const isFilters = () => {
-        if (fName || fCode || fType || fStatus || fLevel || fSendDate) {
-            return true;
+    // Set pagination state to default when have filter
+    useEffect(() => {
+        if (limit || nameValue || codeValue || fType || fStatus || fLevel || fSendDate) {
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
         } else {
-            return false;
+            return;
         }
-    };
+    }, [limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
 
-    useEffect(() => {
-        if (!limit) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [limit]);
-
-    useEffect(() => {
-        if (!nameValue) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [nameValue]);
-
-    useEffect(() => {
-        if (!codeValue) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [codeValue]);
-
-    useEffect(() => {
-        if (!fType) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fType]);
-
-    useEffect(() => {
-        if (!fStatus) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fStatus]);
-
-    useEffect(() => {
-        if (!fLevel) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fLevel]);
-
-    useEffect(() => {
-        if (!fSendDate) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fSendDate]);
-
+    // Change document status
     useEffect(() => {
         if (!documentStatus) return;
         const handleChangeStatus = async () => {
@@ -191,6 +176,7 @@ const DocumentOut = ({ socket }) => {
         handleChangeStatus();
     }, [statusId, documentStatus]);
 
+    // Change document department
     useEffect(() => {
         if (!documentLocation) return;
         const handleChangeLocation = async () => {
@@ -208,22 +194,22 @@ const DocumentOut = ({ socket }) => {
         handleChangeLocation();
     }, [locationId, documentLocation]);
 
+    // Save checked list in localstorage
     useEffect(() => {
         localStorage.setItem('documentOutChecked', JSON.stringify(checked));
     }, [checked]);
 
+    // Save checkedAll boolean in localstorage
     useEffect(() => {
         localStorage.setItem('isCheckAllDocumentOut', JSON.stringify(checkedAll));
     }, [checkedAll]);
 
-    const isCheckedAll = () => {
-        return checked?.length === allDocuments?.length;
-    };
-
+    // Check all rows of document types function
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDocuments, setChecked);
     }, [checkedAll, allDocuments, checked?.length]);
 
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {
@@ -344,36 +330,18 @@ const DocumentOut = ({ socket }) => {
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
-                                                    checked={isCheckedAll()}
+                                                    checked={checked?.length === allDocuments?.length}
                                                     onChange={(e) => setCheckedAll(e.target.checked)}
                                                 />
                                             </div>
                                         </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            STT
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Số ký hiệu
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Tên văn bản
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Loại văn bản
-                                        </th>
-
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Mức độ
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Trạng thái
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Vị trí hiện tại
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Thao tác
-                                        </th>
+                                        {tableHeader?.map((item, index) => {
+                                            return (
+                                                <th key={index} scope="col" className="whitespace-nowrap px-6 py-4">
+                                                    {item}
+                                                </th>
+                                            );
+                                        })}
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
@@ -527,9 +495,7 @@ const DocumentOut = ({ socket }) => {
                         <div
                             onClick={handlePrevPage}
                             className={
-                                page <= 1
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                page <= 1 ? 'md-page-btn hover:bg-[#dddddd] disabled' : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleLeft} />
@@ -538,8 +504,8 @@ const DocumentOut = ({ socket }) => {
                             onClick={handleNextPage}
                             className={
                                 page >= totalPage
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                    ? 'md-page-btn hover:bg-[#dddddd] disabled'
+                                    : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleRight} />
@@ -552,7 +518,7 @@ const DocumentOut = ({ socket }) => {
                     <label className="flex items-center">
                         <input
                             type="checkbox"
-                            checked={isCheckedAll()}
+                            checked={checked?.length === allDocuments?.length}
                             onChange={(e) => setCheckedAll(e.target.checked)}
                         />{' '}
                         <p className="ml-3 mt-1">Chọn tất cả</p>
@@ -605,9 +571,7 @@ const DocumentOut = ({ socket }) => {
                     <div
                         onClick={handlePrevPage}
                         className={
-                            page <= 1
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                            page <= 1 ? 'sm-page-btn hover:bg-[#bbbbbb] disabled' : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Trước
@@ -616,8 +580,8 @@ const DocumentOut = ({ socket }) => {
                         onClick={handleNextPage}
                         className={
                             page >= totalPage
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                                ? 'sm-page-btn hover:bg-[#bbbbbb] disabled'
+                                : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Sau

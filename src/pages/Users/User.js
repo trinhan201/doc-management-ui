@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPlusCircle,
     faSearch,
@@ -8,79 +10,104 @@ import {
     faPenToSquare,
     faEye,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavLink } from 'react-router-dom';
 import UserCard from '~/components/Card/UserCard';
+import UserDetailCard from '~/components/Card/UserDetailCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useDebounce, useFetchTasks } from '~/hooks';
-import UserDetailCard from '~/components/Card/UserDetailCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const User = ({ socket }) => {
     const [showUserDetail, setShowUserDetail] = useState(false);
-    const [user, setUser] = useState({});
     const [searchValue, setSearchValue] = useState('');
+    const [isSave, setIsSave] = useState(false);
+    // User state
+    const [user, setUser] = useState({});
     const [allUsers, setAllUsers] = useState([]);
     const [userLists, setUserLists] = useState([]);
-    const [userRole, setUserRole] = useState('');
+    // Change user role state
     const [roleId, setRoleId] = useState('');
+    const [userRole, setUserRole] = useState('');
+    // Activate user state
     const [activeId, setActiveId] = useState('');
     const [isActived, setIsActived] = useState(false);
-    const [isSave, setIsSave] = useState(false);
+    // Pagination state
     const [limit, setLimit] = useState(5);
     const [page, setPage] = useState(1);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
+    // Checkbox state
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('userChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllUser')) || false);
 
+    const tableHeader = [
+        'STT',
+        'Họ và tên',
+        'Email',
+        'Số điện thoại',
+        'Phòng ban',
+        'Vai trò',
+        'Trạng thái',
+        'Thao tác',
+    ];
     const roleOptions = ['Moderator', 'Member'];
-
     const totalPage = Math.ceil(allUsers.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
     const allTasks = useFetchTasks({ isSave });
 
+    // Go to next page
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
         setRowEnd(rowEnd + 5);
     };
 
+    // Back to previous page
     const handlePrevPage = () => {
         setPage(page - 1);
         setRowStart(rowStart - 5);
         setRowEnd(rowEnd - 5);
     };
 
+    // Show user detail card when click
+    const handleShowUserDetail = async (id) => {
+        setShowUserDetail(true);
+        if (!id) return;
+        const res = await userServices.getUserById(id);
+        if (res.code === 200) {
+            setUser(res.data);
+        } else {
+            return;
+        }
+    };
+
+    // Get users from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getAllUser(page, limit, debouncedValue);
-            setAllUsers(res.allUsers);
-            setUserLists(res.data);
+            setAllUsers(res.allUsers); // all users
+            setUserLists(res.data); // users with filter and pagination
         };
         fetchApi();
     }, [isSave, page, limit, debouncedValue]);
 
+    // Set pagination state to default when have filter
     useEffect(() => {
-        if (!debouncedValue) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [debouncedValue]);
+        if (debouncedValue || limit) {
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+        } else {
+            return;
+        }
+    }, [debouncedValue, limit]);
 
-    useEffect(() => {
-        if (!limit) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [limit]);
-
+    // Change user role function
     useEffect(() => {
         if (!userRole) return;
         const handleChangeRole = async () => {
@@ -98,6 +125,7 @@ const User = ({ socket }) => {
         handleChangeRole();
     }, [roleId, userRole]);
 
+    // Activate user function
     useEffect(() => {
         if (!activeId) return;
         const handleActivateUser = async () => {
@@ -115,33 +143,22 @@ const User = ({ socket }) => {
         handleActivateUser();
     }, [activeId, isActived]);
 
+    // Save checked list in localstorage
     useEffect(() => {
         localStorage.setItem('userChecked', JSON.stringify(checked));
     }, [checked]);
 
+    // Save checkedAll boolean in localstorage
     useEffect(() => {
         localStorage.setItem('isCheckAllUser', JSON.stringify(checkedAll));
     }, [checkedAll]);
 
-    const isCheckedAll = () => {
-        return checked?.length === allUsers.length;
-    };
-
+    // Check all rows of users function
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allUsers, setChecked);
     }, [checkedAll, allUsers, checked?.length]);
 
-    const handleShowUserDetail = async (id) => {
-        setShowUserDetail(true);
-        if (!id) return;
-        const res = await userServices.getUserById(id);
-        if (res.code === 200) {
-            setUser(res.data);
-        } else {
-            return;
-        }
-    };
-
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {
@@ -215,35 +232,18 @@ const User = ({ socket }) => {
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
-                                                    checked={isCheckedAll()}
+                                                    checked={checked?.length === allUsers.length}
                                                     onChange={(e) => setCheckedAll(e.target.checked)}
                                                 />
                                             </div>
                                         </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            STT
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Họ và tên
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Email
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Số điện thoại
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Phòng ban
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Vai trò
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Trạng thái
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Thao tác
-                                        </th>
+                                        {tableHeader?.map((item, index) => {
+                                            return (
+                                                <th key={index} scope="col" className="whitespace-nowrap px-6 py-4">
+                                                    {item}
+                                                </th>
+                                            );
+                                        })}
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
@@ -374,9 +374,7 @@ const User = ({ socket }) => {
                         <div
                             onClick={handlePrevPage}
                             className={
-                                page <= 1
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                page <= 1 ? 'md-page-btn hover:bg-[#dddddd] disabled' : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleLeft} />
@@ -385,8 +383,8 @@ const User = ({ socket }) => {
                             onClick={handleNextPage}
                             className={
                                 page >= totalPage
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                    ? 'md-page-btn hover:bg-[#dddddd] disabled'
+                                    : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleRight} />
@@ -412,7 +410,7 @@ const User = ({ socket }) => {
                     <label className="flex items-center">
                         <input
                             type="checkbox"
-                            checked={isCheckedAll()}
+                            checked={checked?.length === allUsers.length}
                             onChange={(e) => setCheckedAll(e.target.checked)}
                         />{' '}
                         <p className="ml-3 mt-1">Chọn tất cả</p>
@@ -459,14 +457,11 @@ const User = ({ socket }) => {
                 ) : (
                     <p className="text-center p-5">Không tìm thấy dữ liệu</p>
                 )}
-
                 <div className="flex items-center justify-center">
                     <div
                         onClick={handlePrevPage}
                         className={
-                            page <= 1
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                            page <= 1 ? 'sm-page-btn hover:bg-[#bbbbbb] disabled' : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Trước
@@ -475,8 +470,8 @@ const User = ({ socket }) => {
                         onClick={handleNextPage}
                         className={
                             page >= totalPage
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                                ? 'sm-page-btn hover:bg-[#bbbbbb] disabled'
+                                : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Sau

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import FormData from 'form-data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import InputField from '~/components/InputField';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
+import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import FileInput from '~/components/FileInput';
 import * as departmentServices from '~/services/departmentServices';
@@ -16,6 +16,7 @@ import { useFetchTasks } from '~/hooks';
 
 const CreateDocument = ({ title, documentIn, path, socket }) => {
     const [isSave, setIsSave] = useState(false);
+    // Input state
     const [fullName, setFullName] = useState('');
     const [type, setType] = useState('');
     const [code, setCode] = useState('');
@@ -27,7 +28,7 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [documentTypes, setDocumentTypes] = useState([]);
-
+    // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [codeErrMsg, setCodeErrMsg] = useState({});
@@ -40,47 +41,9 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const allTasks = useFetchTasks({ isSave });
-
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
 
-    useEffect(() => {
-        if (!id) return;
-        const fetchApi = async () => {
-            const res = await documentServices.getDocumentById(id);
-            setFullName(res.data.documentName);
-            setCode(res.data.code);
-            setType(res.data.type);
-            setSendDate(res.data.sendDate);
-            setSender(res.data.sender);
-            setLevel(res.data.level);
-            setCurrentLocation(res.data.currentLocation);
-            setNote(res.data.note);
-        };
-        fetchApi();
-    }, [id]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.departmentName);
-            setDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
-            const documentTypeArray = res.allDocumentTypes
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.documentTypeName);
-            setDocumentTypes(documentTypeArray);
-        };
-        fetchApi();
-    }, []);
-
+    // Create or edit document function
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
@@ -123,6 +86,48 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
         }
     };
 
+    // Get available document data when edit document
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await documentServices.getDocumentById(id);
+            setFullName(res.data.documentName);
+            setCode(res.data.code);
+            setType(res.data.type);
+            setSendDate(res.data.sendDate);
+            setSender(res.data.sender);
+            setLevel(res.data.level);
+            setCurrentLocation(res.data.currentLocation);
+            setNote(res.data.note);
+        };
+        fetchApi();
+    }, [id]);
+
+    // Get all departments from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await departmentServices.getAllDepartment(1, 1, '');
+            const departmentArray = res.allDepartments
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.departmentName);
+            setDepartments(departmentArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all document types from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
+            const documentTypeArray = res.allDocumentTypes
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.documentTypeName);
+            setDocumentTypes(documentTypeArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

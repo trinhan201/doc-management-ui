@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faPenToSquare,
-    faTrashCan,
-    faXmark,
-    faPlusCircle,
-    faCheckCircle,
-    faCircleXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faPlusCircle, faCheckCircle, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
 import * as taskServices from '~/services/taskServices';
@@ -21,124 +14,40 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 
 const AdminTaskDetail = ({ socket }) => {
-    const [allDocuments, setAllDocuments] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
-    const [percent, setPercent] = useState('');
-    const [progressStyle, setProgressStyle] = useState('');
+    const [isSave, setIsSave] = useState(false);
     const [tab, setTab] = useState('detail');
     const [task, setTask] = useState({});
     const [attachFiles, setAttachFiles] = useState([]);
-    const [isSave, setIsSave] = useState(false);
+    // List data state
+    const [allDocuments, setAllDocuments] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
+    // Progress bar state
+    const [percent, setPercent] = useState('');
+    const [progressStyle, setProgressStyle] = useState('');
 
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
 
+    // Update tab
     const onUpdateTab = (value) => {
         setTab(value);
     };
 
+    // Get link to reference document detail
     const getRefLink = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
         return `http://localhost:3000/documents/detail/${refLink?._id}`;
     };
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
-            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
-            setAllDocuments(documentArray);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getPublicInfo();
-            setAllUsers(res.data);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const setStatusPercentage = () => {
-            if (task?.progress === 'Hoàn thành') {
-                setPercent('100%');
-                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar full');
-            } else if (task?.progress === 'Chờ duyệt') {
-                setPercent('60%');
-                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent60');
-            } else if (task?.progress === 'Đang xử lý') {
-                setPercent('30%');
-                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent30');
-            }
-        };
-        setStatusPercentage();
-    }, [task?.progress]);
-
-    useEffect(() => {
-        if (!id) return;
-        const fetchApi = async () => {
-            const res = await taskServices.getTaskById(id);
-            if (res.code === 200) {
-                setTask(res.data);
-            } else {
-                navigate('/error');
-            }
-        };
-        fetchApi();
-    }, [id, isSave, navigate]);
-
-    const handleDeleteFile = async (fileName) => {
-        const data = {
-            filename: fileName,
-        };
-        const res = await taskServices.deleteFileUrl(id, data);
-        if (res.code === 200) {
-            successNotify(res.message);
-            setIsSave((isSave) => !isSave);
-        } else {
-            errorNotify(res.message);
-        }
-    };
-
-    useEffect(() => {
-        if (attachFiles.length === 0) return;
-        const uploadFile = async () => {
-            const data = new FormData();
-            for (let i = 0; i < attachFiles?.length; i++) {
-                data.append('myFile', attachFiles[i]);
-            }
-            const res = await taskServices.uploadFile(id, data);
-            if (res.code === 200) {
-                successNotify(res.message);
-                setIsSave((isSave) => !isSave);
-                setAttachFiles([]);
-            } else {
-                errorNotify(res.message);
-            }
-        };
-        uploadFile();
-    }, [attachFiles, id]);
-
-    const handleDelete = async (id) => {
-        const confirmMsg = 'Bạn có chắc muốn xóa công việc này không?';
-        if (!window.confirm(confirmMsg)) return;
-        const res = await taskServices.deleteTaskById(id);
-        if (res.code === 200) {
-            successNotify(res.message);
-            navigate('/tasks');
-        } else {
-            errorNotify(res);
-        }
-    };
-
+    // Get assignment resources of leader
     const getLeaderResources = () => {
         const leaderResources = task?.resources?.find((item) => item.userId === task?.leader?.value);
         return leaderResources;
     };
 
+    // Change task progress
     const handleChangeProgress = async (value) => {
         const res = await taskServices.updateProgress(id, { taskProgress: value });
         if (res.code === 200) {
@@ -172,11 +81,97 @@ const AdminTaskDetail = ({ socket }) => {
         }
     };
 
+    // Delete attach file
+    const handleDeleteFile = async (fileName) => {
+        const data = {
+            filename: fileName,
+        };
+        const res = await taskServices.deleteFileUrl(id, data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res.message);
+        }
+    };
+
+    // Just get id of assigned users
     const getAssignToIds = (arr) => {
         const final = arr.map((item) => item.value);
         return final;
     };
 
+    // Get all in progess documents
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
+            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
+            setAllDocuments(documentArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Get public info of user
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
+        };
+        fetchApi();
+    }, []);
+
+    // Update progress bar
+    useEffect(() => {
+        const setStatusPercentage = () => {
+            if (task?.progress === 'Hoàn thành') {
+                setPercent('100%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar full');
+            } else if (task?.progress === 'Chờ duyệt') {
+                setPercent('60%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent60');
+            } else if (task?.progress === 'Đang xử lý') {
+                setPercent('30%');
+                setProgressStyle('text-[1rem] md:text-[1.4rem] progress-bar percent30');
+            }
+        };
+        setStatusPercentage();
+    }, [task?.progress]);
+
+    // Get current task data
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await taskServices.getTaskById(id);
+            if (res.code === 200) {
+                setTask(res.data);
+            } else {
+                navigate('/error');
+            }
+        };
+        fetchApi();
+    }, [id, isSave, navigate]);
+
+    // Add more attach file
+    useEffect(() => {
+        if (attachFiles.length === 0) return;
+        const uploadFile = async () => {
+            const data = new FormData();
+            for (let i = 0; i < attachFiles?.length; i++) {
+                data.append('myFile', attachFiles[i]);
+            }
+            const res = await taskServices.uploadFile(id, data);
+            if (res.code === 200) {
+                successNotify(res.message);
+                setIsSave((isSave) => !isSave);
+                setAttachFiles([]);
+            } else {
+                errorNotify(res.message);
+            }
+        };
+        uploadFile();
+    }, [attachFiles, id]);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {
@@ -354,18 +349,12 @@ const AdminTaskDetail = ({ socket }) => {
                             >
                                 <FontAwesomeIcon icon={faCircleXmark} /> Chưa hoàn thành
                             </button>
-                            <NavLink
-                                to={`/tasks/edit/${task?._id}`}
-                                className="block w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                            <div
+                                onClick={() => navigate(-1)}
+                                className="block w-full md:w-fit text-center text-[white] bg-blue-600 mt-16 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] cursor-pointer"
                             >
-                                <FontAwesomeIcon icon={faPenToSquare} /> Chỉnh sửa
-                            </NavLink>
-                            <button
-                                onClick={() => handleDelete(task?._id)}
-                                className="w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                            >
-                                <FontAwesomeIcon icon={faTrashCan} /> Xóa
-                            </button>
+                                {'<<'} Trở về
+                            </div>
                         </div>
                     </div>
                     <div className={tab === 'resources' ? '' : 'hidden'}>

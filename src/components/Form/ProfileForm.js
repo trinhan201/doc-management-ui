@@ -11,46 +11,23 @@ import { successNotify, errorNotify } from '../ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 
 const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
+    const [departments, setDepartments] = useState([]);
+    // Input state
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
     const [birth, setBirth] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [department, setDepartment] = useState('');
-
+    // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
 
-    const [departments, setDepartments] = useState([]);
-
     const genderList = ['Nam', 'Nữ'];
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await authServices.getCurrUser();
-            setFullName(res.fullName);
-            setGender(res.gender);
-            setBirth(res.birthDate);
-            setEmail(res.email);
-            setPhone(res.phoneNumber);
-            setDepartment(res.department);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.departmentName);
-            setDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
-
+    // Update user profile
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isFullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
@@ -74,6 +51,32 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
             errorNotify(res);
         }
     };
+
+    // Get available user data when edit user
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await authServices.getCurrUser();
+            setFullName(res.fullName);
+            setGender(res.gender);
+            setBirth(res.birthDate);
+            setEmail(res.email);
+            setPhone(res.phoneNumber);
+            setDepartment(res.department);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all departments from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await departmentServices.getAllDepartment(1, 1, '');
+            const departmentArray = res.allDepartments
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.departmentName);
+            setDepartments(departmentArray);
+        };
+        fetchApi();
+    }, []);
 
     return (
         <div

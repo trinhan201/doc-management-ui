@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import * as taskServices from '~/services/taskServices';
-import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import ExportExcel from '~/components/ExportFile/Task/ExportExcel';
 import ExportWord from '~/components/ExportFile/Task/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
@@ -13,8 +13,9 @@ import { useFetchTasks } from '~/hooks';
 const TaskStatistics = ({ socket }) => {
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
-    const [statisticTasks, setStatisticTasks] = useState([]);
     const [isSave, setIsSave] = useState(false);
+    const [statisticTasks, setStatisticTasks] = useState([]);
+    // Filter statistic state
     const [fType, setFType] = useState('');
     const [fProgress, setFProgress] = useState('');
     const [fStatus, setFStatus] = useState('');
@@ -23,23 +24,14 @@ const TaskStatistics = ({ socket }) => {
     const [fTo, setFTo] = useState('');
 
     const allTasks = useFetchTasks({ isSave });
-
+    // Filter statistic options
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const progressOptions = ['Đang xử lý', 'Chờ duyệt', 'Hoàn thành'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
 
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
-
+    // Statistic function
     const handleStatistic = async () => {
         if (fProgress || fType || fStatus || fLevel || (fFrom && fTo)) {
             const res = await taskServices.getAllTask(
@@ -78,7 +70,16 @@ const TaskStatistics = ({ socket }) => {
         }
     };
 
-    console.log(statisticTasks);
+    // Check tasks deadline function
+    useEffect(() => {
+        if (allTasks?.length === 0) return;
+        const timer = setInterval(async () => {
+            autoUpdateDeadline(allTasks, socket, setIsSave);
+        }, 60000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [allTasks, socket]);
 
     return (
         <>

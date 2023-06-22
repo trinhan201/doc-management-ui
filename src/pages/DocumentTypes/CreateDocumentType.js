@@ -11,33 +11,23 @@ import { useFetchTasks } from '~/hooks';
 
 const CreateDocumentType = ({ title, socket }) => {
     const [isSave, setIsSave] = useState(false);
+    // Input state
     const [fullName, setFullName] = useState('');
     const [note, setNote] = useState('');
     const [status, setStatus] = useState(false);
-
+    // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
 
     const navigate = useNavigate();
     const { id } = useParams();
     const allTasks = useFetchTasks({ isSave });
-
     const statusList = [
         ['Hoạt động', true],
         ['Không hoạt động', false],
     ];
 
-    useEffect(() => {
-        if (!id) return;
-        const fetchApi = async () => {
-            const res = await documentTypeServices.getDocumentTypeById(id);
-            setFullName(res.data.documentTypeName);
-            setStatus(res.data.status);
-            setNote(res.data.note);
-        };
-        fetchApi();
-    }, [id]);
-
+    // Create or edit document type function
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
@@ -61,6 +51,19 @@ const CreateDocumentType = ({ title, socket }) => {
         }
     };
 
+    // Get available document type data when edit document type
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await documentTypeServices.getDocumentTypeById(id);
+            setFullName(res.data.documentTypeName);
+            setStatus(res.data.status);
+            setNote(res.data.note);
+        };
+        fetchApi();
+    }, [id]);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

@@ -1,5 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
+// Create user function
 export const createUser = async (data = {}) => {
     try {
         const res = await httpRequest.post('/user/create', data);
@@ -10,6 +11,7 @@ export const createUser = async (data = {}) => {
     }
 };
 
+// Update user function
 export const updateUser = async (userId, data = {}) => {
     try {
         const res = await httpRequest.put(`/user/update/${userId}`, data);
@@ -20,6 +22,7 @@ export const updateUser = async (userId, data = {}) => {
     }
 };
 
+// Update user role function
 export const updateRole = async (userId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/user/update-role/${userId}`, data);
@@ -30,6 +33,7 @@ export const updateRole = async (userId, data = {}) => {
     }
 };
 
+// Activate user function
 export const activateUser = async (userId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/user/activate/${userId}`, data);
@@ -40,6 +44,7 @@ export const activateUser = async (userId, data = {}) => {
     }
 };
 
+// Delete user function
 export const deleteUserById = async (userId) => {
     try {
         const res = await httpRequest.delete(`/user/delete/${userId}`);
@@ -50,6 +55,7 @@ export const deleteUserById = async (userId) => {
     }
 };
 
+// Delete many user function
 export const deleteManyUser = async (data = {}) => {
     try {
         const res = await httpRequest.post('/user/delete-many', data);
@@ -60,6 +66,7 @@ export const deleteManyUser = async (data = {}) => {
     }
 };
 
+// Get all users function
 export const getAllUser = async (page, limit, search) => {
     try {
         const res = await httpRequest.get(`/user/get-all?page=${page}&limit=${limit}&search=${search}`);
@@ -70,6 +77,7 @@ export const getAllUser = async (page, limit, search) => {
     }
 };
 
+// Get user by id function
 export const getUserById = async (userId) => {
     try {
         const res = await httpRequest.get(`/user/get/${userId}`);
@@ -80,6 +88,7 @@ export const getUserById = async (userId) => {
     }
 };
 
+// Change user password function
 export const changePassword = async (data = {}) => {
     try {
         const res = await httpRequest.patch('/user/change-password', data);
@@ -90,6 +99,7 @@ export const changePassword = async (data = {}) => {
     }
 };
 
+// Change user avatar function
 export const changeAvatar = async (data) => {
     try {
         const res = await httpRequest.post('/user/change-avatar', data);
@@ -100,6 +110,7 @@ export const changeAvatar = async (data) => {
     }
 };
 
+// Remove user avatar function
 export const removeAvatar = async (fileName) => {
     try {
         const res = await httpRequest.delete(`/user/file/${fileName}`);
@@ -110,6 +121,7 @@ export const removeAvatar = async (fileName) => {
     }
 };
 
+// Get public user info function
 export const getPublicInfo = async () => {
     try {
         const res = await httpRequest.get(`/user/public-info`);

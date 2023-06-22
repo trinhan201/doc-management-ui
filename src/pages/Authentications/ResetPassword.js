@@ -5,13 +5,16 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { passwordValidator } from '~/utils/formValidation';
 
 const ResetPassword = () => {
+    // Input state
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    // Input validation state
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
     const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] = useState({});
     const [isPasswordErr, setIsPasswordErr] = useState(false);
     const [isConfirmPasswordErr, setIsConfirmPasswordErr] = useState(false);
 
+    // Reset password function
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isPasswordValid = passwordValidator(password, password, setIsPasswordErr, setPasswordErrMsg);

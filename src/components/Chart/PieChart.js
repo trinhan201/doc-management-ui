@@ -5,10 +5,13 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 ChartJS.register(ArcElement, CategoryScale, LinearScale, Tooltip, Title, Legend);
 
 const PieChart = ({ typeOption, allTasks }) => {
+    // Filter option get from droplist filter
     const typeValue = typeOption?.value;
 
+    // Remove duplicate value
     const types = [...new Set(allTasks?.map((item) => item?.[typeValue]))];
 
+    // Count quantity of each option and put to array
     const countTask = () => {
         const arr = types?.map((type) => {
             return allTasks?.filter((item) => item?.[typeValue] === type).length;
@@ -16,6 +19,7 @@ const PieChart = ({ typeOption, allTasks }) => {
         return arr;
     };
 
+    // Data structure of chart.js
     var data = {
         labels: types,
         datasets: [
@@ -43,6 +47,7 @@ const PieChart = ({ typeOption, allTasks }) => {
         ],
     };
 
+    // Option structure of chart.js
     var options = {
         maintainAspectRatio: false,
         scales: {},

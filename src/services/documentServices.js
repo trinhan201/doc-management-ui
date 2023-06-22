@@ -1,5 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
+// Create document function
 export const createDocument = async (data = {}) => {
     try {
         const res = await httpRequest.post('/document/create', data);
@@ -10,6 +11,7 @@ export const createDocument = async (data = {}) => {
     }
 };
 
+// Upload file of document function
 export const uploadFile = async (documentId, data) => {
     try {
         const res = await httpRequest.post(`/document/upload/${documentId}`, data);
@@ -20,6 +22,7 @@ export const uploadFile = async (documentId, data) => {
     }
 };
 
+// Delete attach file of document function
 export const deleteFileUrl = async (documentId, data) => {
     try {
         const res = await httpRequest.patch(`/document/delete-file-url/${documentId}`, data);
@@ -30,6 +33,7 @@ export const deleteFileUrl = async (documentId, data) => {
     }
 };
 
+// Update document function
 export const updateDocument = async (documentId, data = {}) => {
     try {
         const res = await httpRequest.put(`/document/update/${documentId}`, data);
@@ -40,6 +44,7 @@ export const updateDocument = async (documentId, data = {}) => {
     }
 };
 
+// Change document status function
 export const changeDocumentStatus = async (documentId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/document/change-status/${documentId}`, data);
@@ -50,6 +55,7 @@ export const changeDocumentStatus = async (documentId, data = {}) => {
     }
 };
 
+// Change document document department function
 export const changeDocumentLocation = async (documentId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/document/change-location/${documentId}`, data);
@@ -60,6 +66,7 @@ export const changeDocumentLocation = async (documentId, data = {}) => {
     }
 };
 
+// Delete document function
 export const deleteDocumentById = async (documentId) => {
     try {
         const res = await httpRequest.delete(`/document/delete/${documentId}`);
@@ -70,6 +77,7 @@ export const deleteDocumentById = async (documentId) => {
     }
 };
 
+// Delete many document function
 export const deleteManyDocument = async (data = {}) => {
     try {
         const res = await httpRequest.post('/document/delete-many', data);
@@ -80,6 +88,7 @@ export const deleteManyDocument = async (data = {}) => {
     }
 };
 
+// Get all documents function
 export const getAllDocument = async (page, limit, flag, fName, fCode, fType, fStatus, fLevel, fSendDate) => {
     try {
         const res = await httpRequest.get(
@@ -92,6 +101,7 @@ export const getAllDocument = async (page, limit, flag, fName, fCode, fType, fSt
     }
 };
 
+// Get document by id function
 export const getDocumentById = async (documentId) => {
     try {
         const res = await httpRequest.get(`/document/get/${documentId}`);

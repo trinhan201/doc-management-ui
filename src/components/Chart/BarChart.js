@@ -4,10 +4,13 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Title, Legend);
 
 const BarChart = ({ typeOption, allDocuments, allDocumentIns, allDocumentOuts }) => {
+    // Filter option get from droplist filter
     const typeValue = typeOption?.value;
 
+    // Remove duplicate value
     const types = [...new Set(allDocuments?.map((item) => item?.[typeValue]))];
 
+    // Count quantity of each option and put to array
     const countDocumentIn = () => {
         const arr = types?.map((type) => {
             return allDocumentIns?.filter((item) => item?.[typeValue] === type).length;
@@ -15,6 +18,7 @@ const BarChart = ({ typeOption, allDocuments, allDocumentIns, allDocumentOuts })
         return arr;
     };
 
+    // Count quantity of each option and put to array
     const countDocumentOut = () => {
         const arr = types?.map((type) => {
             return allDocumentOuts?.filter((item) => item?.[typeValue] === type).length;
@@ -22,6 +26,7 @@ const BarChart = ({ typeOption, allDocuments, allDocumentIns, allDocumentOuts })
         return arr;
     };
 
+    // Data structure of chart.js
     var data = {
         labels: types,
         datasets: [
@@ -42,6 +47,7 @@ const BarChart = ({ typeOption, allDocuments, allDocumentIns, allDocumentOuts })
         ],
     };
 
+    // Option structure of chart.js
     var options = {
         maintainAspectRatio: false,
         scales: {},

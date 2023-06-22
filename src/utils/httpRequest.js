@@ -6,6 +6,7 @@ const httpRequest = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
 });
 
+// Check exp of access token to genarate new refresh token
 httpRequest.interceptors.request.use(
     async (config) => {
         const accessToken = localStorage.getItem('accessToken');

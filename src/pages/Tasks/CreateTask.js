@@ -7,19 +7,23 @@ import Select from 'react-select';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import FileInput from '~/components/FileInput';
-import { disabledPastDate, fullNameValidator, dateValidator } from '~/utils/formValidation';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
+import { disabledPastDate, fullNameValidator, dateValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchTasks } from '~/hooks';
+import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const CreateTask = ({ title, socket }) => {
+    const [userId, setUserId] = useState('');
     const [isSave, setIsSave] = useState(false);
     const [prevAssignTo, setPrevAssignTo] = useState(JSON.parse(localStorage.getItem('prevAssignTo')) || []);
+    //List data state
     const [allUsers, setAllUsers] = useState([]);
     const [documents, setDocuments] = useState([]);
+    // Input state
     const [fullName, setFullName] = useState('');
     const [deadline, setDeadline] = useState('');
     const [level, setLevel] = useState('Bình thường');
@@ -30,11 +34,11 @@ const CreateTask = ({ title, socket }) => {
     const [assignTo, setAssignTo] = useState([]);
     const [desc, setDesc] = useState('');
     const [resources, setResources] = useState([]);
+    // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
     const [isDeadlineErr, setIsDeadlineErr] = useState(false);
-    const [userId, setUserId] = useState('');
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -42,11 +46,13 @@ const CreateTask = ({ title, socket }) => {
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
 
-    useEffect(() => {
-        const uid = JSON.parse(localStorage.getItem('userId'));
-        setUserId(uid);
-    }, []);
+    // Just get id of assigned user
+    const getAssignToIds = (assignTo) => {
+        const array = assignTo.map((item) => item.value);
+        return array;
+    };
 
+    // Format all users array
     const getUserOptions = () => {
         const options = allUsers?.map((item) => {
             return { value: item._id, label: item.fullName, flag: 'Support' };
@@ -54,6 +60,7 @@ const CreateTask = ({ title, socket }) => {
         return options;
     };
 
+    // Createn user resource for each assigned user
     const setUserResource = () => {
         const options = assignTo?.map((item) => {
             return { userId: item.value, status: 'Chưa nộp', resources: [], isSubmit: false };
@@ -61,48 +68,14 @@ const CreateTask = ({ title, socket }) => {
         return options;
     };
 
+    // Merge available resources with new resource without duplicate
     const mergeUserResources = () => {
         const ids = new Set(resources.map((d) => d.userId));
         const merged = [...resources, ...setUserResource().filter((d) => !ids.has(d.userId))];
         return merged;
     };
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
-            setAllUsers(filterArray);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        if (!id) return;
-        const fetchApi = async () => {
-            const res = await taskServices.getTaskById(id);
-            setFullName(res.data.taskName);
-            setType(res.data.type);
-            setDeadline(res.data.dueDate);
-            setLevel(res.data.level);
-            setDocument(res.data.refLink);
-            setDesc(res.data.desc);
-            setAssignTo(res.data.assignTo);
-            setLeader(res.data.leader);
-            setResources(res.data.resources);
-            setPrevAssignTo(res.data.assignTo);
-        };
-        fetchApi();
-    }, [id]);
-
-    const getAssignToIds = (assignTo) => {
-        const array = assignTo.map((item) => item.value);
-        return array;
-    };
-
-    useEffect(() => {
-        localStorage.setItem('prevAssignTo', JSON.stringify(prevAssignTo));
-    }, [prevAssignTo]);
-
+    // Create or edit task
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
@@ -195,6 +168,47 @@ const CreateTask = ({ title, socket }) => {
         }
     };
 
+    // Get all users with role Member from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getAllUser(1, 1, '');
+            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
+            setAllUsers(filterArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Get available task data when edit task
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await taskServices.getTaskById(id);
+            setFullName(res.data.taskName);
+            setType(res.data.type);
+            setDeadline(res.data.dueDate);
+            setLevel(res.data.level);
+            setDocument(res.data.refLink);
+            setDesc(res.data.desc);
+            setAssignTo(res.data.assignTo);
+            setLeader(res.data.leader);
+            setResources(res.data.resources);
+            setPrevAssignTo(res.data.assignTo);
+        };
+        fetchApi();
+    }, [id]);
+
+    // Save previous assigned user to localstorage
+    useEffect(() => {
+        localStorage.setItem('prevAssignTo', JSON.stringify(prevAssignTo));
+    }, [prevAssignTo]);
+
+    // Get user id
+    useEffect(() => {
+        const uid = JSON.parse(localStorage.getItem('userId'));
+        setUserId(uid);
+    }, []);
+
+    // Get all in progress document name from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
@@ -206,68 +220,11 @@ const CreateTask = ({ title, socket }) => {
         fetchApi();
     }, []);
 
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {
-            allTasks?.map(async (item) => {
-                const currDate = new Date();
-                const startDate = new Date(item?.createdAt);
-                const endDate = new Date(item?.dueDate);
-                const allDateToDo = endDate.getTime() - startDate.getTime();
-                const datesWerePassed = currDate.getTime() - startDate.getTime();
-                if (currDate.getTime() <= endDate.getTime()) {
-                    if (datesWerePassed >= (allDateToDo / 3) * 2) {
-                        if (item?.status === 'Sắp đến hạn') return;
-                        await taskServices.updateStatus(item?._id, { status: 'Sắp đến hạn' });
-                        setIsSave((isSave) => !isSave);
-
-                        const newNotiId = await Promise.all(
-                            getAssignToIds(item?.assignTo)?.map(async (userId) => {
-                                const noti = await notificationServices.createNotification({
-                                    notification: `Nhiệm vụ ${item.taskName} sắp đến hạn`,
-                                    userId: userId,
-                                    linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
-                                });
-                                return { notiId: noti.data._id, userId: noti.data.userId };
-                            }),
-                        );
-                        socket.current?.emit('sendNotification', {
-                            senderId: '',
-                            _id: newNotiId,
-                            receiverId: getAssignToIds(item?.assignTo),
-                            text: `Nhiệm vụ ${item?.taskName} sắp đến hạn`,
-                            linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
-                            isRead: false,
-                        });
-                    } else {
-                        await taskServices.updateStatus(item?._id, { status: 'Còn hạn' });
-                        setIsSave((isSave) => !isSave);
-                    }
-                } else {
-                    if (item?.status === 'Quá hạn') return;
-                    await taskServices.updateStatus(item?._id, { status: 'Quá hạn' });
-                    setIsSave((isSave) => !isSave);
-
-                    const newNotiId = await Promise.all(
-                        getAssignToIds(item?.assignTo)?.map(async (userId) => {
-                            const noti = await notificationServices.createNotification({
-                                notification: `Nhiệm vụ ${item.taskName} đã quá hạn`,
-                                userId: userId,
-                                linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
-                            });
-                            return { notiId: noti.data._id, userId: noti.data.userId };
-                        }),
-                    );
-                    socket.current?.emit('sendNotification', {
-                        senderId: '',
-                        _id: newNotiId,
-                        receiverId: getAssignToIds(item?.assignTo),
-                        text: `Nhiệm vụ ${item?.taskName} đã quá hạn`,
-                        linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
-                        isRead: false,
-                    });
-                }
-            });
+            autoUpdateDeadline(allTasks, socket, setIsSave);
         }, 60000);
         return () => {
             clearInterval(timer);

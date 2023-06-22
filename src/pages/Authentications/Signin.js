@@ -6,15 +6,19 @@ import * as authServices from '~/services/authServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { emailValidator, passwordValidator } from '~/utils/formValidation';
 
-const Signin = ({ setIsSuccess }) => {
+const Signin = ({ setIsLoggedIn }) => {
+    // Input state
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    // Input validation state
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
     const [isEmailErr, setIsEmailErr] = useState(false);
     const [isPasswordErr, setIsPasswordErr] = useState(false);
+
     const navigate = useNavigate();
 
+    // Sign in function
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
@@ -32,7 +36,7 @@ const Signin = ({ setIsSuccess }) => {
             localStorage.setItem('refreshToken', res.refreshToken);
             const decodedToken = jwt_decode(res.accessToken);
             successNotify(res.message);
-            setIsSuccess(true);
+            setIsLoggedIn(true);
             navigate(decodedToken.role === 'Member' ? '/documents/documents-in' : '/dashboard');
         } else {
             errorNotify(res);

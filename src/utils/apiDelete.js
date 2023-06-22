@@ -1,5 +1,6 @@
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 
+// Delete one row function
 export const handleDelete = async (name, service, setIsSave) => {
     const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn ${name} không?`;
     if (!window.confirm(confirmMsg)) return;
@@ -12,6 +13,7 @@ export const handleDelete = async (name, service, setIsSave) => {
     }
 };
 
+// Delete many rows function
 export const handleDeleteMany = async (
     name,
     checked,

@@ -1,5 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
+// Create notification function
 export const createNotification = async (data) => {
     try {
         const res = await httpRequest.post('/notification/create', data);
@@ -10,6 +11,7 @@ export const createNotification = async (data) => {
     }
 };
 
+// Get all notifications function
 export const getAllNotification = async () => {
     try {
         const res = await httpRequest.get('/notification/get-all');
@@ -20,6 +22,7 @@ export const getAllNotification = async () => {
     }
 };
 
+// Change notification status function
 export const changeNotificationStatus = async (notificationId) => {
     try {
         const res = await httpRequest.patch(`/notification/change-status/${notificationId}`);

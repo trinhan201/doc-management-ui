@@ -6,67 +6,30 @@ import DropList from '~/components/DropList';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
-import { successNotify, errorNotify } from '~/components/ToastMessage';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 
 const SystemStatistics = ({ socket }) => {
+    const [isSave, setIsSave] = useState(false);
+    const [exportType, setExportType] = useState('Excel(.xlsx)');
+    const [preview, setPreview] = useState(false);
+    // List data function
     const [allDocumentIns, setAllDocumentIns] = useState([]);
     const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [allDepartments, setAllDepartments] = useState([]);
-    const [isSave, setIsSave] = useState(false);
+    const [filterData, setFilterData] = useState([]);
+    // Filter statistic state
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
-    const [exportType, setExportType] = useState('Excel(.xlsx)');
-    const [preview, setPreview] = useState(false);
-    const [filterData, setFilterData] = useState([]);
 
     const allTasks = useFetchTasks({ isSave });
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
 
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
-            setAllDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            setAllUsers(res.allUsers);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllDocumentIns(res.allDocumentIn);
-                setAllDocumentOuts(res.allDocumentOut);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, []);
-
+    // Statistic function
     const handleStatistic = async () => {
         if (!(fFrom && fTo)) return errorNotify('Hãy chọn khoảng thời gian cần thốn kê');
         const finalData = allDepartments?.map((d) => {
@@ -103,7 +66,49 @@ const SystemStatistics = ({ socket }) => {
         setPreview(true);
     };
 
-    console.log(allTasks);
+    // Get all departments from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await departmentServices.getAllDepartment(1, 1, '');
+            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
+            setAllDepartments(departmentArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all users from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getAllUser(1, 1, '');
+            setAllUsers(res.allUsers);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all documents from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '');
+            if (res.code === 200) {
+                setAllDocumentIns(res.allDocumentIn);
+                setAllDocumentOuts(res.allDocumentOut);
+            } else {
+                console.log(res.message);
+            }
+        };
+        fetchApi();
+    }, []);
+
+    // Check tasks deadline function
+    useEffect(() => {
+        if (allTasks?.length === 0) return;
+        const timer = setInterval(async () => {
+            autoUpdateDeadline(allTasks, socket, setIsSave);
+        }, 60000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [allTasks, socket]);
 
     return (
         <>

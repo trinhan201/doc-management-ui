@@ -19,9 +19,9 @@ const DocumentDetail = ({ socket }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
-
     const ref = useRef();
 
+    // Delete attach file function
     const handleDeleteFile = async (fileName) => {
         const data = {
             filename: fileName,
@@ -36,6 +36,7 @@ const DocumentDetail = ({ socket }) => {
         }
     };
 
+    // Upload attach file function
     useEffect(() => {
         if (attachFiles.length === 0) return;
         const uploadFile = async () => {
@@ -56,6 +57,7 @@ const DocumentDetail = ({ socket }) => {
         uploadFile();
     }, [attachFiles, id]);
 
+    // Update progress bar when progress change
     useEffect(() => {
         const setStatusPercentage = () => {
             if (document.status === 'Hoàn thành') {
@@ -72,6 +74,7 @@ const DocumentDetail = ({ socket }) => {
         setStatusPercentage();
     }, [document.status]);
 
+    // Get current document data
     useEffect(() => {
         if (!id) return;
         const fetchApi = async () => {
@@ -81,6 +84,7 @@ const DocumentDetail = ({ socket }) => {
         fetchApi();
     }, [id, isSave]);
 
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

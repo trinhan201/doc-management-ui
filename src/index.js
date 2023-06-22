@@ -5,7 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import TimeAgo from 'javascript-time-ago';
 import vi from 'javascript-time-ago/locale/vi';
 

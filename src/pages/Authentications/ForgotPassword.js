@@ -6,10 +6,13 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { emailValidator } from '~/utils/formValidation';
 
 const ForgotPassword = () => {
+    // Input state
     const [email, setEmail] = useState('');
+    // Input validation state
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isEmailErr, setIsEmailErr] = useState(false);
 
+    // Send email to reset password
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);

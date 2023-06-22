@@ -15,15 +15,16 @@ import { useFetchTasks } from '~/hooks';
 
 const MemberTaskDetail = ({ socket }) => {
     const [tab, setTab] = useState('detail');
-    const [allUsers, setAllUsers] = useState([]);
-    const [allDocuments, setAllDocuments] = useState([]);
+    const [isSave, setIsSave] = useState(false);
+    const [isSubmit, setIsSubmit] = useState(false);
     const [task, setTask] = useState({});
     const [attachFiles, setAttachFiles] = useState([]);
     const [displayFile, setDisplayFile] = useState([]);
     const [finalList, setFinalList] = useState([]);
-    const [isSave, setIsSave] = useState(false);
-    const [isSubmit, setIsSubmit] = useState(false);
     const [submitStatus, setSubmitStatus] = useState('');
+    // List data state
+    const [allUsers, setAllUsers] = useState([]);
+    const [allDocuments, setAllDocuments] = useState([]);
 
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
@@ -31,10 +32,12 @@ const MemberTaskDetail = ({ socket }) => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
 
+    // Update tab
     const onUpdateTab = (value) => {
         setTab(value);
     };
 
+    // Change status color
     const setStatusColor = (status) => {
         if (status === 'Sắp đến hạn') {
             return 'w-fit ml-2 status warning';
@@ -45,6 +48,7 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Change submit text color
     const setSubmitTextColor = (status) => {
         if (status === 'Trễ') {
             return 'text-[#dc2626] text-[1.4rem]';
@@ -55,6 +59,7 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Get type file
     const getTypeFile = (fileName) => {
         if (fileName.includes('.xlsx') || fileName.includes('.csv')) {
             return 'Excel';
@@ -69,56 +74,13 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Get link to reference document detail
     const getRefLink = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
         return `http://localhost:3000/documents/detail/${refLink?._id}`;
     };
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getPublicInfo();
-            setAllUsers(res.data);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
-            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
-            setAllDocuments(documentArray);
-        };
-        fetchApi();
-    }, []);
-
-    useEffect(() => {
-        if (!id) return;
-        const fetchApi = async () => {
-            const res = await taskServices.getTaskById(id);
-            if (res.code === 200) {
-                setTask(res.data);
-            } else {
-                navigate('/error');
-            }
-        };
-        fetchApi();
-    }, [id, isSave, navigate]);
-
-    useEffect(() => {
-        const getResources = () => {
-            const resources = task?.resources?.find((item) => {
-                return item.userId === userId;
-            });
-
-            const finalResources = resources?.resources?.map((item) => {
-                return item.replace('http://localhost:8080/static/', '');
-            });
-
-            setDisplayFile(finalResources);
-        };
-        getResources();
-    }, [task?.resources, userId]);
-
+    // Submit assignment
     const handleSubmit = async () => {
         if (!attachFiles) return;
         const data = new FormData();
@@ -137,14 +99,7 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
-    useEffect(() => {
-        const getAttachFilesName = () => {
-            const arr = Array.from(attachFiles)?.map((item) => item.name);
-            setFinalList(displayFile?.concat(arr));
-        };
-        getAttachFilesName();
-    }, [displayFile, attachFiles]);
-
+    // Delete each assignment file
     const handleDeleteSubmitFile = async (fileName) => {
         const resources = task?.resources?.find((item) => item.userId === userId);
         if (resources?.resources?.includes(`http://localhost:8080/static/${fileName}`)) {
@@ -165,20 +120,13 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Get member resources exclude leader
     const getMemberResources = () => {
         const allMemberResources = task?.resources?.filter((item) => item.userId !== task?.leader?.value);
         return allMemberResources;
     };
 
-    useEffect(() => {
-        const getCurrentResources = () => {
-            const resource = task?.resources?.find((item) => item.userId === userId);
-            setIsSubmit(resource?.isSubmit);
-            setSubmitStatus(resource?.status);
-        };
-        getCurrentResources();
-    }, [task?.resources, userId]);
-
+    // Get leader boolean
     const getLeader = () => {
         const leader = task?.leader?.value;
         if (leader === userId) {
@@ -188,6 +136,7 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Unsubmit assignment
     const handleUnsubmit = async () => {
         const res = await taskServices.unsubmitResource(id);
         if (res.code === 200) {
@@ -198,6 +147,7 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Change task progress
     const handleChangeProgress = async () => {
         const res = await taskServices.updateProgress(id, { taskProgress: 'Chờ duyệt' });
         if (res.code === 200) {
@@ -221,6 +171,75 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
+    // Get public info of user
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all documents from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
+            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
+            setAllDocuments(documentArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Get task data from server
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await taskServices.getTaskById(id);
+            if (res.code === 200) {
+                setTask(res.data);
+            } else {
+                navigate('/error');
+            }
+        };
+        fetchApi();
+    }, [id, isSave, navigate]);
+
+    // Get resource files from db and show in UI
+    useEffect(() => {
+        const getResources = () => {
+            const resources = task?.resources?.find((item) => {
+                return item.userId === userId;
+            });
+
+            const finalResources = resources?.resources?.map((item) => {
+                return item.replace('http://localhost:8080/static/', '');
+            });
+
+            setDisplayFile(finalResources);
+        };
+        getResources();
+    }, [task?.resources, userId]);
+
+    // Merge file in input with resource files from db and show in UI
+    useEffect(() => {
+        const getAttachFilesName = () => {
+            const arr = Array.from(attachFiles)?.map((item) => item.name);
+            setFinalList(displayFile?.concat(arr));
+        };
+        getAttachFilesName();
+    }, [displayFile, attachFiles]);
+
+    // Get submit status and isSubmit boolean
+    useEffect(() => {
+        const getCurrentResources = () => {
+            const resource = task?.resources?.find((item) => item.userId === userId);
+            setIsSubmit(resource?.isSubmit);
+            setSubmitStatus(resource?.status);
+        };
+        getCurrentResources();
+    }, [task?.resources, userId]);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

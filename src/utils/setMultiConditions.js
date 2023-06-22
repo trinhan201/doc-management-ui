@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faFilePowerpoint, faFileWord, faFilePdf, faFile } from '@fortawesome/free-solid-svg-icons';
 
+// Set level color
 export const setLevelColor = (level) => {
     if (level === 'Ưu tiên') {
         return 'inline-block align-text-top w-fit level priority';
@@ -11,6 +12,7 @@ export const setLevelColor = (level) => {
     }
 };
 
+// Set file icon
 export const setFileIcon = (fileName) => {
     if (fileName.includes('.xlsx') || fileName.includes('.csv')) {
         return <FontAwesomeIcon className="w-full h-full text-green-700" icon={faFileExcel} />;

@@ -1,3 +1,4 @@
+// Check box function
 export const handleCheck = (checked, setChecked, setCheckedAll, id, data) => {
     setChecked((prev) => {
         const isChecked = checked?.includes(id);
@@ -13,6 +14,7 @@ export const handleCheck = (checked, setChecked, setCheckedAll, id, data) => {
     });
 };
 
+// Check box all function
 export const handleCheckAll = (checkedAll, checkedLength, data, setChecked) => {
     const idsArray = [];
     if (checkedAll === false) {

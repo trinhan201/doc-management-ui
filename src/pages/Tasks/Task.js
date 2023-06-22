@@ -21,17 +21,20 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useDebounce } from '~/hooks';
 
 const Task = ({ socket }) => {
+    const [isSave, setIsSave] = useState(false);
+    // List data state
     const [allUsers, setAllUsers] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const [taskLists, setTaskLists] = useState([]);
-    const [isSave, setIsSave] = useState(false);
+    // Pagination state
     const [limit, setLimit] = useState(5);
     const [page, setPage] = useState(1);
     const [rowStart, setRowStart] = useState(1);
     const [rowEnd, setRowEnd] = useState(0);
+    // Checkbox state
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('taskChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllTask')) || false);
-
+    //Filter input state
     const [fName, setFName] = useState('');
     const [fCreatedAt, setFCreatedAt] = useState('');
     const [fDueDate, setFDueDate] = useState('');
@@ -44,8 +47,19 @@ const Task = ({ socket }) => {
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
+    const tableHeader = [
+        'STT',
+        'Tên công việc',
+        'Loại công việc',
+        'Tiến trình',
+        'Đến hạn',
+        'Trạng thái',
+        'Người thực hiện',
+        'Thao tác',
+    ];
     const totalPage = Math.ceil(allTasks?.length / limit);
 
+    // Update progress bar
     const setProgressPercentage = (progress) => {
         if (progress === 'Hoàn thành') {
             return 'progress-bar full';
@@ -56,6 +70,7 @@ const Task = ({ socket }) => {
         }
     };
 
+    // Set status color
     const setStatusColor = (status) => {
         if (status === 'Sắp đến hạn') {
             return 'w-fit ml-2 status warning';
@@ -66,18 +81,40 @@ const Task = ({ socket }) => {
         }
     };
 
+    // Go to the next page
     const handleNextPage = () => {
         setPage(page + 1);
         setRowStart(rowStart + 5);
         setRowEnd(rowEnd + 5);
     };
 
+    // Back to the previous page
     const handlePrevPage = () => {
         setPage(page - 1);
         setRowStart(rowStart - 5);
         setRowEnd(rowEnd - 5);
     };
 
+    // Remove filter
+    const removeFilter = () => {
+        setFName('');
+        setFCreatedAt('');
+        setFDueDate('');
+        setFType('');
+        setFStatus('');
+        setFLevel('');
+    };
+
+    // isFilter boolean
+    const isFilters = () => {
+        if (fName || fCreatedAt || fDueDate || fType || fStatus || fLevel) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    // Just get public info of user
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getPublicInfo();
@@ -86,6 +123,7 @@ const Task = ({ socket }) => {
         fetchApi();
     }, []);
 
+    // Get all tasks from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await taskServices.getAllTask(
@@ -110,81 +148,33 @@ const Task = ({ socket }) => {
         fetchApi();
     }, [isSave, userRole, page, limit, nameValue, fCreatedAt, fDueDate, fType, fStatus, fLevel]);
 
-    const removeFilter = () => {
-        setFName('');
-        setFCreatedAt('');
-        setFDueDate('');
-        setFType('');
-        setFStatus('');
-        setFLevel('');
-    };
-
-    const isFilters = () => {
-        if (fName || fCreatedAt || fDueDate || fType || fStatus || fLevel) {
-            return true;
+    // Set pagination state to default when have filter
+    useEffect(() => {
+        if (limit || nameValue || fCreatedAt || fDueDate || fStatus || fLevel) {
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
         } else {
-            return false;
+            return;
         }
-    };
+    }, [limit, nameValue, fCreatedAt, fDueDate, fStatus, fLevel]);
 
-    useEffect(() => {
-        if (!limit) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [limit]);
-
-    useEffect(() => {
-        if (!nameValue) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [nameValue]);
-
-    useEffect(() => {
-        if (!fCreatedAt) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fCreatedAt]);
-
-    useEffect(() => {
-        if (!fDueDate) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fDueDate]);
-
-    useEffect(() => {
-        if (!fStatus) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fStatus]);
-
-    useEffect(() => {
-        if (!fLevel) return;
-        setPage(1);
-        setRowStart(1);
-        setRowEnd(0);
-    }, [fLevel]);
-
+    // Save checked list in localstorage
     useEffect(() => {
         localStorage.setItem('taskChecked', JSON.stringify(checked));
     }, [checked]);
 
+    // Save checkedAll boolean in localstorage
     useEffect(() => {
         localStorage.setItem('isCheckAllTask', JSON.stringify(checkedAll));
     }, [checkedAll]);
 
-    const isCheckedAll = () => {
-        return checked?.length === allTasks?.length;
-    };
-
+    // Check all rows of document types function
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allTasks, setChecked);
     }, [checkedAll, allTasks, checked?.length]);
 
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {
@@ -311,35 +301,18 @@ const Task = ({ socket }) => {
                                             <div className="flex items-center">
                                                 <input
                                                     type="checkbox"
-                                                    checked={isCheckedAll()}
+                                                    checked={checked?.length === allTasks?.length}
                                                     onChange={(e) => setCheckedAll(e.target.checked)}
                                                 />
                                             </div>
                                         </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            STT
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Tên công việc
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Loại công việc
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Tiến trình
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Đến hạn
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Trạng thái
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Người thực hiện
-                                        </th>
-                                        <th scope="col" className="whitespace-nowrap px-6 py-4">
-                                            Thao tác
-                                        </th>
+                                        {tableHeader?.map((item, index) => {
+                                            return (
+                                                <th key={index} scope="col" className="whitespace-nowrap px-6 py-4">
+                                                    {item}
+                                                </th>
+                                            );
+                                        })}
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
@@ -503,9 +476,7 @@ const Task = ({ socket }) => {
                         <div
                             onClick={handlePrevPage}
                             className={
-                                page <= 1
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                page <= 1 ? 'md-page-btn hover:bg-[#dddddd] disabled' : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleLeft} />
@@ -514,8 +485,8 @@ const Task = ({ socket }) => {
                             onClick={handleNextPage}
                             className={
                                 page >= totalPage
-                                    ? 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer pointer-events-none opacity-30'
-                                    : 'flex items-center justify-center w-[35px] h-[35px] hover:bg-[#dddddd] rounded-full cursor-pointer'
+                                    ? 'md-page-btn hover:bg-[#dddddd] disabled'
+                                    : 'md-page-btn hover:bg-[#dddddd]'
                             }
                         >
                             <FontAwesomeIcon icon={faAngleRight} />
@@ -529,7 +500,7 @@ const Task = ({ socket }) => {
                     <label className="flex items-center">
                         <input
                             type="checkbox"
-                            checked={isCheckedAll()}
+                            checked={checked?.length === allTasks?.length}
                             onChange={(e) => setCheckedAll(e.target.checked)}
                         />{' '}
                         <p className="ml-3 mt-1">Chọn tất cả</p>
@@ -577,9 +548,7 @@ const Task = ({ socket }) => {
                     <div
                         onClick={handlePrevPage}
                         className={
-                            page <= 1
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                            page <= 1 ? 'sm-page-btn hover:bg-[#bbbbbb] disabled' : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Trước
@@ -588,8 +557,8 @@ const Task = ({ socket }) => {
                         onClick={handleNextPage}
                         className={
                             page >= totalPage
-                                ? 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb] pointer-events-none opacity-30'
-                                : 'bg-[#cccccc] px-[8px] py-[4px] rounded-md mx-1 cursor-pointer hover:bg-[#bbbbbb]'
+                                ? 'sm-page-btn hover:bg-[#bbbbbb] disabled'
+                                : 'sm-page-btn hover:bg-[#bbbbbb]'
                         }
                     >
                         Sau

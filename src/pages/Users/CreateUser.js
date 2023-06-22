@@ -13,49 +13,26 @@ import { useFetchTasks } from '~/hooks';
 
 const CreateUser = ({ title, socket }) => {
     const [isSave, setIsSave] = useState(false);
+    const [departments, setDepartments] = useState([]);
+    // Input state
     const [fullName, setFullName] = useState('');
     const [date, setDate] = useState('');
     const [gender, setGender] = useState('Nam');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [department, setDepartment] = useState('');
+    // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
-    const [departments, setDepartments] = useState([]);
 
     const allTasks = useFetchTasks({ isSave });
     const navigate = useNavigate();
     const { id } = useParams();
-
     const genderList = ['Nam', 'Nữ'];
 
-    useEffect(() => {
-        if (!id) return;
-        const fetchApi = async () => {
-            const res = await userServices.getUserById(id);
-            setFullName(res.data.fullName);
-            setDate(res.data.birthDate);
-            setGender(res.data.gender);
-            setEmail(res.data.email);
-            setPhone(res.data.phoneNumber);
-            setDepartment(res.data.department);
-        };
-        fetchApi();
-    }, [id]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.departmentName);
-            setDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
-
+    // Create or edit user function
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
@@ -83,6 +60,34 @@ const CreateUser = ({ title, socket }) => {
         }
     };
 
+    // Get available user data when edit user
+    useEffect(() => {
+        if (!id) return;
+        const fetchApi = async () => {
+            const res = await userServices.getUserById(id);
+            setFullName(res.data.fullName);
+            setDate(res.data.birthDate);
+            setGender(res.data.gender);
+            setEmail(res.data.email);
+            setPhone(res.data.phoneNumber);
+            setDepartment(res.data.department);
+        };
+        fetchApi();
+    }, [id]);
+
+    // Get all active departments from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await departmentServices.getAllDepartment(1, 1, '');
+            const departmentArray = res.allDepartments
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.departmentName);
+            setDepartments(departmentArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

@@ -1,5 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
+// Create department function
 export const createDepartment = async (data = {}) => {
     try {
         const res = await httpRequest.post('/department/create', data);
@@ -10,6 +11,7 @@ export const createDepartment = async (data = {}) => {
     }
 };
 
+// Update department function
 export const updateDepartment = async (departmentId, data = {}) => {
     try {
         const res = await httpRequest.put(`/department/update/${departmentId}`, data);
@@ -20,6 +22,7 @@ export const updateDepartment = async (departmentId, data = {}) => {
     }
 };
 
+// Activate department function
 export const activateDepartment = async (departmentId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/department/activate/${departmentId}`, data);
@@ -30,6 +33,7 @@ export const activateDepartment = async (departmentId, data = {}) => {
     }
 };
 
+// Delete department function
 export const deleteDepartmentById = async (departmentId) => {
     try {
         const res = await httpRequest.delete(`/department/delete/${departmentId}`);
@@ -40,6 +44,7 @@ export const deleteDepartmentById = async (departmentId) => {
     }
 };
 
+// Delete many department function
 export const deleteManyDepartment = async (data = {}) => {
     try {
         const res = await httpRequest.post('/department/delete-many', data);
@@ -50,6 +55,7 @@ export const deleteManyDepartment = async (data = {}) => {
     }
 };
 
+// Get all departments function
 export const getAllDepartment = async (page, limit, search) => {
     try {
         const res = await httpRequest.get(`/department/get-all?page=${page}&limit=${limit}&search=${search}`);
@@ -60,6 +66,7 @@ export const getAllDepartment = async (page, limit, search) => {
     }
 };
 
+// Get department by id function
 export const getDepartmentById = async (departmentId) => {
     try {
         const res = await httpRequest.get(`/department/get/${departmentId}`);

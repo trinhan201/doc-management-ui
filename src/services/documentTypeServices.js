@@ -1,5 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
+// Create document type function
 export const createDocumentType = async (data = {}) => {
     try {
         const res = await httpRequest.post('/document-type/create', data);
@@ -10,6 +11,7 @@ export const createDocumentType = async (data = {}) => {
     }
 };
 
+// Update document type function
 export const updateDocumentType = async (documentTypeId, data = {}) => {
     try {
         const res = await httpRequest.put(`/document-type/update/${documentTypeId}`, data);
@@ -20,6 +22,7 @@ export const updateDocumentType = async (documentTypeId, data = {}) => {
     }
 };
 
+// Activate document type function
 export const activateDocumentType = async (documentTypeId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/document-type/activate/${documentTypeId}`, data);
@@ -30,6 +33,7 @@ export const activateDocumentType = async (documentTypeId, data = {}) => {
     }
 };
 
+// Delete document type function
 export const deleteDocumentTypeById = async (documentTypeId) => {
     try {
         const res = await httpRequest.delete(`/document-type/delete/${documentTypeId}`);
@@ -40,6 +44,7 @@ export const deleteDocumentTypeById = async (documentTypeId) => {
     }
 };
 
+// Delete many document type function
 export const deleteManyDocumentType = async (data = {}) => {
     try {
         const res = await httpRequest.post('/document-type/delete-many', data);
@@ -50,6 +55,7 @@ export const deleteManyDocumentType = async (data = {}) => {
     }
 };
 
+// Get all document types function
 export const getAllDocumentType = async (page, limit, search) => {
     try {
         const res = await httpRequest.get(`/document-type/get-all?page=${page}&limit=${limit}&search=${search}`);
@@ -60,6 +66,7 @@ export const getAllDocumentType = async (page, limit, search) => {
     }
 };
 
+// Get document type by id function
 export const getDocumentTypeById = async (documentTypeId) => {
     try {
         const res = await httpRequest.get(`/document-type/get/${documentTypeId}`);

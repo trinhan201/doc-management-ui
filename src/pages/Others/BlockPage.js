@@ -5,6 +5,7 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 const BlockPage = () => {
     const navigate = useNavigate();
 
+    // Sign out function
     const handleSignOut = async () => {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return;

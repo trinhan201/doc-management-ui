@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faBookmark, faListCheck, faUsers } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 import BarChart from '~/components/Chart/BarChart';
 import PieChart from '~/components/Chart/PieChart';
-import Select from 'react-select';
 import * as userServices from '~/services/userServices';
 import * as documentServices from '~/services/documentServices';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
@@ -11,12 +11,12 @@ import { useFetchTasks } from '~/hooks';
 
 const Dashboard = ({ socket }) => {
     const [isSave, setIsSave] = useState(false);
+    // List data state
     const [allUsers, setAllUsers] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [allDocumentIns, setAllDocumentIns] = useState([]);
     const [allDocumentOuts, setAllDocumentOuts] = useState([]);
-
-    const allTasks = useFetchTasks({ isSave });
+    // Chart option state
     const [barOption, setBarOption] = useState({
         label: 'Theo loại',
         value: 'type',
@@ -26,6 +26,8 @@ const Dashboard = ({ socket }) => {
         value: 'type',
     });
 
+    const allTasks = useFetchTasks({ isSave });
+    // Filter options in bar chart
     const barOptions = [
         {
             label: 'Theo loại',
@@ -48,7 +50,7 @@ const Dashboard = ({ socket }) => {
             value: 'currentLocation',
         },
     ];
-
+    // Filter options in pie chart
     const pieOptions = [
         {
             label: 'Theo loại',
@@ -68,6 +70,7 @@ const Dashboard = ({ socket }) => {
         },
     ];
 
+    // Get all users from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getPublicInfo();
@@ -80,6 +83,7 @@ const Dashboard = ({ socket }) => {
         fetchApi();
     }, []);
 
+    // Get all documents from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '');
@@ -94,6 +98,7 @@ const Dashboard = ({ socket }) => {
         fetchApi();
     }, []);
 
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

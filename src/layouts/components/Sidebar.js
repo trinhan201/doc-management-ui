@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faAngleDown,
     faAngleRight,
@@ -15,7 +16,6 @@ import {
     faTableList,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import jwt_decode from 'jwt-decode';
 import SidebarItem from '~/components/SidebarItem';
 
@@ -24,6 +24,7 @@ const Sidebar = () => {
     const [toggleSubMenu2, setToggleSubMenu2] = useState(false);
     const [userRole, setUserRole] = useState(JSON.parse(localStorage.getItem('userRole')));
 
+    // Get user role function
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         if (!token) return;

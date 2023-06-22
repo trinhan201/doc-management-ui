@@ -2,23 +2,24 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
-import { passwordValidator } from '~/utils/formValidation';
 import * as userServices from '~/services/userServices';
+import { passwordValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '../ToastMessage';
 
 const ChangePasswordForm = ({ setShowChangePassword }) => {
+    // Input state
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-
+    // Input validation state
     const [oldPasswordErrMsg, setOldPasswordErrMsg] = useState({});
     const [passwordErrMsg, setPasswordErrMsg] = useState({});
     const [confirmPasswordErrMsg, setConfirmPasswordErrMsg] = useState({});
-
     const [isOldPasswordErr, setIsOldPasswordErr] = useState(false);
     const [isPasswordErr, setIsPasswordErr] = useState(false);
     const [isConfirmPasswordErr, setIsConfirmPasswordErr] = useState(false);
 
+    // Change password function
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isOldPasswordValid = passwordValidator(

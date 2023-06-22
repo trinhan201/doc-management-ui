@@ -1,5 +1,6 @@
 import httpRequest from '~/utils/httpRequest';
 
+// Create task function
 export const createTask = async (data = {}) => {
     try {
         const res = await httpRequest.post('/task/create', data);
@@ -10,6 +11,7 @@ export const createTask = async (data = {}) => {
     }
 };
 
+// Upload file of task function
 export const uploadFile = async (taskId, data) => {
     try {
         const res = await httpRequest.post(`/task/upload/${taskId}`, data);
@@ -20,6 +22,7 @@ export const uploadFile = async (taskId, data) => {
     }
 };
 
+// Delete attach file of task function
 export const deleteFileUrl = async (taskId, data) => {
     try {
         const res = await httpRequest.patch(`/task/delete-file-url/${taskId}`, data);
@@ -30,6 +33,7 @@ export const deleteFileUrl = async (taskId, data) => {
     }
 };
 
+// Update task function
 export const updateTask = async (taskId, data = {}) => {
     try {
         const res = await httpRequest.put(`/task/update/${taskId}`, data);
@@ -40,6 +44,7 @@ export const updateTask = async (taskId, data = {}) => {
     }
 };
 
+// Change task progress function
 export const updateProgress = async (taskId, data = {}) => {
     try {
         const res = await httpRequest.patch(`/task/update-progress/${taskId}`, data);
@@ -50,6 +55,7 @@ export const updateProgress = async (taskId, data = {}) => {
     }
 };
 
+// Delete task function
 export const deleteTaskById = async (taskId) => {
     try {
         const res = await httpRequest.delete(`/task/delete/${taskId}`);
@@ -60,6 +66,7 @@ export const deleteTaskById = async (taskId) => {
     }
 };
 
+// Delete many task function
 export const deleteManyTask = async (data = {}) => {
     try {
         const res = await httpRequest.post('/task/delete-many', data);
@@ -70,6 +77,7 @@ export const deleteManyTask = async (data = {}) => {
     }
 };
 
+// Get all tasks function
 export const getAllTask = async (page, limit, taskName, createdAt, dueDate, type, status, level, progress) => {
     try {
         const res = await httpRequest.get(
@@ -82,6 +90,7 @@ export const getAllTask = async (page, limit, taskName, createdAt, dueDate, type
     }
 };
 
+// Get task by id function
 export const getTaskById = async (taskId) => {
     try {
         const res = await httpRequest.get(`/task/get/${taskId}`);
@@ -92,6 +101,7 @@ export const getTaskById = async (taskId) => {
     }
 };
 
+// Submit assignment function
 export const submitResource = async (taskId, data) => {
     try {
         const res = await httpRequest.post(`/task/submit/${taskId}`, data);
@@ -102,6 +112,7 @@ export const submitResource = async (taskId, data) => {
     }
 };
 
+// Change assign role function
 export const changeAssignRole = async (taskId, data) => {
     try {
         const res = await httpRequest.patch(`/task/change-assign-role/${taskId}`, data);
@@ -112,6 +123,7 @@ export const changeAssignRole = async (taskId, data) => {
     }
 };
 
+// Delete each attach file of assignment function
 export const deleteSubmitFileUrl = async (taskId, data) => {
     try {
         const res = await httpRequest.patch(`/task/delete-submit-file-url/${taskId}`, data);
@@ -122,6 +134,7 @@ export const deleteSubmitFileUrl = async (taskId, data) => {
     }
 };
 
+// Unsubmit assignment function
 export const unsubmitResource = async (taskId) => {
     try {
         const res = await httpRequest.patch(`/task/unsubmit/${taskId}`);
@@ -132,6 +145,7 @@ export const unsubmitResource = async (taskId) => {
     }
 };
 
+// Update deadline status function
 export const updateStatus = async (taskId, data) => {
     try {
         const res = await httpRequest.patch(`/task/update-deadline/${taskId}`, data);

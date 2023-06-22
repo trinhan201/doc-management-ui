@@ -1,11 +1,13 @@
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 
+// Just get id of user
 const getAssignToIds = (arr) => {
     const final = arr.map((item) => item.value);
     return final;
 };
 
+// Auto update status deadline
 export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
     allTasks?.map(async (item) => {
         const currDate = new Date();

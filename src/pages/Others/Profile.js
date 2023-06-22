@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import FormData from 'form-data';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import ProfileForm from '~/components/Form/ProfileForm';
 import * as authServices from '~/services/authServices';
 import * as userServices from '~/services/userServices';
@@ -11,16 +11,17 @@ import { AvatarContext } from '~/App';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const Profile = ({ socket }) => {
+    const [isSave, setIsSave] = useState(false);
     const [allTasks, setAllTasks] = useState([]);
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
     const [fileName, setFileName] = useState(JSON.parse(localStorage.getItem('imageName')));
-    const [isSave, setIsSave] = useState(false);
     const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
     const { isChangeAvatar, setIsChangeAvatar } = useContext(AvatarContext);
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
+    // Change avatar function
     const changeAvatar = async (e) => {
         const data = new FormData();
         const file = e.target.files[0];
@@ -37,26 +38,7 @@ const Profile = ({ socket }) => {
         }
     };
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '', '');
-            if (userRole === 'Admin' || userRole === 'Moderator') {
-                setAllTasks(res.allTasks);
-            } else {
-                setAllTasks(res.allMemberTasks);
-            }
-        };
-        fetchApi();
-    }, [isSave, userRole]);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await authServices.getCurrUser();
-            setCurrUser(res);
-        };
-        fetchApi();
-    }, [isSave, isChangeAvatar]);
-
+    // Remove avatar function
     const handleRemoveAvatar = async () => {
         const confirmMsg = 'Bạn có chắc muốn xóa ảnh nền không?';
         if (!window.confirm(confirmMsg)) return;
@@ -71,23 +53,50 @@ const Profile = ({ socket }) => {
         }
     };
 
-    useEffect(() => {
-        localStorage.setItem('imageName', JSON.stringify(fileName));
-    }, [isRemove, fileName]);
-
-    useEffect(() => {
-        localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
-    }, [isRemove]);
-
+    // Get all complete tasks quantity
     const getCompleteTaskQty = () => {
         const qty = allTasks?.filter((item) => item?.progress === 'Hoàn thành');
         return qty;
     };
 
+    // Get complete percentage of all tasks
     const getPercentProgress = () => {
         return `${(getCompleteTaskQty().length / allTasks.length) * 100}%`;
     };
 
+    // Get all tasks from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '', '');
+            if (userRole === 'Admin' || userRole === 'Moderator') {
+                setAllTasks(res.allTasks);
+            } else {
+                setAllTasks(res.allMemberTasks);
+            }
+        };
+        fetchApi();
+    }, [isSave, userRole]);
+
+    // Get current user data
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await authServices.getCurrUser();
+            setCurrUser(res);
+        };
+        fetchApi();
+    }, [isSave, isChangeAvatar]);
+
+    // Save image name in localstorage
+    useEffect(() => {
+        localStorage.setItem('imageName', JSON.stringify(fileName));
+    }, [isRemove, fileName]);
+
+    // Save remove avtar boolean in localstorage
+    useEffect(() => {
+        localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
+    }, [isRemove]);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

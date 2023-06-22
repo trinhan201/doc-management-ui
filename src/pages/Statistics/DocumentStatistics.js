@@ -18,6 +18,7 @@ const DocumentStatistics = ({ socket }) => {
     const [preview, setPreview] = useState(false);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentTypes, setDocumentTypes] = useState([]);
+    // Filter statistic state
     const [flag, setFlag] = useState();
     const [fType, setFType] = useState('');
     const [fStatus, setFStatus] = useState('');
@@ -26,6 +27,7 @@ const DocumentStatistics = ({ socket }) => {
     const [fTo, setFTo] = useState('');
 
     const allTasks = useFetchTasks({ isSave });
+    // Filter statistic options
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
@@ -35,17 +37,7 @@ const DocumentStatistics = ({ socket }) => {
         { label: 'Văn bản đi', value: false },
     ];
 
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
-            const documentTypeArray = res.allDocumentTypes
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.documentTypeName);
-            setDocumentTypes(documentTypeArray);
-        };
-        fetchApi();
-    }, []);
-
+    // Statistic function
     const handleStatistic = async () => {
         if (flag || fType || fStatus || fLevel || (fFrom && fTo)) {
             const res = await documentServices.getAllDocument(
@@ -81,6 +73,19 @@ const DocumentStatistics = ({ socket }) => {
         }
     };
 
+    // Get all document types from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
+            const documentTypeArray = res.allDocumentTypes
+                ?.filter((item) => item.status !== false)
+                .map((item) => item.documentTypeName);
+            setDocumentTypes(documentTypeArray);
+        };
+        fetchApi();
+    }, []);
+
+    // Check tasks deadline function
     useEffect(() => {
         if (allTasks?.length === 0) return;
         const timer = setInterval(async () => {

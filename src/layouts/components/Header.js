@@ -16,10 +16,12 @@ const Header = ({ setToggle, socket }) => {
     const [toggleSidebar, setToggleSidebar] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userAvatar, setUserAvatar] = useState('');
+
     const { isChangeAvatar } = useContext(AvatarContext);
     const navigate = useNavigate();
     const timeAgo = new TimeAgo();
 
+    // Sign out function
     const handleSignOut = async () => {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return;
@@ -36,10 +38,23 @@ const Header = ({ setToggle, socket }) => {
         }
     };
 
+    // isRead notification function
+    const handleChangeNotificationStatus = async (id) => {
+        await notificationServices.changeNotificationStatus(id);
+    };
+
+    // unRead notification length function
+    const notificationNotReadLength = (notifications) => {
+        const length = notifications?.filter((item) => item.isRead === false).length;
+        return length;
+    };
+
+    // Toggle sidebar
     useEffect(() => {
         setToggle(toggleSidebar);
     }, [setToggle, toggleSidebar]);
 
+    // Get current user avatar
     useEffect(() => {
         const fetchApi = async () => {
             const res = await authServices.getCurrUser();
@@ -48,7 +63,7 @@ const Header = ({ setToggle, socket }) => {
         fetchApi();
     }, [isChangeAvatar]);
 
-    //Start------------------------------------------------------------------//
+    // Get realtime notification function
     useEffect(() => {
         socket.current?.on('getNotification', (data) => {
             setNotification({
@@ -62,22 +77,13 @@ const Header = ({ setToggle, socket }) => {
         });
     }, [socket]);
 
+    // Merge notification from db and socket.io
     useEffect(() => {
         if (!notification) return;
         setNotifications((prev) => prev.concat(notification));
     }, [notification]);
 
-    const handleChangeNotificationStatus = async (id) => {
-        await notificationServices.changeNotificationStatus(id);
-    };
-
-    const notificationNotReadLength = (notifications) => {
-        const length = notifications?.filter((item) => item.isRead === false).length;
-        return length;
-    };
-
-    //End------------------------------------------------------------------//
-
+    // Get all notifications from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await notificationServices.getAllNotification();
