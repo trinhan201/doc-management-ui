@@ -9,8 +9,10 @@ import ExportWord from '~/components/ExportFile/Task/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
+import Loading from '~/components/Loading';
 
 const TaskStatistics = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     const [isSave, setIsSave] = useState(false);
@@ -33,6 +35,7 @@ const TaskStatistics = ({ socket }) => {
 
     // Statistic function
     const handleStatistic = async () => {
+        setLoading(true);
         if (fProgress || fType || fStatus || fLevel || (fFrom && fTo)) {
             const res = await taskServices.getAllTask(
                 1,
@@ -60,12 +63,15 @@ const TaskStatistics = ({ socket }) => {
                 } else {
                     setStatisticTasks(res.allTasks);
                 }
+                setLoading(false);
                 setPreview(true);
                 successNotify('Thống kê thành công');
             } else {
+                setLoading(false);
                 console.log(res.message);
             }
         } else {
+            setLoading(false);
             errorNotify('Hãy chọn ít nhất 1 trường');
         }
     };
@@ -185,6 +191,11 @@ const TaskStatistics = ({ socket }) => {
                     )}
                 </div>
             </div>
+            {loading && (
+                <div className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[.15] z-[999]">
+                    <Loading />
+                </div>
+            )}
         </>
     );
 };

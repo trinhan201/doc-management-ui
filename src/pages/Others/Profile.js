@@ -161,11 +161,10 @@ const Profile = ({ socket }) => {
                             <h3 className="text-[1.4rem] font-semibold">Mức độ hoàn thành</h3>
                             <div className="w-full bg-gray-200 rounded-full mt-3">
                                 <div
+                                    title={getPercentProgress() !== 'NaN%' ? getPercentProgress() : '100%'}
                                     style={{ width: getPercentProgress() }}
-                                    className={`bg-blue-600 text-[1.4rem] font-medium text-blue-100 text-center p-1.5 leading-none rounded-full`}
-                                >
-                                    {getPercentProgress()}
-                                </div>
+                                    className={`bg-blue-600 text-[1.4rem] font-medium text-blue-100 text-center p-4 leading-none rounded-full`}
+                                ></div>
                             </div>
                             <div className="flex justify-between mt-9">
                                 <div>

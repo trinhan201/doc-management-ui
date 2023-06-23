@@ -36,6 +36,14 @@ const App = () => {
         });
     }, [userId]);
 
+    // Get user temp role
+    const getTempRole = () => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) return;
+        const decodedToken = jwt_decode(accessToken);
+        return decodedToken.role;
+    };
+
     // Check exp of refresh to logout
     useEffect(() => {
         const refreshToken = localStorage.getItem('refreshToken');
@@ -97,7 +105,7 @@ const App = () => {
                                 <Route
                                     path="/dashboard"
                                     element={
-                                        userRole === 'Moderator' || userRole === 'Admin' ? (
+                                        getTempRole() === 'Moderator' || getTempRole() === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <Dashboard socket={socket} />
                                             </DefaultLayout>

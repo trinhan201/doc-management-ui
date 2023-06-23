@@ -15,8 +15,10 @@ import { disabledPastDate, fullNameValidator, dateValidator } from '~/utils/form
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchTasks } from '~/hooks';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import Loading from '~/components/Loading';
 
 const CreateTask = ({ title, socket }) => {
+    const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState('');
     const [isSave, setIsSave] = useState(false);
     const [prevAssignTo, setPrevAssignTo] = useState(JSON.parse(localStorage.getItem('prevAssignTo')) || []);
@@ -81,7 +83,7 @@ const CreateTask = ({ title, socket }) => {
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         const isDateValid = dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg);
         if (!isfullNameValid || !isDateValid) return;
-
+        setLoading(true);
         const data = {
             taskName: fullName,
             type: type,
@@ -161,9 +163,11 @@ const CreateTask = ({ title, socket }) => {
                     isRead: false,
                 });
             }
+            setLoading(false);
             successNotify(res.message);
             navigate(-1);
         } else {
+            setLoading(false);
             errorNotify(res);
         }
     };
@@ -232,118 +236,125 @@ const CreateTask = ({ title, socket }) => {
     }, [allTasks, socket]);
 
     return (
-        <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
-            <h1 className="text-[2rem] font-bold">{title}</h1>
-            <form autoComplete="on">
-                <div className="mt-8">
-                    <label className="font-bold">Tên công việc:</label>
-                    <InputField
-                        id="fullName"
-                        className={isFullNameErr ? 'invalid' : 'default'}
-                        placeholder="Tên công việc"
-                        value={fullName}
-                        setValue={setFullName}
-                        onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
-                    />
-                    <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
-                </div>
-                <div className="flex flex-col md:flex-row mt-7 gap-6">
-                    <div className="flex-1">
-                        <label className="font-bold">Ngày đến hạn:</label>
+        <>
+            <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
+                <h1 className="text-[2rem] font-bold">{title}</h1>
+                <form autoComplete="on">
+                    <div className="mt-8">
+                        <label className="font-bold">Tên công việc:</label>
                         <InputField
-                            name="datetime-local"
-                            className={isDeadlineErr ? 'invalid' : 'default'}
-                            value={deadline}
-                            setValue={setDeadline}
-                            min={disabledPastDate()}
-                            onBlur={() => dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg)}
+                            id="fullName"
+                            className={isFullNameErr ? 'invalid' : 'default'}
+                            placeholder="Tên công việc"
+                            value={fullName}
+                            setValue={setFullName}
+                            onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
                         />
-                        <p className="text-red-600 text-[1.3rem]">{deadlineErrMsg.date}</p>
+                        <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                     </div>
-                    <div className="flex-1">
-                        <label className="font-bold">Mức độ:</label>
+                    <div className="flex flex-col md:flex-row mt-7 gap-6">
+                        <div className="flex-1">
+                            <label className="font-bold">Ngày đến hạn:</label>
+                            <InputField
+                                name="datetime-local"
+                                className={isDeadlineErr ? 'invalid' : 'default'}
+                                value={deadline}
+                                setValue={setDeadline}
+                                min={disabledPastDate()}
+                                onBlur={() => dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg)}
+                            />
+                            <p className="text-red-600 text-[1.3rem]">{deadlineErrMsg.date}</p>
+                        </div>
+                        <div className="flex-1">
+                            <label className="font-bold">Mức độ:</label>
+                            <DropList
+                                selectedValue={level}
+                                options={levelOptions}
+                                setValue={setLevel}
+                                setId={() => undefined}
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Dựa trên văn bản:</label>
                         <DropList
-                            selectedValue={level}
-                            options={levelOptions}
-                            setValue={setLevel}
+                            selectedValue={document}
+                            options={documents}
+                            setValue={setDocument}
                             setId={() => undefined}
                         />
                     </div>
-                </div>
-                <div className="mt-7">
-                    <label className="font-bold">Dựa trên văn bản:</label>
-                    <DropList
-                        selectedValue={document}
-                        options={documents}
-                        setValue={setDocument}
-                        setId={() => undefined}
-                    />
-                </div>
-                <div className="flex flex-col md:flex-row mt-7 gap-6">
-                    <div className="flex-1">
-                        <label className="font-bold">Nhóm trưởng:</label>
+                    <div className="flex flex-col md:flex-row mt-7 gap-6">
+                        <div className="flex-1">
+                            <label className="font-bold">Nhóm trưởng:</label>
+                            <Select
+                                placeholder="--Vui lòng chọn--"
+                                options={getUserOptions()}
+                                onChange={setLeader}
+                                value={leader}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <label className="font-bold">Loại:</label>
+                            <DropList
+                                selectedValue={type}
+                                options={typeOptions}
+                                setValue={setType}
+                                setId={() => undefined}
+                            />
+                        </div>
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Người thực hiện:</label>
                         <Select
+                            isMulti
                             placeholder="--Vui lòng chọn--"
                             options={getUserOptions()}
-                            onChange={setLeader}
-                            value={leader}
+                            onChange={setAssignTo}
+                            value={assignTo}
                         />
                     </div>
-                    <div className="flex-1">
-                        <label className="font-bold">Loại:</label>
-                        <DropList
-                            selectedValue={type}
-                            options={typeOptions}
-                            setValue={setType}
-                            setId={() => undefined}
+                    <div className="mt-7">
+                        <label className="font-bold">File đính kèm:</label>
+                        <FileInput setAttachFiles={setAttachFiles} />
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Mô tả công việc:</label>
+                        <InputField
+                            textarea
+                            className="default textarea"
+                            placeholder="Mô tả công việc"
+                            rows="6"
+                            cols="50"
+                            value={desc}
+                            setValue={setDesc}
                         />
                     </div>
+                    <div className="block md:flex items-center gap-5 mt-12">
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                navigate(-1);
+                            }}
+                            className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faXmark} /> Hủy bỏ
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {loading && (
+                <div className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[.15] z-[999]">
+                    <Loading />
                 </div>
-                <div className="mt-7">
-                    <label className="font-bold">Người thực hiện:</label>
-                    <Select
-                        isMulti
-                        placeholder="--Vui lòng chọn--"
-                        options={getUserOptions()}
-                        onChange={setAssignTo}
-                        value={assignTo}
-                    />
-                </div>
-                <div className="mt-7">
-                    <label className="font-bold">File đính kèm:</label>
-                    <FileInput setAttachFiles={setAttachFiles} />
-                </div>
-                <div className="mt-7">
-                    <label className="font-bold">Mô tả công việc:</label>
-                    <InputField
-                        textarea
-                        className="default textarea"
-                        placeholder="Mô tả công việc"
-                        rows="6"
-                        cols="50"
-                        value={desc}
-                        setValue={setDesc}
-                    />
-                </div>
-                <div className="block md:flex items-center gap-5 mt-12">
-                    <button
-                        onClick={handleSubmit}
-                        className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
-                    </button>
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            navigate(-1);
-                        }}
-                        className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        <FontAwesomeIcon icon={faXmark} /> Hủy bỏ
-                    </button>
-                </div>
-            </form>
-        </div>
+            )}
+        </>
     );
 };
 

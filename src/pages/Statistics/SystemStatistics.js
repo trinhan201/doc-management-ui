@@ -11,8 +11,10 @@ import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
+import Loading from '~/components/Loading';
 
 const SystemStatistics = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
@@ -28,10 +30,12 @@ const SystemStatistics = ({ socket }) => {
 
     const allTasks = useFetchTasks({ isSave });
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
+    let timer;
 
     // Statistic function
     const handleStatistic = async () => {
         if (!(fFrom && fTo)) return errorNotify('Hãy chọn khoảng thời gian cần thốn kê');
+        setLoading(true);
         const finalData = allDepartments?.map((d) => {
             const user = allUsers
                 ?.filter((item) => item.department === d)
@@ -61,10 +65,17 @@ const SystemStatistics = ({ socket }) => {
                 allDocumentOuts: documentOut,
             };
         });
-        setFilterData(finalData);
-        successNotify('Thống kê thành công');
-        setPreview(true);
+        timer = setTimeout(() => {
+            setLoading(false);
+            setFilterData(finalData);
+            successNotify('Thống kê thành công');
+            setPreview(true);
+        }, 1500);
     };
+
+    useEffect(() => {
+        return () => clearTimeout(timer);
+    }, [timer, loading]);
 
     // Get all departments from server
     useEffect(() => {
@@ -159,6 +170,11 @@ const SystemStatistics = ({ socket }) => {
                     )}
                 </div>
             </div>
+            {loading && (
+                <div className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[.15] z-[999]">
+                    <Loading />
+                </div>
+            )}
         </>
     );
 };

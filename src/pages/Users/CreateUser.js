@@ -10,8 +10,10 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
+import Loading from '~/components/Loading';
 
 const CreateUser = ({ title, socket }) => {
+    const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     const [departments, setDepartments] = useState([]);
     // Input state
@@ -38,6 +40,7 @@ const CreateUser = ({ title, socket }) => {
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
         if (!isEmailValid || !isfullNameValid) return;
+        setLoading(true);
         const data = {
             fullName: fullName,
             gender: gender,
@@ -53,9 +56,11 @@ const CreateUser = ({ title, socket }) => {
             res = await userServices.createUser(data);
         }
         if (res.code === 200) {
+            setLoading(false);
             successNotify(res.message);
             navigate('/users');
         } else {
+            setLoading(false);
             errorNotify(res);
         }
     };
@@ -99,91 +104,98 @@ const CreateUser = ({ title, socket }) => {
     }, [allTasks, socket]);
 
     return (
-        <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
-            <h1 className="text-[2rem] font-bold">{title}</h1>
-            <form autoComplete="on">
-                <div className="mt-8">
-                    <label className="font-bold">Họ và tên:</label>
-                    <InputField
-                        id="fullName"
-                        className={isFullNameErr ? 'invalid' : 'default'}
-                        placeholder="Tên người dùng"
-                        value={fullName}
-                        setValue={setFullName}
-                        onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
-                    />
-                    <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-center mt-7">
-                    <label className="font-bold mr-7">Giới tính:</label>
-                    <div className="flex items-center">
-                        {genderList.map((g, index) => {
-                            return (
-                                <div key={index} className="flex items-center mr-5">
-                                    <InputField
-                                        name="radio"
-                                        className="flex w-[15px] h-[15px]"
-                                        checked={gender === g}
-                                        setValue={() => setGender(g)}
-                                    />
-                                    <label className="text-[1.5rem] ml-3">{g}</label>
-                                </div>
-                            );
-                        })}
+        <>
+            <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
+                <h1 className="text-[2rem] font-bold">{title}</h1>
+                <form autoComplete="on">
+                    <div className="mt-8">
+                        <label className="font-bold">Họ và tên:</label>
+                        <InputField
+                            id="fullName"
+                            className={isFullNameErr ? 'invalid' : 'default'}
+                            placeholder="Tên người dùng"
+                            value={fullName}
+                            setValue={setFullName}
+                            onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
+                        />
+                        <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                     </div>
+                    <div className="flex flex-col md:flex-row md:items-center mt-7">
+                        <label className="font-bold mr-7">Giới tính:</label>
+                        <div className="flex items-center">
+                            {genderList.map((g, index) => {
+                                return (
+                                    <div key={index} className="flex items-center mr-5">
+                                        <InputField
+                                            name="radio"
+                                            className="flex w-[15px] h-[15px]"
+                                            checked={gender === g}
+                                            setValue={() => setGender(g)}
+                                        />
+                                        <label className="text-[1.5rem] ml-3">{g}</label>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Ngày sinh:</label>
+                        <InputField name="date" className="default" value={date} setValue={setDate} />
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Email:</label>
+                        <InputField
+                            id="email"
+                            name="email"
+                            className={isEmailErr ? 'invalid' : 'default'}
+                            placeholder="Email"
+                            value={email}
+                            setValue={setEmail}
+                            onBlur={() => emailValidator(email, setIsEmailErr, setEmailErrMsg)}
+                        />
+                        <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Số điện thoại:</label>
+                        <InputField
+                            id="phone"
+                            className="default"
+                            placeholder="Số điện thoại"
+                            value={phone}
+                            setValue={setPhone}
+                        />
+                    </div>
+                    <div className="mt-7">
+                        <label className="font-bold">Phòng ban:</label>
+                        <DropList
+                            selectedValue={department}
+                            options={departments}
+                            setValue={setDepartment}
+                            setId={() => undefined}
+                        />
+                    </div>
+                    <div className="block md:flex items-center gap-5 mt-12">
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
+                        </button>
+                        <NavLink
+                            to="/users"
+                            className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faXmark} /> Hủy bỏ
+                        </NavLink>
+                    </div>
+                </form>
+            </div>
+            {loading && (
+                <div className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[.15] z-[999]">
+                    <Loading />
                 </div>
-                <div className="mt-7">
-                    <label className="font-bold">Ngày sinh:</label>
-                    <InputField name="date" className="default" value={date} setValue={setDate} />
-                </div>
-                <div className="mt-7">
-                    <label className="font-bold">Email:</label>
-                    <InputField
-                        id="email"
-                        name="email"
-                        className={isEmailErr ? 'invalid' : 'default'}
-                        placeholder="Email"
-                        value={email}
-                        setValue={setEmail}
-                        onBlur={() => emailValidator(email, setIsEmailErr, setEmailErrMsg)}
-                    />
-                    <p className="text-red-600 text-[1.3rem]">{emailErrMsg.email}</p>
-                </div>
-                <div className="mt-7">
-                    <label className="font-bold">Số điện thoại:</label>
-                    <InputField
-                        id="phone"
-                        className="default"
-                        placeholder="Số điện thoại"
-                        value={phone}
-                        setValue={setPhone}
-                    />
-                </div>
-                <div className="mt-7">
-                    <label className="font-bold">Phòng ban:</label>
-                    <DropList
-                        selectedValue={department}
-                        options={departments}
-                        setValue={setDepartment}
-                        setId={() => undefined}
-                    />
-                </div>
-                <div className="block md:flex items-center gap-5 mt-12">
-                    <button
-                        onClick={handleSubmit}
-                        className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
-                    </button>
-                    <NavLink
-                        to="/users"
-                        className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        <FontAwesomeIcon icon={faXmark} /> Hủy bỏ
-                    </NavLink>
-                </div>
-            </form>
-        </div>
+            )}
+        </>
     );
 };
 

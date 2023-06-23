@@ -8,8 +8,10 @@ import { fullNameValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
+import Loading from '~/components/Loading';
 
 const CreateDocumentType = ({ title, socket }) => {
+    const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // Input state
     const [fullName, setFullName] = useState('');
@@ -32,6 +34,7 @@ const CreateDocumentType = ({ title, socket }) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         if (!isfullNameValid) return;
+        setLoading(true);
         const data = {
             documentTypeName: fullName,
             status: status,
@@ -44,9 +47,11 @@ const CreateDocumentType = ({ title, socket }) => {
             res = await documentTypeServices.createDocumentType(data);
         }
         if (res.code === 200) {
+            setLoading(false);
             successNotify(res.message);
             navigate('/document-types');
         } else {
+            setLoading(false);
             errorNotify(res);
         }
     };
@@ -75,67 +80,74 @@ const CreateDocumentType = ({ title, socket }) => {
     }, [allTasks, socket]);
 
     return (
-        <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
-            <h1 className="text-[2rem] font-bold">{title}</h1>
-            <form>
-                <div className="mt-8">
-                    <label className="font-bold">Tên loại văn bản:</label>
-                    <InputField
-                        className={isFullNameErr ? 'invalid' : 'default'}
-                        placeholder="Tên loại văn bản"
-                        value={fullName}
-                        setValue={setFullName}
-                        onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
-                    />
-                    <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-center mt-7">
-                    <label className="font-bold mr-7">Trạng thái:</label>
-                    <div className="flex items-center">
-                        {statusList.map((st, index) => {
-                            return (
-                                <div key={index} className="flex items-center mr-5">
-                                    <InputField
-                                        name="radio"
-                                        className="flex w-[15px] h-[15px]"
-                                        checked={status === st[1]}
-                                        setValue={() => setStatus(st[1])}
-                                    />
-                                    <label className="text-[1.5rem] ml-3">{st[0]}</label>
-                                </div>
-                            );
-                        })}
+        <>
+            <div className="bg-white p-[16px] shadow-4Way border-t-[3px] border-blue-600">
+                <h1 className="text-[2rem] font-bold">{title}</h1>
+                <form>
+                    <div className="mt-8">
+                        <label className="font-bold">Tên loại văn bản:</label>
+                        <InputField
+                            className={isFullNameErr ? 'invalid' : 'default'}
+                            placeholder="Tên loại văn bản"
+                            value={fullName}
+                            setValue={setFullName}
+                            onBlur={() => fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg)}
+                        />
+                        <p className="text-red-600 text-[1.3rem]">{fullNameErrMsg.fullName}</p>
                     </div>
-                </div>
+                    <div className="flex flex-col md:flex-row md:items-center mt-7">
+                        <label className="font-bold mr-7">Trạng thái:</label>
+                        <div className="flex items-center">
+                            {statusList.map((st, index) => {
+                                return (
+                                    <div key={index} className="flex items-center mr-5">
+                                        <InputField
+                                            name="radio"
+                                            className="flex w-[15px] h-[15px]"
+                                            checked={status === st[1]}
+                                            setValue={() => setStatus(st[1])}
+                                        />
+                                        <label className="text-[1.5rem] ml-3">{st[0]}</label>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
-                <div className="mt-7">
-                    <label className="font-bold">Ghi chú:</label>
-                    <InputField
-                        textarea
-                        className="default textarea"
-                        rows="6"
-                        cols="50"
-                        placeholder="Ghi chú"
-                        value={note}
-                        setValue={setNote}
-                    />
+                    <div className="mt-7">
+                        <label className="font-bold">Ghi chú:</label>
+                        <InputField
+                            textarea
+                            className="default textarea"
+                            rows="6"
+                            cols="50"
+                            placeholder="Ghi chú"
+                            value={note}
+                            setValue={setNote}
+                        />
+                    </div>
+                    <div className="block md:flex items-center gap-5 mt-12">
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
+                        </button>
+                        <NavLink
+                            to="/document-types"
+                            className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faXmark} /> Hủy bỏ
+                        </NavLink>
+                    </div>
+                </form>
+            </div>
+            {loading && (
+                <div className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[.15] z-[999]">
+                    <Loading />
                 </div>
-                <div className="block md:flex items-center gap-5 mt-12">
-                    <button
-                        onClick={handleSubmit}
-                        className="w-full md:w-fit text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        <FontAwesomeIcon icon={faFloppyDisk} /> Lưu thông tin
-                    </button>
-                    <NavLink
-                        to="/document-types"
-                        className="block w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                    >
-                        <FontAwesomeIcon icon={faXmark} /> Hủy bỏ
-                    </NavLink>
-                </div>
-            </form>
-        </div>
+            )}
+        </>
     );
 };
 
