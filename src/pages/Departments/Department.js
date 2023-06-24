@@ -18,8 +18,10 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import Loading from '~/components/Loading';
 
 const Department = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [isSave, setIsSave] = useState(false);
     // Department state
@@ -59,9 +61,15 @@ const Department = ({ socket }) => {
     // Get department from server
     useEffect(() => {
         const fetchApi = async () => {
+            setLoading(true);
             const res = await departmentServices.getAllDepartment(page, limit, debouncedValue);
-            setAllDepartments(res.allDepartments); // all departments
-            setDepartmentLists(res.data); // departments with filter and pagination
+            if (res.code === 200) {
+                setLoading(false);
+                setAllDepartments(res.allDepartments); // all departments
+                setDepartmentLists(res.data); // departments with filter and pagination
+            } else {
+                setLoading(false);
+            }
         };
         fetchApi();
     }, [isSave, page, limit, debouncedValue]);
@@ -199,10 +207,16 @@ const Department = ({ socket }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {departmentLists?.length !== 0 ? (
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={9} className="text-center p-5">
+                                                <Loading />
+                                            </td>
+                                        </tr>
+                                    ) : departmentLists?.length !== 0 ? (
                                         departmentLists?.map((dl, index) => {
                                             return (
-                                                <tr key={index} className="border-b dark:border-neutral-500">
+                                                <tr key={index} className="border-b">
                                                     <td className="whitespace-nowrap px-6 py-4">
                                                         <div className="flex items-center">
                                                             <input
@@ -343,7 +357,11 @@ const Department = ({ socket }) => {
                         <option value={100}>100 mục</option>
                     </select>
                 </div>
-                {departmentLists?.length !== 0 ? (
+                {loading ? (
+                    <div className="text-center p-5">
+                        <Loading />
+                    </div>
+                ) : departmentLists?.length !== 0 ? (
                     departmentLists?.map((dl, index) => {
                         return (
                             <DepartmentCard

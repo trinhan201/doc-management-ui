@@ -22,8 +22,10 @@ import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import Loading from '~/components/Loading';
 
 const DocumentOut = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
     const [documentTypes, setDocumentTypes] = useState([]);
@@ -130,6 +132,7 @@ const DocumentOut = ({ socket }) => {
     // Get all documents from server
     useEffect(() => {
         const fetchApi = async () => {
+            setLoading(true);
             const res = await documentServices.getAllDocument(
                 page,
                 limit,
@@ -141,8 +144,13 @@ const DocumentOut = ({ socket }) => {
                 fLevel,
                 fSendDate,
             );
-            setAllDocuments(res.allDocumentOut);
-            setDocumentLists(res.documents);
+            if (res.code === 200) {
+                setLoading(false);
+                setAllDocuments(res.allDocumentOut);
+                setDocumentLists(res.documents);
+            } else {
+                setLoading(false);
+            }
         };
         fetchApi();
     }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
@@ -345,7 +353,13 @@ const DocumentOut = ({ socket }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {documentLists?.length !== 0 ? (
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={9} className="text-center p-5">
+                                                <Loading />
+                                            </td>
+                                        </tr>
+                                    ) : documentLists?.length !== 0 ? (
                                         documentLists?.map((dcl, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
@@ -533,7 +547,11 @@ const DocumentOut = ({ socket }) => {
                         <option value={100}>100 mục</option>
                     </select>
                 </div>
-                {documentLists?.length !== 0 ? (
+                {loading ? (
+                    <div className="text-center p-5">
+                        <Loading />
+                    </div>
+                ) : documentLists?.length !== 0 ? (
                     documentLists?.map((dcl, index) => {
                         return (
                             <DocumentCard

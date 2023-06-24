@@ -127,7 +127,7 @@ const DocumentDetail = ({ socket }) => {
                 </div>
                 <div className="flex flex-col md:flex-row my-5">
                     <h3 className="w-[180px] font-bold">Trạng thái:</h3>
-                    <div className="flex-1 bg-gray-200 rounded-full mt-3">
+                    <div className="flex-1 bg-gray-200 rounded-full mt-3 md:mt-0">
                         <div className={statusStyle}>
                             <span>{percent}</span> <span>{document?.status}</span>
                         </div>

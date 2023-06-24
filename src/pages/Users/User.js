@@ -21,8 +21,10 @@ import { useDebounce, useFetchTasks } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import Loading from '~/components/Loading';
 
 const User = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [showUserDetail, setShowUserDetail] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [isSave, setIsSave] = useState(false);
@@ -89,9 +91,15 @@ const User = ({ socket }) => {
     // Get users from server
     useEffect(() => {
         const fetchApi = async () => {
+            setLoading(true);
             const res = await userServices.getAllUser(page, limit, debouncedValue);
-            setAllUsers(res.allUsers); // all users
-            setUserLists(res.data); // users with filter and pagination
+            if (res.code === 200) {
+                setLoading(false);
+                setAllUsers(res.allUsers); // all users
+                setUserLists(res.data); // users with filter and pagination
+            } else {
+                setLoading(false);
+            }
         };
         fetchApi();
     }, [isSave, page, limit, debouncedValue]);
@@ -247,7 +255,13 @@ const User = ({ socket }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {userLists?.length !== 0 ? (
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={9} className="text-center p-5">
+                                                <Loading />
+                                            </td>
+                                        </tr>
+                                    ) : userLists?.length !== 0 ? (
                                         userLists?.map((ul, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
@@ -425,7 +439,11 @@ const User = ({ socket }) => {
                         <option value={100}>100 mục</option>
                     </select>
                 </div>
-                {userLists?.length !== 0 ? (
+                {loading ? (
+                    <div className="text-center p-5">
+                        <Loading />
+                    </div>
+                ) : userLists?.length !== 0 ? (
                     userLists?.map((ul, index) => {
                         return (
                             <UserCard

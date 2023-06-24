@@ -18,8 +18,10 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import Loading from '~/components/Loading';
 
 const DocumentType = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [isSave, setIsSave] = useState(false);
     //Document type state
@@ -59,9 +61,15 @@ const DocumentType = ({ socket }) => {
     // Get document types from server
     useEffect(() => {
         const fetchApi = async () => {
+            setLoading(true);
             const res = await documentTypeServices.getAllDocumentType(page, limit, debouncedValue);
-            setAllDocumentTypes(res.allDocumentTypes); // all document types
-            setDocumentTypeLists(res.data); // document types with filter and pagination
+            if (res.code === 200) {
+                setLoading(false);
+                setAllDocumentTypes(res.allDocumentTypes); // all document types
+                setDocumentTypeLists(res.data); // document types with filter and pagination
+            } else {
+                setLoading(false);
+            }
         };
         fetchApi();
     }, [isSave, page, limit, debouncedValue]);
@@ -199,7 +207,13 @@ const DocumentType = ({ socket }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {documentTypeLists?.length !== 0 ? (
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={9} className="text-center p-5">
+                                                <Loading />
+                                            </td>
+                                        </tr>
+                                    ) : documentTypeLists?.length !== 0 ? (
                                         documentTypeLists?.map((dtl, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
@@ -343,7 +357,11 @@ const DocumentType = ({ socket }) => {
                         <option value={100}>100 mục</option>
                     </select>
                 </div>
-                {documentTypeLists?.length !== 0 ? (
+                {loading ? (
+                    <div className="text-center p-5">
+                        <Loading />
+                    </div>
+                ) : documentTypeLists?.length !== 0 ? (
                     documentTypeLists?.map((dtl, index) => {
                         return (
                             <DocumentTypeCard

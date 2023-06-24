@@ -19,8 +19,10 @@ import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useDebounce } from '~/hooks';
+import Loading from '~/components/Loading';
 
 const Task = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
     const [allUsers, setAllUsers] = useState([]);
@@ -126,6 +128,7 @@ const Task = ({ socket }) => {
     // Get all tasks from server
     useEffect(() => {
         const fetchApi = async () => {
+            setLoading(true);
             const res = await taskServices.getAllTask(
                 page,
                 limit,
@@ -137,12 +140,17 @@ const Task = ({ socket }) => {
                 fLevel,
                 '',
             );
-            if (userRole === 'Admin' || userRole === 'Moderator') {
-                setTaskLists(res.tasks);
-                setAllTasks(res.allTasks);
+            if (res.code === 200) {
+                setLoading(false);
+                if (userRole === 'Admin' || userRole === 'Moderator') {
+                    setTaskLists(res.tasks);
+                    setAllTasks(res.allTasks);
+                } else {
+                    setTaskLists(res.memberTasks);
+                    setAllTasks(res.allMemberTasks);
+                }
             } else {
-                setTaskLists(res.memberTasks);
-                setAllTasks(res.allMemberTasks);
+                setLoading(false);
             }
         };
         fetchApi();
@@ -316,7 +324,13 @@ const Task = ({ socket }) => {
                                     </tr>
                                 </thead>
                                 <tbody className="[&>*:nth-child(odd)]:bg-[#f9fafb]">
-                                    {taskLists?.length !== 0 ? (
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={9} className="text-center p-5">
+                                                <Loading />
+                                            </td>
+                                        </tr>
+                                    ) : taskLists?.length !== 0 ? (
                                         taskLists?.map((tl, index) => {
                                             return (
                                                 <tr key={index} className="border-b dark:border-neutral-500">
@@ -494,7 +508,6 @@ const Task = ({ socket }) => {
                     </div>
                 </div>
             </div>
-
             <div className="md:hidden">
                 <div className="flex items-center justify-between mb-5">
                     <label className="flex items-center">
@@ -515,7 +528,11 @@ const Task = ({ socket }) => {
                         <option value={100}>100 mục</option>
                     </select>
                 </div>
-                {taskLists?.length !== 0 ? (
+                {loading ? (
+                    <div className="text-center p-5">
+                        <Loading />
+                    </div>
+                ) : taskLists?.length !== 0 ? (
                     taskLists?.map((tl, index) => {
                         return (
                             <TaskCard

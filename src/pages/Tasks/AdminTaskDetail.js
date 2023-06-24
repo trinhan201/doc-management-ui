@@ -12,8 +12,10 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
+import Loading from '~/components/Loading';
 
 const AdminTaskDetail = ({ socket }) => {
+    const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     const [tab, setTab] = useState('detail');
     const [task, setTask] = useState({});
@@ -49,6 +51,7 @@ const AdminTaskDetail = ({ socket }) => {
 
     // Change task progress
     const handleChangeProgress = async (value) => {
+        setLoading(true);
         const res = await taskServices.updateProgress(id, { taskProgress: value });
         if (res.code === 200) {
             successNotify(value === 'Hoàn thành' ? 'Nhiệm vụ đã hoàn thành' : 'Nhiệm vụ chưa hoàn thành');
@@ -76,8 +79,10 @@ const AdminTaskDetail = ({ socket }) => {
                 linkTask: `http://localhost:3000/tasks/detail/${id}`,
                 isRead: false,
             });
+            setLoading(false);
         } else {
-            errorNotify(res.message);
+            setLoading(false);
+            errorNotify(res);
         }
     };
 
@@ -343,7 +348,7 @@ const AdminTaskDetail = ({ socket }) => {
                                 onClick={() => handleChangeProgress('Đang xử lý')}
                                 className={
                                     task?.progress === 'Chờ duyệt'
-                                        ? 'w-full md:w-fit text-center text-[white] bg-[#f7bb07] my-4 md:my-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                                        ? 'w-full md:w-fit text-center text-[white] bg-[#f7bb07] mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
                                         : 'hidden'
                                 }
                             >
@@ -351,7 +356,7 @@ const AdminTaskDetail = ({ socket }) => {
                             </button>
                             <div
                                 onClick={() => navigate(-1)}
-                                className="block w-full md:w-fit text-center text-[white] bg-blue-600 mt-16 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] cursor-pointer"
+                                className="block w-full md:w-fit text-center text-[white] bg-blue-600 my-4 md:my-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] cursor-pointer"
                             >
                                 {'<<'} Trở về
                             </div>
@@ -425,6 +430,11 @@ const AdminTaskDetail = ({ socket }) => {
                     </ul>
                 </div>
             </div>
+            {loading && (
+                <div className="fixed top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-[#000000]/[.15] z-[999]">
+                    <Loading />
+                </div>
+            )}
         </>
     );
 };
