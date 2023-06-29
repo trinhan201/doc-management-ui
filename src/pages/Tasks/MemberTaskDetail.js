@@ -2,19 +2,25 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import TimeAgo from 'javascript-time-ago';
 import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
+import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
+import { handleDelete } from '~/utils/apiDelete';
 
 const MemberTaskDetail = ({ socket }) => {
+    const [comment, setComment] = useState('');
+    const [commentId, setCommentId] = useState('');
+    const [allComments, setAllComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [tab, setTab] = useState('detail');
     const [isSave, setIsSave] = useState(false);
@@ -31,6 +37,7 @@ const MemberTaskDetail = ({ socket }) => {
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
     const ref = useRef();
+    const timeAgo = new TimeAgo();
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
 
@@ -80,6 +87,29 @@ const MemberTaskDetail = ({ socket }) => {
     const getRefLink = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
         return `http://localhost:3000/documents/detail/${refLink?._id}`;
+    };
+
+    // Create comment
+    const handleSubmitComment = async (e) => {
+        e.preventDefault();
+        const data = {
+            taskId: id,
+            content: comment,
+        };
+        let res;
+        if (commentId) {
+            res = await commentServices.updateComment(commentId, data);
+        } else {
+            res = await commentServices.createComment(data);
+        }
+        if (res.code === 200) {
+            setComment('');
+            setCommentId('');
+            setIsSave((isSave) => !isSave);
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
     };
 
     // Submit assignment
@@ -181,6 +211,46 @@ const MemberTaskDetail = ({ socket }) => {
             errorNotify(res);
         }
     };
+
+    // Get all comments
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await commentServices.getAllComment();
+            if (res.code === 200) {
+                const filterComments = res?.data
+                    ?.filter((item) => item.taskId === id)
+                    .map((comment) => {
+                        const user = allUsers?.find((user) => user._id === comment.userId);
+                        return {
+                            userName: user?.fullName,
+                            avatar: user?.avatar,
+                            commentId: comment?._id,
+                            userId: comment?.userId,
+                            content: comment?.content,
+                            date: comment?.createdAt,
+                        };
+                    });
+                setAllComments(filterComments);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, [id, allUsers, isSave]);
+
+    // Get comment by id
+    useEffect(() => {
+        if (!commentId) return;
+        const fetchApi = async () => {
+            const res = await commentServices.getCommentById(commentId);
+            if (res.code === 200) {
+                setComment(res.data.content);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, [commentId]);
 
     // Get public info of user
     useEffect(() => {
@@ -390,30 +460,41 @@ const MemberTaskDetail = ({ socket }) => {
                                 rows="3"
                                 cols="50"
                                 placeholder="Viết gì đó..."
+                                value={comment}
+                                setValue={setComment}
                             />
-                            <button className="w-full md:w-fit text-[1.4rem] text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]">
+                            <button
+                                onClick={handleSubmitComment}
+                                className="w-full md:w-fit text-[1.4rem] text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                            >
                                 Gửi
                             </button>
                         </form>
                         <ul className="mt-5">
-                            <CommentItem
-                                img="https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg"
-                                username="Member 1"
-                                content="Noi dung binh luan"
-                                cmtDate="20/01/2023"
-                            />
-                            <CommentItem
-                                img="https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg"
-                                username="Member 1"
-                                content="Noi dung binh luan"
-                                cmtDate="20/01/2023"
-                            />
-                            <CommentItem
-                                img="https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg"
-                                username="Member 1"
-                                content="Noi dung binh luan"
-                                cmtDate="20/01/2023"
-                            />
+                            {allComments?.map((cm, index) => {
+                                return (
+                                    <CommentItem
+                                        key={index}
+                                        currUserId={userId}
+                                        userCommentId={cm?.userId}
+                                        img={
+                                            cm?.avatar ||
+                                            'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
+                                        }
+                                        username={cm?.userName}
+                                        content={cm?.content}
+                                        cmtDate={timeAgo.format(new Date(cm?.date))}
+                                        handleEdit={() => setCommentId(cm?.commentId)}
+                                        handleDelete={() =>
+                                            handleDelete(
+                                                'bình luận',
+                                                commentServices.deleteCommentById(cm?.commentId),
+                                                setIsSave,
+                                            )
+                                        }
+                                    />
+                                );
+                            })}
                         </ul>
                     </div>
                 </div>
