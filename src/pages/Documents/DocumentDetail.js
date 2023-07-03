@@ -104,6 +104,14 @@ const DocumentDetail = ({ socket }) => {
                     <p className="flex-1">{document?.documentName}</p>
                 </div>
                 <div className="flex flex-col md:flex-row my-5">
+                    <h3 className="w-[180px] font-bold">Số đến/đi:</h3>
+                    <p className="flex-1">{document?.number}</p>
+                </div>
+                <div className="flex flex-col md:flex-row my-5">
+                    <h3 className="w-[180px] font-bold">Ngày đến/đi:</h3>
+                    <p className="flex-1">{new Date(document?.sendDate).toLocaleDateString()}</p>
+                </div>
+                <div className="flex flex-col md:flex-row my-5">
                     <h3 className="w-[180px] font-bold">Loại văn bản:</h3>
                     <p className="flex-1">{document?.type}</p>
                 </div>
@@ -113,7 +121,7 @@ const DocumentDetail = ({ socket }) => {
                 </div>
                 <div className="flex flex-col md:flex-row my-5">
                     <h3 className="w-[180px] font-bold">Ngày ban hành:</h3>
-                    <p className="flex-1">{new Date(document?.sendDate).toLocaleDateString()}</p>
+                    <p className="flex-1">{new Date(document?.issuedDate).toLocaleDateString()}</p>
                 </div>
                 <div className="flex flex-col md:flex-row my-5">
                     <h3 className="w-[180px] font-bold">Nơi ban hành:</h3>

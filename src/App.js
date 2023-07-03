@@ -245,6 +245,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    inputLabel="đi"
                                                     socket={socket}
                                                     title="Sửa văn bản đi"
                                                     documentIn={false}
@@ -262,6 +263,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    inputLabel="đi"
                                                     socket={socket}
                                                     title="Thêm văn bản đi mới"
                                                     documentIn={false}
@@ -287,6 +289,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    inputLabel="đến"
                                                     socket={socket}
                                                     title="Sửa văn bản đến"
                                                     documentIn={true}
@@ -304,6 +307,7 @@ const App = () => {
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateDocument
+                                                    inputLabel="đến"
                                                     socket={socket}
                                                     title="Thêm văn bản đến mới"
                                                     documentIn={true}

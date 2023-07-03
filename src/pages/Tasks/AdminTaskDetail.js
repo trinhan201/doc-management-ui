@@ -483,7 +483,7 @@ const AdminTaskDetail = ({ socket }) => {
                             Gửi
                         </button>
                     </form>
-                    <ul className="mt-5">
+                    <ul className="max-h-[500px] mt-5 p-2 overflow-y-auto">
                         {allComments?.map((cm, index) => {
                             return (
                                 <CommentItem

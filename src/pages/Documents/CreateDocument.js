@@ -15,15 +15,17 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
 
-const CreateDocument = ({ title, documentIn, path, socket }) => {
+const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // Input state
     const [fullName, setFullName] = useState('');
+    const [number, setNumber] = useState('');
+    const [sendDate, setSendDate] = useState('');
     const [type, setType] = useState('');
     const [code, setCode] = useState('');
     const [sender, setSender] = useState('');
-    const [sendDate, setSendDate] = useState('');
+    const [issuedDate, setIssuedDate] = useState('');
     const [level, setLevel] = useState('Bình thường');
     const [note, setNote] = useState('');
     const [currentLocation, setCurrentLocation] = useState('');
@@ -33,12 +35,16 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
     // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
+    const [numberErrMsg, setNumberErrMsg] = useState({});
+    const [isNumberErr, setIsNumberErr] = useState(false);
+    const [sendDateErrMsg, setSendDateErrMsg] = useState({});
+    const [isSendDateErr, setIsSendDateErr] = useState(false);
     const [codeErrMsg, setCodeErrMsg] = useState({});
     const [isCodeErr, setIsCodeErr] = useState(false);
     const [senderErrMsg, setSenderErrMsg] = useState({});
     const [isSenderErr, setIsSenderErr] = useState(false);
-    const [sendDateErrMsg, setSendDateErrMsg] = useState({});
-    const [isSendDateErr, setIsSendDateErr] = useState(false);
+    const [issuedDateErrMsg, setIssuedDateErrMsg] = useState({});
+    const [isIssuedDateErr, setIsIssuedDateErr] = useState(false);
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -49,18 +55,30 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
+        const isNumberValid = fullNameValidator(number, setIsNumberErr, setNumberErrMsg);
+        const isSendDateValid = dateValidator(sendDate, setIsSendDateErr, setSendDateErrMsg);
         const isCodeValid = fullNameValidator(code, setIsCodeErr, setCodeErrMsg);
         const isSenderValid = fullNameValidator(sender, setIsSenderErr, setSenderErrMsg);
-        const isDateValid = dateValidator(sendDate, setIsSendDateErr, setSendDateErrMsg);
-        if (!isfullNameValid || !isCodeValid || !isSenderValid || !isDateValid) return;
+        const isIssuedDateValid = dateValidator(issuedDate, setIsIssuedDateErr, setIssuedDateErrMsg);
+        if (
+            !isfullNameValid ||
+            !isNumberValid ||
+            !isSendDateValid ||
+            !isCodeValid ||
+            !isSenderValid ||
+            !isIssuedDateValid
+        )
+            return;
         setLoading(true);
         const data = {
             documentName: fullName,
+            number: number,
+            sendDate: sendDate,
             type: type,
             documentIn: documentIn,
             code: code,
             sender: sender,
-            sendDate: sendDate,
+            issuedDate: issuedDate,
             level: level,
             note: note,
             currentLocation: currentLocation,
@@ -98,9 +116,11 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
         const fetchApi = async () => {
             const res = await documentServices.getDocumentById(id);
             setFullName(res.data.documentName);
+            setNumber(res.data.number);
+            setSendDate(res.data.sendDate);
             setCode(res.data.code);
             setType(res.data.type);
-            setSendDate(res.data.sendDate);
+            setIssuedDate(res.data.issuedDate);
             setSender(res.data.sender);
             setLevel(res.data.level);
             setCurrentLocation(res.data.currentLocation);
@@ -164,6 +184,31 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
                     </div>
                     <div className="flex flex-col md:flex-row gap-6 mt-7">
                         <div className="flex-1">
+                            <label className="font-bold">Số {inputLabel}:</label>
+                            <InputField
+                                id="number"
+                                className={isNumberErr ? 'invalid' : 'default'}
+                                placeholder={`Số ${inputLabel}`}
+                                value={number}
+                                setValue={setNumber}
+                                onBlur={() => fullNameValidator(number, setIsNumberErr, setNumberErrMsg)}
+                            />
+                            <p className="text-red-600 text-[1.3rem]">{numberErrMsg.comeNumber}</p>
+                        </div>
+                        <div className="flex-1">
+                            <label className="font-bold">Ngày {inputLabel}:</label>
+                            <InputField
+                                name="date"
+                                className={isSendDateErr ? 'invalid' : 'default'}
+                                value={sendDate}
+                                setValue={setSendDate}
+                                onBlur={() => dateValidator(sendDate, setIsSendDateErr, setSendDateErrMsg)}
+                            />
+                            <p className="text-red-600 text-[1.3rem]">{sendDateErrMsg.inDate}</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-6 mt-7">
+                        <div className="flex-1">
                             <label className="font-bold">Số ký hiệu:</label>
                             <InputField
                                 id="docCode"
@@ -190,12 +235,12 @@ const CreateDocument = ({ title, documentIn, path, socket }) => {
                             <label className="font-bold">Ngày ban hành:</label>
                             <InputField
                                 name="date"
-                                className={isSendDateErr ? 'invalid' : 'default'}
-                                value={sendDate}
-                                setValue={setSendDate}
-                                onBlur={() => dateValidator(sendDate, setIsSendDateErr, setSendDateErrMsg)}
+                                className={isIssuedDateErr ? 'invalid' : 'default'}
+                                value={issuedDate}
+                                setValue={setIssuedDate}
+                                onBlur={() => dateValidator(issuedDate, setIsIssuedDateErr, setIssuedDateErrMsg)}
                             />
-                            <p className="text-red-600 text-[1.3rem]">{sendDateErrMsg.date}</p>
+                            <p className="text-red-600 text-[1.3rem]">{issuedDateErrMsg.issuedDate}</p>
                         </div>
                         <div className="flex-1">
                             <label className="font-bold">Nơi ban hành:</label>

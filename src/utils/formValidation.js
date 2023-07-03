@@ -6,6 +6,7 @@ export const fullNameValidator = (fullName, setIsFullNameErr, setFullNameErrMsg)
     const msg = {};
     if (isEmpty(fullName)) {
         msg.fullName = 'Tên không được để trống';
+        msg.comeNumber = 'Số đến không được để trống';
         msg.code = 'Số ký hiệu không được để trống';
         msg.sender = 'Nơi ban hành không được để trống';
         setIsFullNameErr(true);
@@ -75,7 +76,10 @@ export const disabledPastDate = () => {
 export const dateValidator = (date, setIsDateErr, setDateErrMsg) => {
     const msg = {};
     if (isEmpty(date)) {
-        msg.date = 'Thơi gian không được để trống';
+        msg.date = 'Thời gian không được để trống';
+        msg.inDate = 'Ngày đến không được để trống';
+        msg.outDate = 'Ngày đi không được để trống';
+        msg.issuedDate = 'Ngày ban hành không được để trống';
         setIsDateErr(true);
     } else {
         setIsDateErr(false);
