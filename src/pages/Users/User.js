@@ -65,15 +65,15 @@ const User = ({ socket }) => {
     // Go to next page
     const handleNextPage = () => {
         setPage(page + 1);
-        setRowStart(rowStart + 5);
-        setRowEnd(rowEnd + 5);
+        setRowStart(rowStart + +limit);
+        setRowEnd(rowEnd + +limit);
     };
 
     // Back to previous page
     const handlePrevPage = () => {
         setPage(page - 1);
-        setRowStart(rowStart - 5);
-        setRowEnd(rowEnd - 5);
+        setRowStart(rowStart - +limit);
+        setRowEnd(rowEnd - +limit);
     };
 
     // Show user detail card when click

@@ -9,6 +9,7 @@ import {
     faPenToSquare,
     faEye,
     faFilterCircleXmark,
+    faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
@@ -17,7 +18,7 @@ import * as documentServices from '~/services/documentServices';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useDebounce, useFetchTasks } from '~/hooks';
+import { useFetchTasks } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
@@ -48,11 +49,12 @@ const DocumentIn = ({ socket }) => {
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAlldocumentIn')) || false);
     // Filter input state
     const [fName, setFName] = useState('');
+    const [fNote, setFNote] = useState('');
     const [fCode, setFCode] = useState('');
     const [fType, setFType] = useState('');
     const [fStatus, setFStatus] = useState('');
     const [fLevel, setFLevel] = useState('');
-    const [fSendDate, setFSendDate] = useState('');
+    const [fIssuedDate, setFIssuedDate] = useState('');
 
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
@@ -67,38 +69,69 @@ const DocumentIn = ({ socket }) => {
         'Thao tác',
     ];
     const totalPage = Math.ceil(allDocuments?.length / limit);
-    const nameValue = useDebounce(fName, 300);
-    const codeValue = useDebounce(fCode, 300);
     const allTasks = useFetchTasks({ isSave });
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     // Go to the next page
     const handleNextPage = () => {
         setPage(page + 1);
-        setRowStart(rowStart + 5);
-        setRowEnd(rowEnd + 5);
+        setRowStart(rowStart + +limit);
+        setRowEnd(rowEnd + +limit);
     };
 
     // Back to the previous page
     const handlePrevPage = () => {
         setPage(page - 1);
-        setRowStart(rowStart - 5);
-        setRowEnd(rowEnd - 5);
+        setRowStart(rowStart - +limit);
+        setRowEnd(rowEnd - +limit);
     };
 
     // Remove filter function
     const removeFilter = () => {
         setFName('');
+        setFNote('');
         setFCode('');
         setFType('');
         setFStatus('');
         setFLevel('');
-        setFSendDate('');
+        setFIssuedDate('');
+        setIsSave((isSave) => !isSave);
+    };
+
+    // Handle filter
+    const filter = async () => {
+        if (fName || fNote || fCode || fType || fStatus || fLevel || fIssuedDate) {
+            setLoading(true);
+            const res = await documentServices.getAllDocument(
+                page,
+                limit,
+                true,
+                fName,
+                fNote,
+                fCode,
+                fType,
+                fStatus,
+                fLevel,
+                fIssuedDate,
+            );
+            if (res.code === 200) {
+                setLoading(false);
+                setPage(1);
+                setRowStart(1);
+                setRowEnd(0);
+                setAllDocuments(res.allDocumentIn);
+                setDocumentLists(res.documents);
+            } else {
+                setLoading(false);
+            }
+        } else {
+            errorNotify('Hãy chọn ít nhất 1 trường');
+        }
     };
 
     // isFilter boolean
     const isFilters = () => {
-        if (fName || fCode || fType || fStatus || fLevel || fSendDate) {
+        if (fName || fNote || fCode || fType || fStatus || fLevel || fIssuedDate) {
             return true;
         } else {
             return false;
@@ -137,12 +170,13 @@ const DocumentIn = ({ socket }) => {
                 page,
                 limit,
                 true,
-                nameValue,
-                codeValue,
+                fName,
+                fNote,
+                fCode,
                 fType,
                 fStatus,
                 fLevel,
-                fSendDate,
+                fIssuedDate,
             );
             if (res.code === 200) {
                 setLoading(false);
@@ -153,18 +187,14 @@ const DocumentIn = ({ socket }) => {
             }
         };
         fetchApi();
-    }, [isSave, page, limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
+    }, [isSave, page, limit]);
 
-    // Set pagination state to default when have filter
     useEffect(() => {
-        if (limit || nameValue || codeValue || fType || fStatus || fLevel || fSendDate) {
-            setPage(1);
-            setRowStart(1);
-            setRowEnd(0);
-        } else {
-            return;
-        }
-    }, [limit, nameValue, codeValue, fType, fStatus, fLevel, fSendDate]);
+        if (!limit) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [limit]);
 
     // Change document status
     useEffect(() => {
@@ -239,6 +269,12 @@ const DocumentIn = ({ socket }) => {
                         <InputField className="default" placeholder="Tên văn bản" value={fName} setValue={setFName} />
                     </div>
                     <div className="flex-1">
+                        <label className="text-[1.4rem]">Trích yếu:</label>
+                        <InputField className="default" placeholder="Trích yếu" value={fNote} setValue={setFNote} />
+                    </div>
+                </div>
+                <div className="flex flex-col md:flex-row gap-5 mt-5">
+                    <div className="flex-1">
                         <label className="text-[1.4rem]">Số ký hiệu:</label>
                         <InputField className="default" placeholder="Số ký hiệu" value={fCode} setValue={setFCode} />
                     </div>
@@ -247,8 +283,8 @@ const DocumentIn = ({ socket }) => {
                         <InputField
                             name="date"
                             className="default leading-[1.3]"
-                            value={fSendDate}
-                            setValue={setFSendDate}
+                            value={fIssuedDate}
+                            setValue={setFIssuedDate}
                         />
                     </div>
                 </div>
@@ -281,13 +317,21 @@ const DocumentIn = ({ socket }) => {
                         />
                     </div>
                 </div>
-                <div className={isFilters() ? 'flex justify-center' : 'hidden'}>
+                <div className="flex items-center gap-5 mt-[20px]">
                     <button
-                        onClick={removeFilter}
-                        className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        onClick={filter}
+                        className="flex-1 w-full text-[1.3rem] md:text-[1.6rem] text-[white] bg-blue-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                     >
-                        <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
+                        <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
                     </button>
+                    <div className={isFilters() ? 'flex-1' : 'hidden'}>
+                        <button
+                            onClick={removeFilter}
+                            className="w-full text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">

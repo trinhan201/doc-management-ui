@@ -9,6 +9,7 @@ import {
     faTrashCan,
     faAngleRight,
     faAngleLeft,
+    faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
@@ -18,8 +19,8 @@ import TaskCard from '~/components/Card/TaskCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useDebounce } from '~/hooks';
 import Loading from '~/components/Loading';
+import { errorNotify } from '~/components/ToastMessage';
 
 const Task = ({ socket }) => {
     const [loading, setLoading] = useState(false);
@@ -44,7 +45,6 @@ const Task = ({ socket }) => {
     const [fStatus, setFStatus] = useState('');
     const [fLevel, setFLevel] = useState('');
 
-    const nameValue = useDebounce(fName, 300);
     const userRole = JSON.parse(localStorage.getItem('userRole'));
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
@@ -86,15 +86,15 @@ const Task = ({ socket }) => {
     // Go to the next page
     const handleNextPage = () => {
         setPage(page + 1);
-        setRowStart(rowStart + 5);
-        setRowEnd(rowEnd + 5);
+        setRowStart(rowStart + +limit);
+        setRowEnd(rowEnd + +limit);
     };
 
     // Back to the previous page
     const handlePrevPage = () => {
         setPage(page - 1);
-        setRowStart(rowStart - 5);
-        setRowEnd(rowEnd - 5);
+        setRowStart(rowStart - +limit);
+        setRowEnd(rowEnd - +limit);
     };
 
     // Remove filter
@@ -105,6 +105,45 @@ const Task = ({ socket }) => {
         setFType('');
         setFStatus('');
         setFLevel('');
+        setIsSave((isSave) => !isSave);
+    };
+
+    // Handle filter
+    const filter = async () => {
+        if (fName || fCreatedAt || fDueDate || fType || fStatus || fLevel) {
+            setLoading(true);
+            const res = await taskServices.getAllTask(
+                page,
+                limit,
+                fName,
+                fCreatedAt,
+                fDueDate,
+                fType,
+                fStatus,
+                fLevel,
+                '',
+            );
+            if (res.code === 200) {
+                setLoading(false);
+                if (userRole === 'Admin' || userRole === 'Moderator') {
+                    setPage(1);
+                    setRowStart(1);
+                    setRowEnd(0);
+                    setTaskLists(res.tasks);
+                    setAllTasks(res.allTasks);
+                } else {
+                    setPage(1);
+                    setRowStart(1);
+                    setRowEnd(0);
+                    setTaskLists(res.memberTasks);
+                    setAllTasks(res.allMemberTasks);
+                }
+            } else {
+                setLoading(false);
+            }
+        } else {
+            errorNotify('Hãy chọn ít nhất 1 trường');
+        }
     };
 
     // isFilter boolean
@@ -132,7 +171,7 @@ const Task = ({ socket }) => {
             const res = await taskServices.getAllTask(
                 page,
                 limit,
-                nameValue,
+                fName,
                 fCreatedAt,
                 fDueDate,
                 fType,
@@ -154,18 +193,15 @@ const Task = ({ socket }) => {
             }
         };
         fetchApi();
-    }, [isSave, userRole, page, limit, nameValue, fCreatedAt, fDueDate, fType, fStatus, fLevel]);
+    }, [isSave, userRole, page, limit]);
 
     // Set pagination state to default when have filter
     useEffect(() => {
-        if (limit || nameValue || fCreatedAt || fDueDate || fStatus || fLevel) {
-            setPage(1);
-            setRowStart(1);
-            setRowEnd(0);
-        } else {
-            return;
-        }
-    }, [limit, nameValue, fCreatedAt, fDueDate, fStatus, fLevel]);
+        if (!limit) return;
+        setPage(1);
+        setRowStart(1);
+        setRowEnd(0);
+    }, [limit]);
 
     // Save checked list in localstorage
     useEffect(() => {
@@ -251,13 +287,21 @@ const Task = ({ socket }) => {
                         />
                     </div>
                 </div>
-                <div className={isFilters() ? 'flex justify-center' : 'hidden'}>
+                <div className="flex items-center gap-5 mt-[20px]">
                     <button
-                        onClick={removeFilter}
-                        className="w-full md:w-[50%] text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 mt-[20px] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        onClick={filter}
+                        className="flex-1 w-full text-[1.3rem] md:text-[1.6rem] text-[white] bg-blue-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                     >
-                        <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
+                        <FontAwesomeIcon icon={faSearch} /> Tìm kiếm
                     </button>
+                    <div className={isFilters() ? 'flex-1' : 'hidden'}>
+                        <button
+                            onClick={removeFilter}
+                            className="w-full text-[1.3rem] md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                        >
+                            <FontAwesomeIcon icon={faFilterCircleXmark} /> Xóa bộ lọc
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">

@@ -99,7 +99,7 @@ const SystemStatistics = ({ socket }) => {
     // Get all documents from server
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '');
+            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '', '');
             if (res.code === 200) {
                 setAllDocumentIns(res.allDocumentIn);
                 setAllDocumentOuts(res.allDocumentOut);

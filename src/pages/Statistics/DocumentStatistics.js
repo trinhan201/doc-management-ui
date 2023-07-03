@@ -49,6 +49,7 @@ const DocumentStatistics = ({ socket }) => {
                 flag?.value || '',
                 '',
                 '',
+                '',
                 fType || '',
                 fStatus || '',
                 fLevel || '',

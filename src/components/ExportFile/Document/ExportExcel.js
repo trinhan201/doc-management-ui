@@ -53,7 +53,7 @@ const ExportExcel = (props) => {
                 F: 'Nơi ban hành',
                 G: 'Mức độ',
                 H: 'Trạng thái',
-                I: 'Trích yêu',
+                I: 'Trích yếu',
             },
         ];
 

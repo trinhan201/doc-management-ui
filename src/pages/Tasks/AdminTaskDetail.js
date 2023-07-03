@@ -179,7 +179,7 @@ const AdminTaskDetail = ({ socket }) => {
     // Get all in progess documents
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '');
+            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '');
             const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
             setAllDocuments(documentArray);
         };
