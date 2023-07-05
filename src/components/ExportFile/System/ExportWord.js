@@ -10,6 +10,7 @@ import {
     TableLayoutType,
     AlignmentType,
     TextRun,
+    VerticalMergeType,
 } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -21,7 +22,7 @@ const ExportWord = (props) => {
         'Tổng số văn bản đến',
         'Tổng số văn bản đi',
         'Tổng số công việc',
-        'Tổng số tin nhắn',
+        'Tổng số bình luận',
     ];
 
     const handleExport = () => {
@@ -184,12 +185,14 @@ const ExportWord = (props) => {
                             new Paragraph({
                                 children: [
                                     new TextRun({
-                                        text: '',
+                                        text: `${item.allComments}`,
                                         font: 'Arial',
                                     }),
                                 ],
                             }),
                         ],
+                        rowSpan: props.filterData?.length,
+                        verticalMerge: VerticalMergeType.RESTART,
                         verticalAlign: VerticalAlign.TOP,
                         width: { size: 10, type: WidthType.PERCENTAGE },
                     }),

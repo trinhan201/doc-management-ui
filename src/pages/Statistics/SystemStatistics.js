@@ -6,6 +6,7 @@ import DropList from '~/components/DropList';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
+import * as commentServices from '~/services/commentServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
@@ -23,6 +24,7 @@ const SystemStatistics = ({ socket }) => {
     const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [allDepartments, setAllDepartments] = useState([]);
+    const [allComments, setAllComments] = useState([]);
     const [filterData, setFilterData] = useState([]);
     // Filter statistic state
     const [fFrom, setFFrom] = useState('');
@@ -63,6 +65,7 @@ const SystemStatistics = ({ socket }) => {
                 allUsers: user,
                 allDocumentIns: documentIn,
                 allDocumentOuts: documentOut,
+                allComments: allComments?.length,
             };
         });
         timer = setTimeout(() => {
@@ -92,6 +95,15 @@ const SystemStatistics = ({ socket }) => {
         const fetchApi = async () => {
             const res = await userServices.getAllUser(1, 1, '');
             setAllUsers(res.allUsers);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all comments from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await commentServices.getAllComment();
+            setAllComments(res.data);
         };
         fetchApi();
     }, []);
@@ -166,7 +178,7 @@ const SystemStatistics = ({ socket }) => {
                     {exportType === 'Excel(.xlsx)' ? (
                         <ExportExcel filterData={filterData} fFrom={fFrom} fTo={fTo} />
                     ) : (
-                        <ExportWord filterData={filterData} fFrom={fFrom} fTo={fTo} />
+                        <ExportWord allComments={allComments.length} filterData={filterData} fFrom={fFrom} fTo={fTo} />
                     )}
                 </div>
             </div>

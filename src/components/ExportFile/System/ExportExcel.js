@@ -41,7 +41,7 @@ const ExportExcel = (props) => {
                 D: 'Tổng số văn bản đến',
                 E: 'Tổng số văn bản đi',
                 F: 'Tổng số công việc',
-                G: 'Tổng số tin nhắn',
+                G: 'Tổng số bình luận',
             },
         ];
 
@@ -53,7 +53,7 @@ const ExportExcel = (props) => {
                 D: row.allDocumentIns,
                 E: row.allDocumentOuts,
                 F: '',
-                G: '',
+                G: row.allComments,
             });
         });
 
@@ -64,6 +64,12 @@ const ExportExcel = (props) => {
         const sheet = XLSX.utils.json_to_sheet(finalData, {
             skipHeader: true,
         });
+
+        const merge = [
+            { s: { r: 3, c: 6 }, e: { r: table.length + 1, c: 6 } },
+            { s: { r: 3, c: 5 }, e: { r: table.length + 1, c: 5 } },
+        ];
+        sheet['!merges'] = merge;
 
         XLSX.utils.book_append_sheet(wb, sheet, 'report');
 
