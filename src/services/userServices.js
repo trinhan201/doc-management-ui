@@ -131,3 +131,14 @@ export const getPublicInfo = async () => {
         return error.response.data.message;
     }
 };
+
+// Change req change info status function
+export const changeReqChangeInfoStatus = async (userId, data) => {
+    try {
+        const res = await httpRequest.patch(`/user/change-req-info-status/${userId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

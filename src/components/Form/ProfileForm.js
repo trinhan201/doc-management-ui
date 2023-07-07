@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
-import jwt_decode from 'jwt-decode';
+import { faXmark, faFloppyDisk, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import InputField from '../InputField';
 import DropList from '../DropList';
 import * as userServices from '~/services/userServices';
 import * as authServices from '~/services/authServices';
 import * as departmentServices from '~/services/departmentServices';
+import * as reqChangeInfoServices from '~/services/reqChangeInfoServices';
+import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '../ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 import Loading from '../Loading';
 
-const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
+const ProfileForm = ({ formTitle, setShowForm, setIsSave, socket }) => {
     const [loading, setLoading] = useState(false);
     const [departments, setDepartments] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
     // Input state
     const [fullName, setFullName] = useState('');
     const [gender, setGender] = useState('');
@@ -28,6 +30,8 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
     const [isEmailErr, setIsEmailErr] = useState(false);
 
     const genderList = ['Nam', 'Nữ'];
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
+    const userId = JSON.parse(localStorage.getItem('userId'));
 
     // Update user profile
     const handleSubmit = async (e) => {
@@ -44,8 +48,7 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
             phoneNumber: phone,
             department: department,
         };
-        const decodedToken = jwt_decode(localStorage.getItem('accessToken'));
-        const res = await userServices.updateUser(decodedToken._id, data);
+        const res = await userServices.updateUser(userId, data);
         if (res.code === 200) {
             setLoading(false);
             successNotify(res.message);
@@ -56,6 +59,60 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
             errorNotify(res);
         }
     };
+
+    // Member send request to admin
+    const handleRequestChange = async (e) => {
+        e.preventDefault();
+        const isFullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
+        const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
+        if (!isFullNameValid || !isEmailValid) return;
+        setLoading(true);
+        const dataToChange = {
+            fullName: fullName,
+            gender: gender,
+            birthDate: birth,
+            email: email,
+            phoneNumber: phone,
+            department: department,
+        };
+        const finalData = {
+            userId: userId,
+            dataToChange: dataToChange,
+        };
+        const res = await reqChangeInfoServices.createReqChangeInfo(finalData);
+        if (res.code === 200) {
+            setLoading(false);
+            successNotify(res.message);
+            setShowForm(false);
+            setIsSave(true);
+            await userServices.changeReqChangeInfoStatus(userId, { isReqChangeInfo: true });
+            const newNotiId = await notificationServices.createNotification({
+                notification: `Yêu cầu đổi thông tin của ${fullName}`,
+                userId: allUsers?.find((item) => item.role === 'Admin')._id,
+                linkTask: `http://localhost:3000/users/request-change`,
+            });
+            socket.current?.emit('sendNotification', {
+                senderId: userId,
+                _id: [{ notiId: newNotiId.data._id, userId: newNotiId.data.userId }],
+                receiverId: [allUsers?.find((item) => item.role === 'Admin')._id],
+                text: `Yêu cầu đổi thông tin của ${fullName}`,
+                linkTask: `http://localhost:3000/users/request-change`,
+                isRead: false,
+            });
+        } else {
+            setLoading(false);
+            errorNotify(res);
+        }
+    };
+
+    // Get public info of user
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getPublicInfo();
+            setAllUsers(res.data);
+        };
+        fetchApi();
+    }, []);
 
     // Get available user data when edit user
     useEffect(() => {
@@ -162,10 +219,11 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave }) => {
                         </div>
                         <div className="flex justify-center items-center gap-5">
                             <button
-                                onClick={handleSubmit}
+                                onClick={userRole === 'Admin' ? handleSubmit : handleRequestChange}
                                 className="w-full text-[white] bg-[#321fdb] mt-12 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
                             >
-                                <FontAwesomeIcon icon={faFloppyDisk} /> Lưu
+                                <FontAwesomeIcon icon={userRole === 'Admin' ? faFloppyDisk : faPaperPlane} />{' '}
+                                {userRole === 'Admin' ? 'Lưu' : 'Gửi yêu cầu'}
                             </button>
                             <button
                                 onClick={() => setShowForm(false)}

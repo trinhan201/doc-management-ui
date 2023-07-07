@@ -11,7 +11,7 @@ const SidebarItem = (props) => {
                 <NavLink
                     to={props.path}
                     className={
-                        props.path === '/documents' || props.path === '/statistics'
+                        props.path === '/documents' || props.path === '/statistics' || props.path === '/users'
                             ? ({ isActive }) =>
                                   isActive
                                       ? 'flex items-center py-[18px] pl-[25px] bg-[#46546c] text-white hover:text-white pointer-events-none'

@@ -13,8 +13,10 @@ import {
     faGear,
     faLayerGroup,
     faListCheck,
+    faPen,
     faTableList,
     faUser,
+    faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import jwt_decode from 'jwt-decode';
 import SidebarItem from '~/components/SidebarItem';
@@ -22,6 +24,7 @@ import SidebarItem from '~/components/SidebarItem';
 const Sidebar = () => {
     const [toggleSubMenu, setToggleSubMenu] = useState(false);
     const [toggleSubMenu2, setToggleSubMenu2] = useState(false);
+    const [toggleSubMenu3, setToggleSubMenu3] = useState(false);
     const [userRole, setUserRole] = useState(JSON.parse(localStorage.getItem('userRole')));
 
     // Get user role function
@@ -77,7 +80,31 @@ const Sidebar = () => {
                     <SidebarItem path="/departments" icon={faLayerGroup} title="Phòng ban" />
                 </div>
                 <div className={userRole === 'Admin' ? '' : 'hidden'}>
-                    <SidebarItem path="/users" icon={faUser} title="Thành viên" />
+                    <SidebarItem
+                        onClick={() => setToggleSubMenu3(!toggleSubMenu3)}
+                        className="hello"
+                        path="/users"
+                        icon={faUser}
+                        title="Thành viên"
+                        firstElement={
+                            <FontAwesomeIcon
+                                className="absolute top-[50%] translate-y-[-50%] right-[16px] text-[#ffffff]/[0.3]"
+                                icon={toggleSubMenu3 ? faAngleDown : faAngleRight}
+                            />
+                        }
+                        secondElement={
+                            <ul
+                                className={
+                                    !toggleSubMenu3
+                                        ? 'max-h-0 transition-height duration-[1s] overflow-hidden'
+                                        : 'max-h-[300px] transition-height duration-[1.5s] overflow-hidden'
+                                }
+                            >
+                                <SidebarItem path="/users/all" icon={faUsers} title="Tất cả thành viên" />
+                                <SidebarItem path="/users/request-change" icon={faPen} title="Yêu cầu đổi thông tin" />
+                            </ul>
+                        }
+                    />
                 </div>
                 <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
                     <SidebarItem

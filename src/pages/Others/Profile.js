@@ -233,7 +233,11 @@ const Profile = ({ socket }) => {
                     <div>
                         <button
                             onClick={() => setShowProfileForm(true)}
-                            className="w-full lg:w-fit text-[1.5rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] mt-7"
+                            className={
+                                currUser.isReqChangeInfo
+                                    ? 'w-full lg:w-fit text-[1.5rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] mt-7 disabled'
+                                    : 'w-full lg:w-fit text-[1.5rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] mt-7'
+                            }
                         >
                             Chỉnh sửa
                         </button>
@@ -245,6 +249,7 @@ const Profile = ({ socket }) => {
                     formTitle="Chỉnh sửa thông tin cá nhân"
                     setShowForm={setShowProfileForm}
                     setIsSave={() => setIsSave(!isSave)}
+                    socket={socket}
                 />
             )}
         </>

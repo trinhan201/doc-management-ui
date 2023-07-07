@@ -7,7 +7,7 @@ import { Department, CreateDepartment } from './pages/Departments';
 import { DocumentIn, DocumentOut, DocumentDetail, CreateDocument } from './pages/Documents';
 import { DocumentType, CreateDocumentType } from './pages/DocumentTypes';
 import { Task, AdminTaskDetail, MemberTaskDetail, CreateTask } from './pages/Tasks';
-import { User, CreateUser } from './pages/Users';
+import { User, CreateUser, RequestChange } from './pages/Users';
 import { DocumentStatistics, SystemStatistics, TaskStatistics } from './pages/Statistics';
 import { Dashboard, Profile, Page404, BlockPage, ProtectedRoutes, PublicRoutes } from './pages/Others';
 import DefaultLayout from './layouts/DefaultLayout';
@@ -150,12 +150,25 @@ const App = () => {
                                         )
                                     }
                                 />
+                                <Route path="/users" element={<Navigate to="/users/all" />} />
                                 <Route
-                                    path="/users"
+                                    path="/users/all"
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <User socket={socket} />
+                                            </DefaultLayout>
+                                        ) : (
+                                            <Page404 />
+                                        )
+                                    }
+                                />
+                                <Route
+                                    path="/users/request-change"
+                                    element={
+                                        userRole === 'Admin' ? (
+                                            <DefaultLayout socket={socket}>
+                                                <RequestChange socket={socket} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
