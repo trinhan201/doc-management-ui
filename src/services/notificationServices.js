@@ -32,3 +32,14 @@ export const changeNotificationStatus = async (notificationId) => {
         return error.response.data.message;
     }
 };
+
+// Delete notification function
+export const deleteNotificationById = async (notificationId) => {
+    try {
+        const res = await httpRequest.delete(`/notification/delete/${notificationId}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};

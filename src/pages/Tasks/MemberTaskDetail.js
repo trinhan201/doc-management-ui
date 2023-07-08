@@ -18,6 +18,7 @@ import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 
 const MemberTaskDetail = ({ socket }) => {
+    const [taskProgress, setTaskProgress] = useState('Chờ duyệt');
     const [comment, setComment] = useState('');
     const [commentId, setCommentId] = useState('');
     const [allComments, setAllComments] = useState([]);
@@ -278,6 +279,7 @@ const MemberTaskDetail = ({ socket }) => {
             const res = await taskServices.getTaskById(id);
             if (res.code === 200) {
                 setTask(res.data);
+                setTaskProgress(res.data.progress);
             } else {
                 navigate('/error');
             }
@@ -560,9 +562,9 @@ const MemberTaskDetail = ({ socket }) => {
                         <button
                             onClick={handleUnsubmit}
                             className={
-                                task?.progress === 'Hoàn thành' || task?.progress === 'Chờ duyệt'
-                                    ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s] pointer-events-none opacity-50'
-                                    : 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] transition-all duration-[1s]'
+                                taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
+                                    ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] disabled'
+                                    : 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc]'
                             }
                         >
                             Hủy nộp
@@ -571,9 +573,9 @@ const MemberTaskDetail = ({ socket }) => {
                         <button
                             onClick={handleSubmit}
                             className={
-                                task?.progress === 'Hoàn thành' || task?.progress === 'Chờ duyệt'
-                                    ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] pointer-events-none opacity-50'
-                                    : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                                taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
+                                    ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'
+                                    : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
                             }
                         >
                             Nộp
@@ -583,9 +585,9 @@ const MemberTaskDetail = ({ socket }) => {
                         onClick={handleChangeProgress}
                         className={
                             getLeader()
-                                ? task?.progress === 'Hoàn thành' || task?.progress === 'Chờ duyệt'
-                                    ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] pointer-events-none opacity-50'
-                                    : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                                ? taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
+                                    ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'
+                                    : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
                                 : 'hidden'
                         }
                     >

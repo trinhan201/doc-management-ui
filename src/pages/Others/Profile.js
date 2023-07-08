@@ -11,6 +11,7 @@ import { AvatarContext } from '~/App';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const Profile = ({ socket }) => {
+    const [isReqChangeInfo, setIsReqChangeInfo] = useState(true);
     const [isSave, setIsSave] = useState(false);
     const [allTasks, setAllTasks] = useState([]);
     const [showProfileForm, setShowProfileForm] = useState(false);
@@ -82,6 +83,7 @@ const Profile = ({ socket }) => {
         const fetchApi = async () => {
             const res = await authServices.getCurrUser();
             setCurrUser(res);
+            setIsReqChangeInfo(res.isReqChangeInfo);
         };
         fetchApi();
     }, [isSave, isChangeAvatar]);
@@ -234,7 +236,7 @@ const Profile = ({ socket }) => {
                         <button
                             onClick={() => setShowProfileForm(true)}
                             className={
-                                currUser.isReqChangeInfo
+                                isReqChangeInfo
                                     ? 'w-full lg:w-fit text-[1.5rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] mt-7 disabled'
                                     : 'w-full lg:w-fit text-[1.5rem] text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] mt-7'
                             }
