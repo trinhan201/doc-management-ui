@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faPlusCircle, faCheckCircle, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import TimeAgo from 'javascript-time-ago';
 import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
 import * as taskServices from '~/services/taskServices';
@@ -16,6 +15,7 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
+import { formatVNDateTime } from '~/utils/formatDateTime';
 
 const AdminTaskDetail = ({ socket }) => {
     const [commentId, setCommentId] = useState('');
@@ -36,7 +36,6 @@ const AdminTaskDetail = ({ socket }) => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
     const navigate = useNavigate();
-    const timeAgo = new TimeAgo();
     const allTasks = useFetchTasks({ isSave });
 
     // Update tab
@@ -298,11 +297,11 @@ const AdminTaskDetail = ({ socket }) => {
                             <div className="flex items-center mt-12">
                                 <div className="flex-1">
                                     <h3 className="text-[1.8rem] font-bold">Ngày bắt đầu:</h3>
-                                    <p className="text-[1.4rem]">{new Date(task?.createdAt).toLocaleString()}</p>
+                                    <p className="text-[1.4rem]">{formatVNDateTime(task?.createdAt)}</p>
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="text-[1.8rem] font-bold">Ngày kết thúc:</h3>
-                                    <p className="text-[1.4rem]">{new Date(task?.dueDate).toLocaleString()}</p>
+                                    <p className="text-[1.4rem]">{formatVNDateTime(task?.dueDate)}</p>
                                 </div>
                             </div>
                             <div className="mt-12">
@@ -496,7 +495,7 @@ const AdminTaskDetail = ({ socket }) => {
                                     }
                                     username={cm?.userName}
                                     content={cm?.content}
-                                    cmtDate={timeAgo.format(new Date(cm?.date))}
+                                    cmtDate={cm?.date}
                                     handleEdit={() => setCommentId(cm?.commentId)}
                                     handleDelete={() =>
                                         handleDelete(

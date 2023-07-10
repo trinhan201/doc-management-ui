@@ -1,10 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import TimeAgo from 'javascript-time-ago';
+import { formatVNTimeAgo } from '~/utils/formatDateTime';
 
 const NotificationCard = (props) => {
-    const timeAgo = new TimeAgo();
-
     return (
         <li
             onClick={props.handleChangeNotificationStatus}
@@ -14,7 +12,7 @@ const NotificationCard = (props) => {
                 <p title={props.notification} className="w-[90%] truncate">
                     {props.notification}
                 </p>
-                <p className="text-[1rem]">{timeAgo.format(new Date(props.createdAt))}</p>
+                <p className="text-[1rem]">{formatVNTimeAgo(props.createdAt)}</p>
             </a>
             {!props.isRead && (
                 <div className="absolute top-[50%] translate-y-[-50%] right-[16px] text-blue-500">

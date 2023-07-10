@@ -159,6 +159,7 @@ const Header = ({ setToggle, socket }) => {
                                         .map((notification, index) => {
                                             return (
                                                 <NotificationCard
+                                                    key={index}
                                                     linkTask={notification?.linkTask}
                                                     notification={notification?.notification}
                                                     createdAt={notification?.createdAt}

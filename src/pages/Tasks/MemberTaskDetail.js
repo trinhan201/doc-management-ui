@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import TimeAgo from 'javascript-time-ago';
 import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
@@ -16,6 +15,8 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
+import { formatVNDateTime } from '~/utils/formatDateTime';
+import { faClock } from '@fortawesome/free-regular-svg-icons';
 
 const MemberTaskDetail = ({ socket }) => {
     const [taskProgress, setTaskProgress] = useState('Chờ duyệt');
@@ -38,7 +39,6 @@ const MemberTaskDetail = ({ socket }) => {
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
     const ref = useRef();
-    const timeAgo = new TimeAgo();
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
 
@@ -377,7 +377,7 @@ const MemberTaskDetail = ({ socket }) => {
                                 <span className={setLevelColor(task?.level)}>{task?.level}</span>
                             </h3>
                             <p className="text-[1.3rem]">
-                                Đến <span>{new Date(task?.dueDate).toLocaleString()}</span>
+                                <FontAwesomeIcon icon={faClock} /> Đến <span>{formatVNDateTime(task?.dueDate)}</span>
                                 <span className={setStatusColor(task?.status)}>{task?.status}</span>
                             </p>
                             <hr className="my-7 border-[1.5px] border-black" />
@@ -485,7 +485,7 @@ const MemberTaskDetail = ({ socket }) => {
                                         }
                                         username={cm?.userName}
                                         content={cm?.content}
-                                        cmtDate={timeAgo.format(new Date(cm?.date))}
+                                        cmtDate={cm?.date}
                                         handleEdit={() => setCommentId(cm?.commentId)}
                                         handleDelete={() =>
                                             handleDelete(

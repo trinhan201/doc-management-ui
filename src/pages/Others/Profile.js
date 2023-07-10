@@ -9,6 +9,7 @@ import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { AvatarContext } from '~/App';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const Profile = ({ socket }) => {
     const [isReqChangeInfo, setIsReqChangeInfo] = useState(true);
@@ -209,7 +210,7 @@ const Profile = ({ socket }) => {
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">
                             <span className="mr-5 lg:mr-0 lg:w-[240px] font-bold">Ngày sinh:</span>{' '}
-                            <span className="flex-1">{new Date(currUser?.birthDate).toLocaleDateString()}</span>
+                            <span className="flex-1">{formatVNDate(currUser?.birthDate)}</span>
                         </p>
                         <hr />
                         <p className="flex text-[1.8rem] py-[12px]">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { formatVNTimeAgo } from '~/utils/formatDateTime';
 
 const CommentItem = (props) => {
     const [showAction, setShowAction] = useState(false);
@@ -64,7 +65,7 @@ const CommentItem = (props) => {
 
                         <p className="text-[16px] text-[#9a919b] break-all">{props.content}</p>
                         <div className="relative flex items-center">
-                            <p className="text-[13px]">{props.cmtDate}</p>
+                            <p className="text-[13px]">{formatVNTimeAgo(props.cmtDate)}</p>
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faCheck, faPen, faXmark } from '@fortawesome/free-solid-svg-icons';
 import * as userServices from '~/services/userServices';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const RequestChangeInfoCard = (props) => {
     const [showMore, setShowMore] = useState(false);
@@ -34,8 +35,7 @@ const RequestChangeInfoCard = (props) => {
                 <div onClick={toggle} className="flex items-center gap-x-3 cursor-pointer">
                     <FontAwesomeIcon className="text-blue-600" icon={faPen} />
                     <h3 className="text-[1.4rem] font-bold">
-                        Yêu cầu của {currentUserData?.fullName} -{' '}
-                        <span>{new Date(props.createdAt).toLocaleDateString()}</span>
+                        Yêu cầu của {currentUserData?.fullName} - <span>{formatVNDate(props.createdAt)}</span>
                     </h3>
                 </div>
                 <div className="flex items-center">
@@ -82,11 +82,12 @@ const RequestChangeInfoCard = (props) => {
                         <span>{props.newGender}</span>
                     </p>
                     <p>
-                        <span className="font-bold">Ngày sinh:</span> <span>{currentUserData?.birthDate}</span>{' '}
+                        <span className="font-bold">Ngày sinh:</span>{' '}
+                        <span>{formatVNDate(currentUserData?.birthDate)}</span>{' '}
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{props.newBirthDate}</span>
+                        <span>{formatVNDate(props.newBirthDate)}</span>
                     </p>
                     <p>
                         <span className="font-bold">Email:</span> <span>{currentUserData?.email}</span>{' '}

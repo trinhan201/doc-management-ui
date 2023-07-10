@@ -21,6 +21,7 @@ import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 import { errorNotify } from '~/components/ToastMessage';
+import { formatVNDateTime } from '~/utils/formatDateTime';
 
 const Task = ({ socket }) => {
     const [loading, setLoading] = useState(false);
@@ -422,7 +423,7 @@ const Task = ({ socket }) => {
                                                         </div>
                                                     </td>
                                                     <td title={tl?.dueDate} className="whitespace-nowrap px-6 py-4">
-                                                        {new Date(tl?.dueDate).toLocaleDateString()}
+                                                        {formatVNDateTime(tl?.dueDate)}
                                                     </td>
                                                     <td title={tl?.status} className="whitespace-nowrap px-6 py-4">
                                                         <div className={setStatusColor(tl?.status)}>{tl?.status}</div>

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const UserDetail = (props) => {
     return (
@@ -39,7 +40,9 @@ const UserDetail = (props) => {
                     </div>
                     <div className="flex my-2">
                         <p className="w-[94px] md:w-[120px] font-bold">Ngày sinh:</p>
-                        <p className="flex-1 w-[200px] break-words whitespace-pre-wrap">{props.birthDate}</p>
+                        <p className="flex-1 w-[200px] break-words whitespace-pre-wrap">
+                            {formatVNDate(props.birthDate)}
+                        </p>
                     </div>
                     <div className="flex my-2">
                         <p className="w-[94px] md:w-[120px] font-bold">Email:</p>
