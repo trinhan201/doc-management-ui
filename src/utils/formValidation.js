@@ -77,6 +77,7 @@ export const dateValidator = (date, setIsDateErr, setDateErrMsg) => {
     const msg = {};
     if (isEmpty(date)) {
         msg.date = 'Thời gian không được để trống';
+        msg.dueDate = 'Ngày đến hạn không được để trống';
         msg.inDate = 'Ngày đến không được để trống';
         msg.outDate = 'Ngày đi không được để trống';
         msg.issuedDate = 'Ngày ban hành không được để trống';
@@ -85,6 +86,20 @@ export const dateValidator = (date, setIsDateErr, setDateErrMsg) => {
         setIsDateErr(false);
     }
     setDateErrMsg(msg);
+    if (Object.keys(msg).length > 0) return false;
+    return true;
+};
+
+export const dropListValidator = (value, setIsDropListErr, setDropListErrMsg) => {
+    const msg = {};
+    if (!value || value.length === 0) {
+        msg.leader = 'Nhóm trưởng không được để trống';
+        msg.assignTo = 'Người thực hiện không được để trống';
+        setIsDropListErr(true);
+    } else {
+        setIsDropListErr(false);
+    }
+    setDropListErrMsg(msg);
     if (Object.keys(msg).length > 0) return false;
     return true;
 };

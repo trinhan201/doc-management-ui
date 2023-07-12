@@ -73,7 +73,7 @@ const DocumentDetail = ({ socket }) => {
             }
         };
         setStatusPercentage();
-    }, [document.status]);
+    }, [document?.status]);
 
     // Get current document data
     useEffect(() => {

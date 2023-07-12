@@ -11,7 +11,7 @@ import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
-import { disabledPastDate, fullNameValidator, dateValidator } from '~/utils/formValidation';
+import { disabledPastDate, fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchTasks } from '~/hooks';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
@@ -41,6 +41,10 @@ const CreateTask = ({ title, socket }) => {
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
     const [isDeadlineErr, setIsDeadlineErr] = useState(false);
+    const [leaderErrMsg, setLeaderErrMsg] = useState({});
+    const [isLeaderErr, setIsLeaderErr] = useState(false);
+    const [assignToErrMsg, setAssignToErrMsg] = useState({});
+    const [isAssignToErr, setIsAssignToErr] = useState(false);
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -62,7 +66,7 @@ const CreateTask = ({ title, socket }) => {
         return options;
     };
 
-    // Createn user resource for each assigned user
+    // Create user resource for each assigned user
     const setUserResource = () => {
         const options = assignTo?.map((item) => {
             return { userId: item.value, status: 'Chưa nộp', resources: [], isSubmit: false };
@@ -82,7 +86,9 @@ const CreateTask = ({ title, socket }) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         const isDateValid = dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg);
-        if (!isfullNameValid || !isDateValid) return;
+        const isLeaderValid = dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg);
+        const isAssignToValid = dropListValidator(assignTo, setIsAssignToErr, setAssignToErrMsg);
+        if (!isfullNameValid || !isDateValid || isLeaderValid || isAssignToValid) return;
         setLoading(true);
         const data = {
             taskName: fullName,
@@ -263,7 +269,7 @@ const CreateTask = ({ title, socket }) => {
                                 min={disabledPastDate()}
                                 onBlur={() => dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg)}
                             />
-                            <p className="text-red-600 text-[1.3rem]">{deadlineErrMsg.date}</p>
+                            <p className="text-red-600 text-[1.3rem]">{deadlineErrMsg.dueDate}</p>
                         </div>
                         <div className="flex-1">
                             <label className="font-bold">Mức độ:</label>
@@ -288,11 +294,14 @@ const CreateTask = ({ title, socket }) => {
                         <div className="flex-1">
                             <label className="font-bold">Nhóm trưởng:</label>
                             <Select
+                                className={isLeaderErr && 'droplistInvalid'}
                                 placeholder="--Vui lòng chọn--"
                                 options={getUserOptions()}
                                 onChange={setLeader}
+                                onBlur={() => dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg)}
                                 value={leader}
                             />
+                            <p className="text-red-600 text-[1.3rem]">{leaderErrMsg.leader}</p>
                         </div>
                         <div className="flex-1">
                             <label className="font-bold">Loại:</label>
@@ -308,11 +317,14 @@ const CreateTask = ({ title, socket }) => {
                         <label className="font-bold">Người thực hiện:</label>
                         <Select
                             isMulti
+                            className={isAssignToErr && 'droplistInvalid'}
                             placeholder="--Vui lòng chọn--"
                             options={getUserOptions()}
                             onChange={setAssignTo}
+                            onBlur={() => dropListValidator(assignTo, setIsAssignToErr, setAssignToErrMsg)}
                             value={assignTo}
                         />
+                        <p className="text-red-600 text-[1.3rem]">{assignToErrMsg.assignTo}</p>
                     </div>
                     <div className="mt-7">
                         <label className="font-bold">File đính kèm:</label>

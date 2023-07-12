@@ -3,19 +3,27 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import FormData from 'form-data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import FileInput from '~/components/FileInput';
 import * as departmentServices from '~/services/departmentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
 import * as documentServices from '~/services/documentServices';
-import { fullNameValidator, dateValidator } from '~/utils/formValidation';
+import * as userServices from '~/services/userServices';
+import * as taskServices from '~/services/taskServices';
+import * as notificationServices from '~/services/notificationServices';
+import { fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
+import SwitchButton from '~/components/SwitchButton';
+import { disabledPastDate } from '~/utils/formValidation';
 
 const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
+    const [allUsers, setAllUsers] = useState([]);
+    const [isAssigned, setAssigned] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // Input state
@@ -32,6 +40,13 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [documentTypes, setDocumentTypes] = useState([]);
+    // Task input state
+    const [leader, setLeader] = useState();
+    const [assignTo, setAssignTo] = useState([]);
+    const [deadline, setDeadline] = useState('');
+    const [taskName, setTaskName] = useState('');
+    const [taskType, setTaskType] = useState('');
+    const [taskDesc, setTaskDesc] = useState('');
     // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
@@ -45,11 +60,42 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [isSenderErr, setIsSenderErr] = useState(false);
     const [issuedDateErrMsg, setIssuedDateErrMsg] = useState({});
     const [isIssuedDateErr, setIsIssuedDateErr] = useState(false);
+    const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
+    const [isDeadlineErr, setIsDeadlineErr] = useState(false);
+    const [taskNameErrMsg, setTaskNameErrMsg] = useState({});
+    const [isTaskNameErr, setIsTaskNameErr] = useState(false);
+    const [leaderErrMsg, setLeaderErrMsg] = useState({});
+    const [isLeaderErr, setIsLeaderErr] = useState(false);
+    const [assignToErrMsg, setAssignToErrMsg] = useState({});
+    const [isAssignToErr, setIsAssignToErr] = useState(false);
 
     const navigate = useNavigate();
     const { id } = useParams();
     const allTasks = useFetchTasks({ isSave });
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
+    const taskTypeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
+
+    // Just get id of assigned user
+    const getAssignToIds = (assignTo) => {
+        const array = assignTo.map((item) => item.value);
+        return array;
+    };
+
+    // Format all users array
+    const getUserOptions = () => {
+        const options = allUsers?.map((item) => {
+            return { value: item._id, label: item.fullName, flag: 'Support' };
+        });
+        return options;
+    };
+
+    // Create user resource for each assigned user
+    const setUserResource = () => {
+        const options = assignTo?.map((item) => {
+            return { userId: item.value, status: 'Chưa nộp', resources: [], isSubmit: false };
+        });
+        return options;
+    };
 
     // Create or edit document function
     const handleSubmit = async (e) => {
@@ -60,6 +106,10 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         const isCodeValid = fullNameValidator(code, setIsCodeErr, setCodeErrMsg);
         const isSenderValid = fullNameValidator(sender, setIsSenderErr, setSenderErrMsg);
         const isIssuedDateValid = dateValidator(issuedDate, setIsIssuedDateErr, setIssuedDateErrMsg);
+        const isLeaderValid = dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg);
+        const isAssignToValid = dropListValidator(assignTo, setIsAssignToErr, setAssignToErrMsg);
+        const isTaskNameValidator = fullNameValidator(taskName, setIsTaskNameErr, setTaskNameErrMsg);
+        const isTaskDeadlineValidator = dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg);
         if (
             !isfullNameValid ||
             !isNumberValid ||
@@ -69,6 +119,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
             !isIssuedDateValid
         )
             return;
+        if (isAssigned) {
+            if (!isLeaderValid || !isAssignToValid || !isTaskNameValidator || !isTaskDeadlineValidator) return;
+        }
         setLoading(true);
         const data = {
             documentName: fullName,
@@ -104,11 +157,67 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                 successNotify(res.message);
                 navigate(`/documents/${path}`);
             }
+            // ------------------------------------
+            if (isAssigned) {
+                const taskDatas = {
+                    taskName: taskName,
+                    type: taskType,
+                    dueDate: deadline,
+                    level: level,
+                    refLink: res.data.documentName,
+                    desc: taskDesc,
+                    leader: leader,
+                    assignTo: assignTo,
+                    resources: setUserResource(),
+                };
+                const resTask = await taskServices.createTask(taskDatas);
+                // ------------------------------------
+                if (resTask.code === 200) {
+                    await documentServices.changeDocumentStatus(res.data._id, { documentStatus: 'Đang xử lý' });
+                    if (leader) {
+                        const data = {
+                            userId: leader.value,
+                            flag: 'Leader',
+                        };
+                        await taskServices.changeAssignRole(resTask.data._id, data);
+                    }
+                    const newNotiId = await Promise.all(
+                        getAssignToIds(resTask.data.assignTo)?.map(async (userId) => {
+                            const noti = await notificationServices.createNotification({
+                                notification: 'Bạn có nhiệm vụ mới',
+                                userId: userId,
+                                linkTask: `http://localhost:3000/tasks/detail/${resTask.data._id}`,
+                            });
+                            return { notiId: noti.data._id, userId: noti.data.userId };
+                        }),
+                    );
+                    socket.current?.emit('sendNotification', {
+                        senderId: '',
+                        _id: newNotiId,
+                        receiverId: getAssignToIds(resTask.data.assignTo),
+                        text: 'Bạn có nhiệm vụ mới',
+                        linkTask: `http://localhost:3000/tasks/detail/${resTask.data._id}`,
+                        isRead: false,
+                    });
+                }
+                // ------------------------------------
+            }
+            // ------------------------------------
         } else {
             setLoading(false);
             errorNotify(res);
         }
     };
+
+    // Get all users with role Member from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await userServices.getAllUser(1, 1, '');
+            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
+            setAllUsers(filterArray);
+        };
+        fetchApi();
+    }, []);
 
     // Get available document data when edit document
     useEffect(() => {
@@ -278,6 +387,95 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                         <label className="font-bold">File đính kèm:</label>
                         <FileInput setAttachFiles={setAttachFiles} />
                     </div>
+                    {title === 'Thêm văn bản đến mới' && (
+                        <div className="flex items-center gap-x-5 mt-7">
+                            <label className="font-bold">Giao việc:</label>
+                            <SwitchButton
+                                checked={isAssigned}
+                                setValue={() => setAssigned(!isAssigned)}
+                                setId={() => undefined}
+                            />
+                        </div>
+                    )}
+                    {isAssigned && (
+                        <div className="border-[2px] border-[#bbbbbb] border-dashed p-3 mt-7">
+                            <div>
+                                <label className="font-bold">Tên công việc:</label>
+                                <InputField
+                                    id="taskName"
+                                    className={isTaskNameErr ? 'invalid' : 'default'}
+                                    placeholder="Tên công việc"
+                                    value={taskName}
+                                    setValue={setTaskName}
+                                    onBlur={() => fullNameValidator(taskName, setIsTaskNameErr, setTaskNameErrMsg)}
+                                />
+                                <p className="text-red-600 text-[1.3rem]">{taskNameErrMsg.fullName}</p>
+                            </div>
+                            <div className="flex flex-col md:flex-row mt-7 gap-6">
+                                <div className="flex-1">
+                                    <label className="font-bold">Ngày đến hạn:</label>
+                                    <InputField
+                                        name="datetime-local"
+                                        className={isDeadlineErr ? 'invalid' : 'default'}
+                                        value={deadline}
+                                        setValue={setDeadline}
+                                        min={disabledPastDate()}
+                                        onBlur={() => dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg)}
+                                    />
+                                    <p className="text-red-600 text-[1.3rem]">{deadlineErrMsg.dueDate}</p>
+                                </div>
+                                <div className="flex-1">
+                                    <label className="font-bold">Loại:</label>
+                                    <DropList
+                                        selectedValue={taskType}
+                                        options={taskTypeOptions}
+                                        setValue={setTaskType}
+                                        setId={() => undefined}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-6 mt-7">
+                                <div className="flex-1">
+                                    <label className="font-bold">Nhóm trưởng:</label>
+                                    <Select
+                                        className={isLeaderErr && 'droplistInvalid'}
+                                        placeholder="--Vui lòng chọn--"
+                                        options={getUserOptions()}
+                                        onChange={setLeader}
+                                        onBlur={() => dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg)}
+                                        value={leader}
+                                    />
+                                    <p className="text-red-600 text-[1.3rem]">{leaderErrMsg.leader}</p>
+                                </div>
+                                <div className="flex-1">
+                                    <label className="font-bold">Người thực hiện:</label>
+                                    <Select
+                                        isMulti
+                                        className={isAssignToErr && 'droplistInvalid'}
+                                        placeholder="--Vui lòng chọn--"
+                                        options={getUserOptions()}
+                                        onChange={setAssignTo}
+                                        onBlur={() => dropListValidator(assignTo, setIsAssignToErr, setAssignToErrMsg)}
+                                        value={assignTo}
+                                    />
+                                    <p className="text-red-600 text-[1.3rem]">{assignToErrMsg.assignTo}</p>
+                                </div>
+                            </div>
+                            <div className="mt-7">
+                                <label className="font-bold">Mô tả công việc:</label>
+                                <InputField
+                                    textarea
+                                    className="default textarea"
+                                    placeholder="Mô tả công việc"
+                                    rows="6"
+                                    cols="50"
+                                    value={taskDesc}
+                                    setValue={setTaskDesc}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     <div className="mt-7">
                         <label className="font-bold">Trích yếu:</label>
                         <InputField
