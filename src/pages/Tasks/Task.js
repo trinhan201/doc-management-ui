@@ -422,7 +422,10 @@ const Task = ({ socket }) => {
                                                             <div className={setProgressPercentage(tl?.progress)}></div>
                                                         </div>
                                                     </td>
-                                                    <td title={tl?.dueDate} className="whitespace-nowrap px-6 py-4">
+                                                    <td
+                                                        title={formatVNDateTime(tl?.dueDate)}
+                                                        className="whitespace-nowrap px-6 py-4"
+                                                    >
                                                         {formatVNDateTime(tl?.dueDate)}
                                                     </td>
                                                     <td title={tl?.status} className="whitespace-nowrap px-6 py-4">

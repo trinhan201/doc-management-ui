@@ -314,7 +314,7 @@ const AdminTaskDetail = ({ socket }) => {
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">Người thực hiện:</h3>
-                                <div className="flex -space-x-2">
+                                <div className="group relative flex -space-x-2 w-fit">
                                     {task?.assignTo?.slice(0, 3).map((at, index) => {
                                         const user = allUsers?.find((user) => {
                                             return user?._id === at?.value;
@@ -343,6 +343,11 @@ const AdminTaskDetail = ({ socket }) => {
                                                 +{task?.assignTo?.length - 3}
                                             </span>
                                         </div>
+                                    </div>
+                                    <div className="group-hover:block hidden absolute top-0 left-[120%] whitespace-nowrap z-10 px-3 py-2 text-[1.4rem] font-medium text-white bg-gray-900 rounded-lg shadow-sm">
+                                        {task?.assignTo?.map((item) => {
+                                            return <p className="m-auto">{item?.label}</p>;
+                                        })}
                                     </div>
                                 </div>
                             </div>
