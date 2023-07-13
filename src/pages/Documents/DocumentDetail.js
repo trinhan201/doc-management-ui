@@ -80,10 +80,14 @@ const DocumentDetail = ({ socket }) => {
         if (!id) return;
         const fetchApi = async () => {
             const res = await documentServices.getDocumentById(id);
-            setDocument(res.data);
+            if (res.code === 200) {
+                setDocument(res.data);
+            } else {
+                navigate('/error');
+            }
         };
         fetchApi();
-    }, [id, isSave]);
+    }, [id, isSave, navigate]);
 
     // Check tasks deadline function
     useEffect(() => {

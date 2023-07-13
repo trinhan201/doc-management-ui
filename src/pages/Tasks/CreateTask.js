@@ -25,6 +25,7 @@ const CreateTask = ({ title, socket }) => {
     //List data state
     const [allUsers, setAllUsers] = useState([]);
     const [documents, setDocuments] = useState([]);
+    const [allDocuments, setAllDocuments] = useState([]);
     // Input state
     const [fullName, setFullName] = useState('');
     const [deadline, setDeadline] = useState('');
@@ -81,6 +82,12 @@ const CreateTask = ({ title, socket }) => {
         return merged;
     };
 
+    // Get docId to reference document id
+    const getDocId = (value) => {
+        const doc = allDocuments.find((item) => item.documentName === value);
+        return doc?._id;
+    };
+
     // Create or edit task
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -88,7 +95,7 @@ const CreateTask = ({ title, socket }) => {
         const isDateValid = dateValidator(deadline, setIsDeadlineErr, setDeadlineErrMsg);
         const isLeaderValid = dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg);
         const isAssignToValid = dropListValidator(assignTo, setIsAssignToErr, setAssignToErrMsg);
-        if (!isfullNameValid || !isDateValid || isLeaderValid || isAssignToValid) return;
+        if (!isfullNameValid || !isDateValid || !isLeaderValid || !isAssignToValid) return;
         setLoading(true);
         const data = {
             taskName: fullName,
@@ -109,6 +116,7 @@ const CreateTask = ({ title, socket }) => {
             res = await taskServices.createTask(data);
         }
         if (res.code === 200) {
+            await documentServices.updateDocument(getDocId(document), { assignTo: assignTo });
             if (attachFiles) {
                 const data = new FormData();
                 for (let i = 0; i < attachFiles.length; i++) {
@@ -136,7 +144,6 @@ const CreateTask = ({ title, socket }) => {
                         return { notiId: noti.data._id, userId: noti.data.userId };
                     }),
                 );
-                console.log(newNotiId);
                 socket.current?.emit('sendNotification', {
                     senderId: userId,
                     _id: newNotiId,
@@ -222,10 +229,12 @@ const CreateTask = ({ title, socket }) => {
     useEffect(() => {
         const fetchApi = async () => {
             const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '');
-            const documentArray = res.allDocumentIn
+            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
+            setAllDocuments(documentArray);
+            const documentNameArray = res.allDocumentIn
                 ?.filter((item) => item.status === 'Đang xử lý')
                 .map((item) => item.documentName);
-            setDocuments(documentArray);
+            setDocuments(documentNameArray);
         };
         fetchApi();
     }, []);

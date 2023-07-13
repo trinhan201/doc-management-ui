@@ -38,6 +38,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [note, setNote] = useState('');
     const [currentLocation, setCurrentLocation] = useState('');
     const [attachFiles, setAttachFiles] = useState([]);
+    const [isHaveTask, setIsHaveTask] = useState(true);
     const [departments, setDepartments] = useState([]);
     const [documentTypes, setDocumentTypes] = useState([]);
     // Task input state
@@ -135,6 +136,8 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
             level: level,
             note: note,
             currentLocation: currentLocation,
+            isHaveTask: isAssigned ? true : false,
+            assignTo: isAssigned ? assignTo : [],
         };
         let res;
         if (id) {
@@ -234,6 +237,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
             setLevel(res.data.level);
             setCurrentLocation(res.data.currentLocation);
             setNote(res.data.note);
+            setIsHaveTask(res.data.isHaveTask);
         };
         fetchApi();
     }, [id]);
@@ -387,7 +391,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                         <label className="font-bold">File đính kèm:</label>
                         <FileInput setAttachFiles={setAttachFiles} />
                     </div>
-                    {title === 'Thêm văn bản đến mới' && (
+                    {(title === 'Thêm văn bản đến mới' || (title === 'Sửa văn bản đến' && isHaveTask === false)) && (
                         <div className="flex items-center gap-x-5 mt-7">
                             <label className="font-bold">Giao việc:</label>
                             <SwitchButton
