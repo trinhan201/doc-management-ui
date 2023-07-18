@@ -10,9 +10,9 @@ import {
     TableLayoutType,
     AlignmentType,
     TextRun,
-    VerticalMergeType,
 } from 'docx';
 import { saveAs } from 'file-saver';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const ExportWord = (props) => {
     const dataHeader = [
@@ -23,10 +23,122 @@ const ExportWord = (props) => {
         'Tổng số văn bản đi',
         'Tổng số công việc',
         'Tổng số bình luận',
+        'Tổng số thông báo',
     ];
 
     const handleExport = () => {
-        let tbody;
+        const getFirstCell = (index, data) => {
+            if (index === 0) {
+                return new TableCell({
+                    children: [
+                        new Paragraph({
+                            alignment: AlignmentType.CENTER,
+                            children: [
+                                new TextRun({
+                                    text: `${data}`,
+                                    font: 'Arial',
+                                }),
+                            ],
+                        }),
+                    ],
+                    rowSpan: props.filterData?.length,
+                    verticalAlign: VerticalAlign.TOP,
+                    width: { size: 10, type: WidthType.PERCENTAGE },
+                });
+            } else {
+                return;
+            }
+        };
+
+        const setTableRow = () => {
+            var tableRow = props.filterData?.map((item, index) => {
+                return new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                        new TextRun({
+                                            text: `${index + 1}`,
+                                            font: 'Arial',
+                                        }),
+                                    ],
+                                }),
+                            ],
+                            verticalAlign: VerticalAlign.TOP,
+                            width: { size: 5, type: WidthType.PERCENTAGE },
+                        }),
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: item.department,
+
+                                            font: 'Arial',
+                                        }),
+                                    ],
+                                }),
+                            ],
+                            verticalAlign: VerticalAlign.TOP,
+                            width: { size: 10, type: WidthType.PERCENTAGE },
+                        }),
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                        new TextRun({
+                                            text: `${item.allUsers}`,
+                                            font: 'Arial',
+                                        }),
+                                    ],
+                                }),
+                            ],
+                            verticalAlign: VerticalAlign.TOP,
+                            width: { size: 10, type: WidthType.PERCENTAGE },
+                        }),
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                        new TextRun({
+                                            text: `${item.allDocumentIns}`,
+
+                                            font: 'Arial',
+                                        }),
+                                    ],
+                                }),
+                            ],
+                            verticalAlign: VerticalAlign.TOP,
+                            width: { size: 10, type: WidthType.PERCENTAGE },
+                        }),
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    alignment: AlignmentType.CENTER,
+                                    children: [
+                                        new TextRun({
+                                            text: `${item.allDocumentOuts}`,
+                                            font: 'Arial',
+                                        }),
+                                    ],
+                                }),
+                            ],
+                            verticalAlign: VerticalAlign.TOP,
+                            width: { size: 10, type: WidthType.PERCENTAGE },
+                        }),
+                        getFirstCell(index, item.allTasks),
+                        getFirstCell(index, item.allComments),
+                        getFirstCell(index, item.allNotifications),
+                    ],
+                });
+            });
+            return tableRow;
+        };
+
         const doc = new Document({
             sections: [
                 {
@@ -47,12 +159,23 @@ const ExportWord = (props) => {
                             alignment: AlignmentType.CENTER,
                             children: [
                                 new TextRun({
+                                    text: `Tổng hợp dữ liệu hệ thống: ${`Từ ngày ${
+                                        formatVNDate(props.fFrom) || '?'
+                                    } đến ngày ${formatVNDate(props.fTo) || '?'}`}`,
+                                    font: 'Arial',
+                                }),
+                            ],
+                        }),
+                        new Paragraph({
+                            alignment: AlignmentType.CENTER,
+                            children: [
+                                new TextRun({
                                     text: '',
                                     size: 36,
                                 }),
                             ],
                         }),
-                        (tbody = new Table({
+                        new Table({
                             width: { size: 100, type: WidthType.PERCENTAGE },
                             layout: TableLayoutType.FIXED,
                             rows: [
@@ -80,125 +203,12 @@ const ExportWord = (props) => {
                                         });
                                     }),
                                 }),
+                                ...setTableRow(),
                             ],
-                        })),
+                        }),
                     ],
                 },
             ],
-        });
-
-        props.filterData?.forEach((item, index) => {
-            var tableRow = new TableRow({
-                children: [
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                alignment: AlignmentType.CENTER,
-                                children: [
-                                    new TextRun({
-                                        text: `${index + 1}`,
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 5, type: WidthType.PERCENTAGE },
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                children: [
-                                    new TextRun({
-                                        text: item.department,
-
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 10, type: WidthType.PERCENTAGE },
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                alignment: AlignmentType.CENTER,
-                                children: [
-                                    new TextRun({
-                                        text: `${item.allUsers}`,
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 10, type: WidthType.PERCENTAGE },
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                alignment: AlignmentType.CENTER,
-                                children: [
-                                    new TextRun({
-                                        text: `${item.allDocumentIns}`,
-
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 10, type: WidthType.PERCENTAGE },
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                alignment: AlignmentType.CENTER,
-                                children: [
-                                    new TextRun({
-                                        text: `${item.allDocumentOuts}`,
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 10, type: WidthType.PERCENTAGE },
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                children: [
-                                    new TextRun({
-                                        text: '',
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 10, type: WidthType.PERCENTAGE },
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                children: [
-                                    new TextRun({
-                                        text: `${item.allComments}`,
-                                        font: 'Arial',
-                                    }),
-                                ],
-                            }),
-                        ],
-                        rowSpan: props.filterData?.length,
-                        verticalMerge: VerticalMergeType.RESTART,
-                        verticalAlign: VerticalAlign.TOP,
-                        width: { size: 10, type: WidthType.PERCENTAGE },
-                    }),
-                ],
-            });
-            tbody.root.push(tableRow);
         });
 
         Packer.toBlob(doc).then((blob) => {

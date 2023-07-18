@@ -7,6 +7,7 @@ import * as departmentServices from '~/services/departmentServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
 import * as commentServices from '~/services/commentServices';
+import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
@@ -25,6 +26,7 @@ const SystemStatistics = ({ socket }) => {
     const [allUsers, setAllUsers] = useState([]);
     const [allDepartments, setAllDepartments] = useState([]);
     const [allComments, setAllComments] = useState([]);
+    const [allNotifications, setAllNotifications] = useState([]);
     const [filterData, setFilterData] = useState([]);
     // Filter statistic state
     const [fFrom, setFFrom] = useState('');
@@ -60,12 +62,29 @@ const SystemStatistics = ({ socket }) => {
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
                 ).length;
+            const tasks = allTasks?.filter(
+                (item) =>
+                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
+                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
+            ).length;
+            const comments = allComments?.filter(
+                (item) =>
+                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
+                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
+            ).length;
+            const notifications = allNotifications?.filter(
+                (item) =>
+                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
+                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
+            ).length;
             return {
                 department: d,
                 allUsers: user,
                 allDocumentIns: documentIn,
                 allDocumentOuts: documentOut,
-                allComments: allComments?.length,
+                allComments: comments,
+                allNotifications: notifications,
+                allTasks: tasks,
             };
         });
         timer = setTimeout(() => {
@@ -104,6 +123,15 @@ const SystemStatistics = ({ socket }) => {
         const fetchApi = async () => {
             const res = await commentServices.getAllComment();
             setAllComments(res.data);
+        };
+        fetchApi();
+    }, []);
+
+    // Get all notification from server
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await notificationServices.getAllNotification();
+            setAllNotifications(res.all);
         };
         fetchApi();
     }, []);

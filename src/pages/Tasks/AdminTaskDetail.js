@@ -346,7 +346,7 @@ const AdminTaskDetail = ({ socket }) => {
                                     </div>
                                     <div className="group-hover:block hidden absolute top-0 left-[120%] whitespace-nowrap z-10 px-3 py-2 text-[1.4rem] font-medium text-white bg-gray-900 rounded-lg shadow-sm">
                                         {task?.assignTo?.map((item) => {
-                                            return <p className="m-auto">{item?.label}</p>;
+                                            return <p className="m-auto">{`${item?.label} - ${item.flag}`}</p>;
                                         })}
                                     </div>
                                 </div>

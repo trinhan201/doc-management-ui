@@ -93,6 +93,8 @@ export const dateValidator = (date, setIsDateErr, setDateErrMsg) => {
 export const dropListValidator = (value, setIsDropListErr, setDropListErrMsg) => {
     const msg = {};
     if (!value || value.length === 0) {
+        msg.department = 'Phòng ban không được để trống';
+        msg.currLocation = 'Vị trí hiện tại không được để trống';
         msg.leader = 'Nhóm trưởng không được để trống';
         msg.assignTo = 'Người thực hiện không được để trống';
         setIsDropListErr(true);

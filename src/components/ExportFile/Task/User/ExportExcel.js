@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import * as XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const ExportExcel = (props) => {
     const workbook2blob = (workbook) => {
@@ -35,46 +36,77 @@ const ExportExcel = (props) => {
 
         const subTitle = [
             {
-                A: `Tổng hợp công việc: ${props.fProgress || '?'} - ${props.fType || '?'} - ${props.fStatus || '?'} - ${
-                    props.fLevel || '?'
-                } - ${`Từ ngày ${props.fFrom || '?'} đến ngày ${props.fTo || '?'}`}`,
+                A: `Tổng hợp công việc theo thành viên: ${`Từ ngày ${formatVNDate(props.fFrom) || '?'} đến ngày ${
+                    formatVNDate(props.fTo) || '?'
+                }`}`,
             },
             {},
         ];
 
-        const total = [{ A: '' }, { A: `Tổng số ${props.allTasks?.length} công việc` }];
-
         let table = [
             {
                 A: 'STT',
-                B: 'Tên công việc',
-                C: 'Loại công việc',
-                D: 'Mức độ',
-                E: 'Tiến trình',
-                F: 'Trạng thái',
-                G: 'Đến hạn',
+                B: 'Thành viên',
+                C: 'Tên công việc',
+                D: 'Loại công việc',
+                E: 'Mức độ',
+                F: 'Hoàn thành',
+                G: 'Chờ duyệt',
+                H: 'Chưa hoàn thành',
+                I: 'Còn hạn',
+                J: 'Sắp đến hạn',
+                K: 'Quá hạn',
+                L: 'Tổng',
             },
         ];
 
-        props.allTasks.forEach((row, index) => {
-            table.push({
-                A: index + 1,
-                B: row.taskName,
-                C: row.type,
-                D: row.level,
-                E: row.progress,
-                F: row.status,
-                G: new Date(row.dueDate).toLocaleDateString(),
+        props.allDatas.map((row, index) => {
+            return row?.tasks?.forEach((t) => {
+                table.push({
+                    A: index + 1,
+                    B: row?.user,
+                    C: t?.taskName,
+                    D: t?.type,
+                    E: t?.level,
+                    F: row?.finishTask,
+                    G: row?.pendingTask,
+                    H: row?.inProgressTask,
+                    I: row?.unDueTask,
+                    J: row?.dueSoonTask,
+                    K: row?.outOfDateTask,
+                    L: row?.tasks?.length,
+                });
             });
         });
 
-        const finalData = [...title, ...subTitle, ...table, ...total];
+        const finalData = [...title, ...subTitle, ...table];
 
         const wb = XLSX.utils.book_new();
 
         const sheet = XLSX.utils.json_to_sheet(finalData, {
             skipHeader: true,
         });
+        let acc = 5;
+        const mergeArray = props.allDatas.map((item) => {
+            const merge = [
+                { s: { r: acc, c: 0 }, e: { r: item?.tasks?.length + acc - 1, c: 0 } },
+                { s: { r: acc, c: 1 }, e: { r: item?.tasks?.length + acc - 1, c: 1 } },
+                { s: { r: acc, c: 5 }, e: { r: item?.tasks?.length + acc - 1, c: 5 } },
+                { s: { r: acc, c: 6 }, e: { r: item?.tasks?.length + acc - 1, c: 6 } },
+                { s: { r: acc, c: 7 }, e: { r: item?.tasks?.length + acc - 1, c: 7 } },
+                { s: { r: acc, c: 8 }, e: { r: item?.tasks?.length + acc - 1, c: 8 } },
+                { s: { r: acc, c: 9 }, e: { r: item?.tasks?.length + acc - 1, c: 9 } },
+                { s: { r: acc, c: 10 }, e: { r: item?.tasks?.length + acc - 1, c: 10 } },
+                { s: { r: acc, c: 11 }, e: { r: item?.tasks?.length + acc - 1, c: 11 } },
+            ];
+            acc = acc + item?.tasks?.length;
+            return merge;
+        });
+
+        var flatArray = mergeArray.reduce(function (flatOutput, flatItem) {
+            return flatOutput.concat(flatItem);
+        }, []);
+        sheet['!merges'] = flatArray;
 
         XLSX.utils.book_append_sheet(wb, sheet, 'report');
 
@@ -84,12 +116,11 @@ const ExportExcel = (props) => {
         finalData.forEach((data, index) => (data['A'] === 'STT' ? headerIndexes.push(index) : null));
 
         const dataInfo = {
-            titleRange: 'A1:G2',
-            subTitleRange: 'A3:G3',
-            tbodyRange: `A4:G${finalData.length}`,
-            tbodyRangeBorder: `A5:G${finalData.length - 2}`,
-            theadRange: headerIndexes?.length >= 1 ? `A${headerIndexes[0] + 1}:G${headerIndexes[0] + 1}` : null,
-            totalRange: `A${finalData.length}:G${finalData.length}`,
+            titleRange: 'A1:L2',
+            subTitleRange: 'A3:L3',
+            tbodyRange: `A4:L${finalData.length}`,
+            tbodyRangeBorder: `A5:L${finalData.length}`,
+            theadRange: headerIndexes?.length >= 1 ? `A${headerIndexes[0] + 1}:L${headerIndexes[0] + 1}` : null,
         };
 
         return addStyle(workbookBlob, dataInfo);
@@ -108,11 +139,16 @@ const ExportExcel = (props) => {
 
                 sheet.column('A').width(5).style({ horizontalAlignment: 'center', bold: true });
                 sheet.column('B').width(15);
-                sheet.column('C').width(20);
-                sheet.column('D').width(25);
-                sheet.column('E').width(20);
-                sheet.column('F').width(20);
-                sheet.column('G').width(20).style({ horizontalAlignment: 'center' });
+                sheet.column('C').width(25).style({ horizontalAlignment: 'left' });
+                sheet.column('D').width(15).style({ horizontalAlignment: 'center' });
+                sheet.column('E').width(15).style({ horizontalAlignment: 'center' });
+                sheet.column('F').width(10).style({ horizontalAlignment: 'center' });
+                sheet.column('G').width(10).style({ horizontalAlignment: 'center' });
+                sheet.column('H').width(10).style({ horizontalAlignment: 'center' });
+                sheet.column('I').width(10).style({ horizontalAlignment: 'center' });
+                sheet.column('J').width(10).style({ horizontalAlignment: 'center' });
+                sheet.column('K').width(10).style({ horizontalAlignment: 'center' });
+                sheet.column('L').width(10).style({ horizontalAlignment: 'center' });
 
                 sheet.range(dataInfo.titleRange).merged(true).style({
                     bold: true,
@@ -127,12 +163,6 @@ const ExportExcel = (props) => {
                     verticalAlignment: 'center',
                     fontSize: 10,
                     border: false,
-                });
-
-                sheet.range(dataInfo.totalRange).merged(true).style({
-                    bold: true,
-                    horizontalAlignment: 'right',
-                    verticalAlignment: 'center',
                 });
 
                 if (dataInfo.tbodyRange) {

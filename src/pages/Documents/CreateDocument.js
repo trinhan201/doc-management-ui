@@ -61,6 +61,8 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [isSenderErr, setIsSenderErr] = useState(false);
     const [issuedDateErrMsg, setIssuedDateErrMsg] = useState({});
     const [isIssuedDateErr, setIsIssuedDateErr] = useState(false);
+    const [currLocationErrMsg, setCurrLocationErrMsg] = useState({});
+    const [isCurrLocationErr, setIsCurrLocationErr] = useState(false);
     const [deadlineErrMsg, setDeadlineErrMsg] = useState({});
     const [isDeadlineErr, setIsDeadlineErr] = useState(false);
     const [taskNameErrMsg, setTaskNameErrMsg] = useState({});
@@ -107,6 +109,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         const isCodeValid = fullNameValidator(code, setIsCodeErr, setCodeErrMsg);
         const isSenderValid = fullNameValidator(sender, setIsSenderErr, setSenderErrMsg);
         const isIssuedDateValid = dateValidator(issuedDate, setIsIssuedDateErr, setIssuedDateErrMsg);
+        const isCurrLocationValid = dropListValidator(currentLocation, setIsCurrLocationErr, setCurrLocationErrMsg);
         const isLeaderValid = dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg);
         const isAssignToValid = dropListValidator(assignTo, setIsAssignToErr, setAssignToErrMsg);
         const isTaskNameValidator = fullNameValidator(taskName, setIsTaskNameErr, setTaskNameErrMsg);
@@ -117,7 +120,8 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
             !isSendDateValid ||
             !isCodeValid ||
             !isSenderValid ||
-            !isIssuedDateValid
+            !isIssuedDateValid ||
+            !isCurrLocationValid
         )
             return;
         if (isAssigned) {
@@ -380,11 +384,16 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                         <div className="flex-1">
                             <label className="font-bold">Ví trí hiện tại:</label>
                             <DropList
+                                isErr={isCurrLocationErr}
                                 selectedValue={currentLocation}
                                 options={departments}
                                 setValue={setCurrentLocation}
                                 setId={() => undefined}
+                                onBlur={() =>
+                                    dropListValidator(currentLocation, setIsCurrLocationErr, setCurrLocationErrMsg)
+                                }
                             />
+                            <p className="text-red-600 text-[1.3rem]">{currLocationErrMsg.currLocation}</p>
                         </div>
                     </div>
                     <div className="mt-7">

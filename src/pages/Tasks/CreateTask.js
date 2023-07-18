@@ -116,7 +116,7 @@ const CreateTask = ({ title, socket }) => {
             res = await taskServices.createTask(data);
         }
         if (res.code === 200) {
-            await documentServices.updateDocument(getDocId(document), { assignTo: assignTo });
+            getDocId(document) && (await documentServices.updateDocument(getDocId(document), { assignTo: assignTo }));
             if (attachFiles) {
                 const data = new FormData();
                 for (let i = 0; i < attachFiles.length; i++) {

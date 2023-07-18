@@ -7,7 +7,7 @@ import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
 import * as departmentServices from '~/services/departmentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { fullNameValidator, emailValidator } from '~/utils/formValidation';
+import { fullNameValidator, emailValidator, dropListValidator } from '~/utils/formValidation';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
@@ -25,9 +25,11 @@ const CreateUser = ({ title, socket }) => {
     const [department, setDepartment] = useState('');
     // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
-    const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
+    const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isEmailErr, setIsEmailErr] = useState(false);
+    const [departmentErrMsg, setDepartmentErrMsg] = useState({});
+    const [isDepartmentErr, setIsDepartmentErr] = useState(false);
 
     const allTasks = useFetchTasks({ isSave });
     const navigate = useNavigate();
@@ -39,7 +41,8 @@ const CreateUser = ({ title, socket }) => {
         e.preventDefault();
         const isfullNameValid = fullNameValidator(fullName, setIsFullNameErr, setFullNameErrMsg);
         const isEmailValid = emailValidator(email, setIsEmailErr, setEmailErrMsg);
-        if (!isEmailValid || !isfullNameValid) return;
+        const isDepartmentValid = dropListValidator(department, setIsDepartmentErr, setDepartmentErrMsg);
+        if (!isEmailValid || !isfullNameValid || !isDepartmentValid) return;
         setLoading(true);
         const data = {
             fullName: fullName,
@@ -168,11 +171,14 @@ const CreateUser = ({ title, socket }) => {
                     <div className="mt-7">
                         <label className="font-bold">Phòng ban:</label>
                         <DropList
+                            isErr={isDepartmentErr}
                             selectedValue={department}
                             options={departments}
                             setValue={setDepartment}
                             setId={() => undefined}
+                            onBlur={() => dropListValidator(department, setIsDepartmentErr, setDepartmentErrMsg)}
                         />
+                        <p className="text-red-600 text-[1.3rem]">{departmentErrMsg.department}</p>
                     </div>
                     <div className="block md:flex items-center gap-5 mt-12">
                         <button

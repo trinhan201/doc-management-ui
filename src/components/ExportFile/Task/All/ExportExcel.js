@@ -32,57 +32,50 @@ const ExportExcel = (props) => {
     };
 
     const handleExport = () => {
-        const title = [{ A: 'Báo cáo thống kê hệ thống năm 2023' }, {}];
+        const title = [{ A: 'Báo cáo thống kê công việc năm 2023' }, {}];
 
         const subTitle = [
             {
-                A: `Tổng hợp dữ liệu hệ thống: ${`Từ ngày ${formatVNDate(props.fFrom) || '?'} đến ngày ${
-                    formatVNDate(props.fTo) || '?'
-                }`}`,
+                A: `Tổng hợp công việc: ${props.fProgress || '?'} - ${props.fType || '?'} - ${props.fStatus || '?'} - ${
+                    props.fLevel || '?'
+                } - ${`Từ ngày ${formatVNDate(props.fFrom) || '?'} đến ngày ${formatVNDate(props.fTo) || '?'}`}`,
             },
             {},
         ];
 
+        const total = [{ A: '' }, { A: `Tổng số ${props.allTasks?.length} công việc` }];
+
         let table = [
             {
                 A: 'STT',
-                B: 'Tên phòng ban',
-                C: 'Tổng số người dùng',
-                D: 'Tổng số văn bản đến',
-                E: 'Tổng số văn bản đi',
-                F: 'Tổng số công việc',
-                G: 'Tổng số bình luận',
-                H: 'Tổng số thông báo',
+                B: 'Tên công việc',
+                C: 'Loại công việc',
+                D: 'Mức độ',
+                E: 'Tiến trình',
+                F: 'Trạng thái',
+                G: 'Đến hạn',
             },
         ];
 
-        props.filterData.forEach((row, index) => {
+        props.allTasks.forEach((row, index) => {
             table.push({
                 A: index + 1,
-                B: row.department,
-                C: row.allUsers,
-                D: row.allDocumentIns,
-                E: row.allDocumentOuts,
-                F: row.allTasks,
-                G: row.allComments,
-                H: row.allNotifications,
+                B: row.taskName,
+                C: row.type,
+                D: row.level,
+                E: row.progress,
+                F: row.status,
+                G: new Date(row.dueDate).toLocaleDateString(),
             });
         });
 
-        const finalData = [...title, ...subTitle, ...table];
+        const finalData = [...title, ...subTitle, ...table, ...total];
 
         const wb = XLSX.utils.book_new();
 
         const sheet = XLSX.utils.json_to_sheet(finalData, {
             skipHeader: true,
         });
-
-        const merge = [
-            { s: { r: 5, c: 7 }, e: { r: props?.filterData?.length + 4, c: 7 } },
-            { s: { r: 5, c: 6 }, e: { r: props?.filterData?.length + 4, c: 6 } },
-            { s: { r: 5, c: 5 }, e: { r: props?.filterData?.length + 4, c: 5 } },
-        ];
-        sheet['!merges'] = merge;
 
         XLSX.utils.book_append_sheet(wb, sheet, 'report');
 
@@ -92,10 +85,12 @@ const ExportExcel = (props) => {
         finalData.forEach((data, index) => (data['A'] === 'STT' ? headerIndexes.push(index) : null));
 
         const dataInfo = {
-            titleRange: 'A1:H2',
-            subTitleRange: 'A3:H3',
-            tbodyRange: `A5:H${finalData.length}`,
-            theadRange: headerIndexes?.length >= 1 ? `A${headerIndexes[0] + 1}:H${headerIndexes[0] + 1}` : null,
+            titleRange: 'A1:G2',
+            subTitleRange: 'A3:G3',
+            tbodyRange: `A4:G${finalData.length}`,
+            tbodyRangeBorder: `A5:G${finalData.length - 2}`,
+            theadRange: headerIndexes?.length >= 1 ? `A${headerIndexes[0] + 1}:G${headerIndexes[0] + 1}` : null,
+            totalRange: `A${finalData.length}:G${finalData.length}`,
         };
 
         return addStyle(workbookBlob, dataInfo);
@@ -114,12 +109,11 @@ const ExportExcel = (props) => {
 
                 sheet.column('A').width(5).style({ horizontalAlignment: 'center', bold: true });
                 sheet.column('B').width(15);
-                sheet.column('C').width(20).style({ horizontalAlignment: 'center' });
-                sheet.column('D').width(25).style({ horizontalAlignment: 'center' });
-                sheet.column('E').width(20).style({ horizontalAlignment: 'center' });
-                sheet.column('F').width(20).style({ horizontalAlignment: 'center' });
+                sheet.column('C').width(20);
+                sheet.column('D').width(25);
+                sheet.column('E').width(20);
+                sheet.column('F').width(20);
                 sheet.column('G').width(20).style({ horizontalAlignment: 'center' });
-                sheet.column('H').width(20).style({ horizontalAlignment: 'center' });
 
                 sheet.range(dataInfo.titleRange).merged(true).style({
                     bold: true,
@@ -136,9 +130,20 @@ const ExportExcel = (props) => {
                     border: false,
                 });
 
+                sheet.range(dataInfo.totalRange).merged(true).style({
+                    bold: true,
+                    horizontalAlignment: 'right',
+                    verticalAlignment: 'center',
+                });
+
                 if (dataInfo.tbodyRange) {
                     sheet.range(dataInfo.tbodyRange).style({
                         wrapText: true,
+                    });
+                }
+
+                if (dataInfo.tbodyRangeBorder) {
+                    sheet.range(dataInfo.tbodyRangeBorder).style({
                         border: 'thin',
                     });
                 }

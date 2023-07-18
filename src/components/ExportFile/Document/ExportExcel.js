@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import * as XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const ExportExcel = (props) => {
     const workbook2blob = (workbook) => {
@@ -36,7 +37,9 @@ const ExportExcel = (props) => {
             {
                 A: `Tổng hợp văn bản theo Sổ: ${props.flag || '?'} - ${props.fType || '?'} - ${
                     props.fStatus || '?'
-                } - ${props.fLevel || '?'} - ${`Từ ngày ${props.fFrom || '?'} đến ngày ${props.fTo || '?'}`}`,
+                } - ${props.fLevel || '?'} - ${`Từ ngày ${formatVNDate(props.fFrom) || '?'} đến ngày ${
+                    formatVNDate(props.fTo) || '?'
+                }`}`,
             },
             {},
         ];

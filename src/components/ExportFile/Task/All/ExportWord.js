@@ -12,6 +12,7 @@ import {
     TextRun,
 } from 'docx';
 import { saveAs } from 'file-saver';
+import { formatVNDate } from '~/utils/formatDateTime';
 
 const ExportWord = (props) => {
     const dataHeader = ['STT', 'Tên công việc', 'Loại công việc', 'Mức độ', 'Tiến trình', 'Trạng thái', 'Đến hạn'];
@@ -40,9 +41,9 @@ const ExportWord = (props) => {
                                 new TextRun({
                                     text: `Tổng hợp công việc: ${props.progress || '?'} - ${props.fType || '?'} - ${
                                         props.fStatus || '?'
-                                    } - ${props.fLevel || '?'} - ${`Từ ngày ${props.fFrom || '?'} đến ngày ${
-                                        props.fTo || '?'
-                                    }`}`,
+                                    } - ${props.fLevel || '?'} - ${`Từ ngày ${
+                                        formatVNDate(props.fFrom) || '?'
+                                    } đến ngày ${formatVNDate(props.fTo) || '?'}`}`,
                                     font: 'Arial',
                                 }),
                             ],
