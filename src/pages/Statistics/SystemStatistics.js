@@ -3,14 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
-import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchDepartments, useFetchComments } from '~/hooks';
+import { useFetchTasks, useFetchDepartments, useFetchComments, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const SystemStatistics = ({ socket }) => {
@@ -19,8 +18,6 @@ const SystemStatistics = ({ socket }) => {
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     // List data function
-    const [allDocumentIns, setAllDocumentIns] = useState([]);
-    const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [allNotifications, setAllNotifications] = useState([]);
     const [filterData, setFilterData] = useState([]);
@@ -31,6 +28,8 @@ const SystemStatistics = ({ socket }) => {
     const allTasks = useFetchTasks({ isSave });
     const allDepartments = useFetchDepartments({ isActived: undefined });
     const allComments = useFetchComments({ qtyCmt: true });
+    const allDocumentIns = useFetchDocuments().allDocumentIns;
+    const allDocumentOuts = useFetchDocuments().allDocumentOuts;
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     let timer;
 
@@ -106,27 +105,11 @@ const SystemStatistics = ({ socket }) => {
         fetchApi();
     }, []);
 
-    console.log(allComments);
-
     // Get all notification from server
     useEffect(() => {
         const fetchApi = async () => {
             const res = await notificationServices.getAllNotification();
             setAllNotifications(res.all);
-        };
-        fetchApi();
-    }, []);
-
-    // Get all documents from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllDocumentIns(res.allDocumentIn);
-                setAllDocumentOuts(res.allDocumentOut);
-            } else {
-                console.log(res.message);
-            }
         };
         fetchApi();
     }, []);

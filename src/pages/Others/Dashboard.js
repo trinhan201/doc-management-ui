@@ -4,18 +4,11 @@ import { faBook, faBookmark, faListCheck, faUsers } from '@fortawesome/free-soli
 import Select from 'react-select';
 import BarChart from '~/components/Chart/BarChart';
 import PieChart from '~/components/Chart/PieChart';
-import * as userServices from '~/services/userServices';
-import * as documentServices from '~/services/documentServices';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchPublicUserInfo, useFetchDocuments } from '~/hooks';
 
 const Dashboard = ({ socket }) => {
     const [isSave, setIsSave] = useState(false);
-    // List data state
-    const [allUsers, setAllUsers] = useState([]);
-    const [allDocuments, setAllDocuments] = useState([]);
-    const [allDocumentIns, setAllDocumentIns] = useState([]);
-    const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     // Chart option state
     const [barOption, setBarOption] = useState({
         label: 'Theo loại',
@@ -27,6 +20,10 @@ const Dashboard = ({ socket }) => {
     });
 
     const allTasks = useFetchTasks({ isSave });
+    const allUsers = useFetchPublicUserInfo();
+    const allDocuments = useFetchDocuments().allDocuments;
+    const allDocumentIns = useFetchDocuments().allDocumentIns;
+    const allDocumentOuts = useFetchDocuments().allDocumentOuts;
     // Filter options in bar chart
     const barOptions = [
         {
@@ -69,34 +66,6 @@ const Dashboard = ({ socket }) => {
             value: 'level',
         },
     ];
-
-    // Get all users from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getPublicInfo();
-            if (res.code === 200) {
-                setAllUsers(res.data);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, []);
-
-    // Get all documents from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, '', '', '', '', '', '', '', '');
-            if (res.code === 200) {
-                setAllDocuments(res.allDocuments);
-                setAllDocumentIns(res.allDocumentIn);
-                setAllDocumentOuts(res.allDocumentOut);
-            } else {
-                console.log(res.message);
-            }
-        };
-        fetchApi();
-    }, []);
 
     // Check tasks deadline function
     useEffect(() => {

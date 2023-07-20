@@ -14,7 +14,6 @@ import {
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
-import * as userServices from '~/services/userServices';
 import TaskCard from '~/components/Card/TaskCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
@@ -22,12 +21,12 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 import { errorNotify } from '~/components/ToastMessage';
 import { formatVNDateTime } from '~/utils/formatDateTime';
+import { useFetchPublicUserInfo } from '~/hooks';
 
 const Task = ({ socket }) => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
-    const [allUsers, setAllUsers] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const [taskLists, setTaskLists] = useState([]);
     // Pagination state
@@ -47,6 +46,7 @@ const Task = ({ socket }) => {
     const [fLevel, setFLevel] = useState('');
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
+    const allUsers = useFetchPublicUserInfo();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
@@ -155,15 +155,6 @@ const Task = ({ socket }) => {
             return false;
         }
     };
-
-    // Just get public info of user
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getPublicInfo();
-            setAllUsers(res.data);
-        };
-        fetchApi();
-    }, []);
 
     // Get all tasks from server
     useEffect(() => {

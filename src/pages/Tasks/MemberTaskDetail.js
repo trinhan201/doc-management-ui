@@ -5,14 +5,12 @@ import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import CommentItem from '~/components/CommentItem';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
-import * as documentServices from '~/services/documentServices';
-import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
 import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchComments, useFetchTasks } from '~/hooks';
+import { useFetchComments, useFetchPublicUserInfo, useFetchTasks, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -31,14 +29,13 @@ const MemberTaskDetail = ({ socket }) => {
     const [displayFile, setDisplayFile] = useState([]);
     const [finalList, setFinalList] = useState([]);
     const [submitStatus, setSubmitStatus] = useState('');
-    // List data state
-    const [allUsers, setAllUsers] = useState([]);
-    const [allDocuments, setAllDocuments] = useState([]);
 
     const navigate = useNavigate();
     const { id } = useParams();
     const allTasks = useFetchTasks({ isSave });
+    const allUsers = useFetchPublicUserInfo();
     const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
+    const allDocuments = useFetchDocuments().inProgressDocs;
     const ref = useRef();
     const userId = JSON.parse(localStorage.getItem('userId'));
 
@@ -226,25 +223,6 @@ const MemberTaskDetail = ({ socket }) => {
         };
         fetchApi();
     }, [commentId]);
-
-    // Get public info of user
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getPublicInfo();
-            setAllUsers(res.data);
-        };
-        fetchApi();
-    }, []);
-
-    // Get all documents from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '');
-            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
-            setAllDocuments(documentArray);
-        };
-        fetchApi();
-    }, []);
 
     // Get task data from server
     useEffect(() => {

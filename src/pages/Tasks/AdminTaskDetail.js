@@ -5,14 +5,12 @@ import { faXmark, faPlusCircle, faCheckCircle, faCircleXmark } from '@fortawesom
 import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
 import * as taskServices from '~/services/taskServices';
-import * as userServices from '~/services/userServices';
-import * as documentServices from '~/services/documentServices';
 import * as notificationServices from '~/services/notificationServices';
 import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchComments } from '~/hooks';
+import { useFetchTasks, useFetchComments, useFetchPublicUserInfo, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -25,9 +23,6 @@ const AdminTaskDetail = ({ socket }) => {
     const [tab, setTab] = useState('detail');
     const [task, setTask] = useState({});
     const [attachFiles, setAttachFiles] = useState([]);
-    // List data state
-    const [allDocuments, setAllDocuments] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
     // Progress bar state
     const [percent, setPercent] = useState('');
     const [progressStyle, setProgressStyle] = useState('');
@@ -35,8 +30,10 @@ const AdminTaskDetail = ({ socket }) => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
     const navigate = useNavigate();
+    const allUsers = useFetchPublicUserInfo();
     const allTasks = useFetchTasks({ isSave });
     const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
+    const allDocuments = useFetchDocuments().inProgressDocs;
 
     // Update tab
     const onUpdateTab = (value) => {
@@ -148,25 +145,6 @@ const AdminTaskDetail = ({ socket }) => {
         };
         fetchApi();
     }, [commentId]);
-
-    // Get all in progess documents
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '');
-            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
-            setAllDocuments(documentArray);
-        };
-        fetchApi();
-    }, []);
-
-    // Get public info of user
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getPublicInfo();
-            setAllUsers(res.data);
-        };
-        fetchApi();
-    }, []);
 
     // Update progress bar
     useEffect(() => {

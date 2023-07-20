@@ -13,7 +13,7 @@ import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
 import { disabledPastDate, fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchTasks } from '~/hooks';
+import { useFetchDocuments, useFetchTasks } from '~/hooks';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
@@ -24,8 +24,6 @@ const CreateTask = ({ title, socket }) => {
     const [prevAssignTo, setPrevAssignTo] = useState(JSON.parse(localStorage.getItem('prevAssignTo')) || []);
     //List data state
     const [allUsers, setAllUsers] = useState([]);
-    const [documents, setDocuments] = useState([]);
-    const [allDocuments, setAllDocuments] = useState([]);
     // Input state
     const [fullName, setFullName] = useState('');
     const [deadline, setDeadline] = useState('');
@@ -50,6 +48,8 @@ const CreateTask = ({ title, socket }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
+    const documents = useFetchDocuments().inProgressDocNames;
+    const allDocuments = useFetchDocuments().inProgressDocs;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
 
@@ -223,20 +223,6 @@ const CreateTask = ({ title, socket }) => {
     useEffect(() => {
         const uid = JSON.parse(localStorage.getItem('userId'));
         setUserId(uid);
-    }, []);
-
-    // Get all in progress document name from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '');
-            const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
-            setAllDocuments(documentArray);
-            const documentNameArray = res.allDocumentIn
-                ?.filter((item) => item.status === 'Đang xử lý')
-                .map((item) => item.documentName);
-            setDocuments(documentNameArray);
-        };
-        fetchApi();
     }, []);
 
     // Check tasks deadline function
