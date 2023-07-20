@@ -5,12 +5,11 @@ import Select from 'react-select';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
-import * as documentTypeServices from '~/services/documentTypeServices';
 import ExportExcel from '~/components/ExportFile/Document/ExportExcel';
 import ExportWord from '~/components/ExportFile/Document/ExportWord';
 import { errorNotify, successNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchDocumentTypes } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const DocumentStatistics = ({ socket }) => {
@@ -19,7 +18,6 @@ const DocumentStatistics = ({ socket }) => {
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     const [allDocuments, setAllDocuments] = useState([]);
-    const [documentTypes, setDocumentTypes] = useState([]);
     // Filter statistic state
     const [flag, setFlag] = useState();
     const [fType, setFType] = useState('');
@@ -29,6 +27,7 @@ const DocumentStatistics = ({ socket }) => {
     const [fTo, setFTo] = useState('');
 
     const allTasks = useFetchTasks({ isSave });
+    const documentTypes = useFetchDocumentTypes();
     // Filter statistic options
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
@@ -79,18 +78,6 @@ const DocumentStatistics = ({ socket }) => {
             errorNotify('Hãy chọn ít nhất 1 trường');
         }
     };
-
-    // Get all document types from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
-            const documentTypeArray = res.allDocumentTypes
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.documentTypeName);
-            setDocumentTypes(documentTypeArray);
-        };
-        fetchApi();
-    }, []);
 
     // Check tasks deadline function
     useEffect(() => {

@@ -15,10 +15,8 @@ import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
-import * as departmentServices from '~/services/departmentServices';
-import * as documentTypeServices from '~/services/documentTypeServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchTasks } from '~/hooks';
+import { useFetchDepartments, useFetchDocumentTypes, useFetchTasks } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
@@ -29,8 +27,6 @@ const DocumentIn = ({ socket }) => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
-    const [documentTypes, setDocumentTypes] = useState([]);
-    const [departments, setDepartments] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentLists, setDocumentLists] = useState([]);
     // Change status state
@@ -70,6 +66,8 @@ const DocumentIn = ({ socket }) => {
     ];
     const totalPage = Math.ceil(allDocuments?.length / limit);
     const allTasks = useFetchTasks({ isSave });
+    const departments = useFetchDepartments({ isActived: false });
+    const documentTypes = useFetchDocumentTypes();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     // Go to the next page
@@ -137,30 +135,6 @@ const DocumentIn = ({ socket }) => {
             return false;
         }
     };
-
-    // Get all document types from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
-            const documentTypeArray = res.allDocumentTypes
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.documentTypeName);
-            setDocumentTypes(documentTypeArray);
-        };
-        fetchApi();
-    }, []);
-
-    // Get all departments from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.departmentName);
-            setDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
 
     // Get all documents from server
     useEffect(() => {

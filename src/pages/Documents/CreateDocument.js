@@ -7,8 +7,6 @@ import Select from 'react-select';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import FileInput from '~/components/FileInput';
-import * as departmentServices from '~/services/departmentServices';
-import * as documentTypeServices from '~/services/documentTypeServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
 import * as taskServices from '~/services/taskServices';
@@ -16,7 +14,7 @@ import * as notificationServices from '~/services/notificationServices';
 import { fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchDepartments, useFetchDocumentTypes } from '~/hooks';
 import Loading from '~/components/Loading';
 import SwitchButton from '~/components/SwitchButton';
 import { disabledPastDate } from '~/utils/formValidation';
@@ -39,8 +37,6 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [currentLocation, setCurrentLocation] = useState('');
     const [attachFiles, setAttachFiles] = useState([]);
     const [isHaveTask, setIsHaveTask] = useState(true);
-    const [departments, setDepartments] = useState([]);
-    const [documentTypes, setDocumentTypes] = useState([]);
     // Task input state
     const [leader, setLeader] = useState();
     const [assignTo, setAssignTo] = useState([]);
@@ -75,6 +71,8 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const allTasks = useFetchTasks({ isSave });
+    const departments = useFetchDepartments({ isActived: false });
+    const documentTypes = useFetchDocumentTypes();
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const taskTypeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
 
@@ -245,30 +243,6 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         };
         fetchApi();
     }, [id]);
-
-    // Get all departments from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.departmentName);
-            setDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
-
-    // Get all document types from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await documentTypeServices.getAllDocumentType(1, 1, '');
-            const documentTypeArray = res.allDocumentTypes
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.documentTypeName);
-            setDocumentTypes(documentTypeArray);
-        };
-        fetchApi();
-    }, []);
 
     // Check tasks deadline function
     useEffect(() => {

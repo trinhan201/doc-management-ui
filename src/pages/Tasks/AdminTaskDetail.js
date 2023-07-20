@@ -12,7 +12,7 @@ import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchComments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -20,7 +20,6 @@ import { formatVNDateTime } from '~/utils/formatDateTime';
 const AdminTaskDetail = ({ socket }) => {
     const [commentId, setCommentId] = useState('');
     const [comment, setComment] = useState('');
-    const [allComments, setAllComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     const [tab, setTab] = useState('detail');
@@ -37,6 +36,7 @@ const AdminTaskDetail = ({ socket }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
+    const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
 
     // Update tab
     const onUpdateTab = (value) => {
@@ -148,32 +148,6 @@ const AdminTaskDetail = ({ socket }) => {
         };
         fetchApi();
     }, [commentId]);
-
-    // Get all comments
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await commentServices.getAllComment();
-            if (res.code === 200) {
-                const filterComments = res?.data
-                    ?.filter((item) => item.taskId === id)
-                    .map((comment) => {
-                        const user = allUsers?.find((user) => user._id === comment.userId);
-                        return {
-                            userName: user?.fullName,
-                            avatar: user?.avatar,
-                            commentId: comment?._id,
-                            userId: comment?.userId,
-                            content: comment?.content,
-                            date: comment?.createdAt,
-                        };
-                    });
-                setAllComments(filterComments);
-            } else {
-                console.log(res);
-            }
-        };
-        fetchApi();
-    }, [id, allUsers, isSave]);
 
     // Get all in progess documents
     useEffect(() => {

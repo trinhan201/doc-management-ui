@@ -3,16 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
-import * as departmentServices from '~/services/departmentServices';
 import * as documentServices from '~/services/documentServices';
 import * as userServices from '~/services/userServices';
-import * as commentServices from '~/services/commentServices';
 import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchDepartments, useFetchComments } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const SystemStatistics = ({ socket }) => {
@@ -24,8 +22,6 @@ const SystemStatistics = ({ socket }) => {
     const [allDocumentIns, setAllDocumentIns] = useState([]);
     const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
-    const [allDepartments, setAllDepartments] = useState([]);
-    const [allComments, setAllComments] = useState([]);
     const [allNotifications, setAllNotifications] = useState([]);
     const [filterData, setFilterData] = useState([]);
     // Filter statistic state
@@ -33,6 +29,8 @@ const SystemStatistics = ({ socket }) => {
     const [fTo, setFTo] = useState('');
 
     const allTasks = useFetchTasks({ isSave });
+    const allDepartments = useFetchDepartments({ isActived: undefined });
+    const allComments = useFetchComments({ qtyCmt: true });
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     let timer;
 
@@ -99,16 +97,6 @@ const SystemStatistics = ({ socket }) => {
         return () => clearTimeout(timer);
     }, [timer, loading]);
 
-    // Get all departments from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments?.map((item) => item.departmentName);
-            setAllDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
-
     // Get all users from server
     useEffect(() => {
         const fetchApi = async () => {
@@ -118,14 +106,7 @@ const SystemStatistics = ({ socket }) => {
         fetchApi();
     }, []);
 
-    // Get all comments from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await commentServices.getAllComment();
-            setAllComments(res.data);
-        };
-        fetchApi();
-    }, []);
+    console.log(allComments);
 
     // Get all notification from server
     useEffect(() => {
