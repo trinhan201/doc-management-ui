@@ -10,7 +10,7 @@ import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchComments, useFetchPublicUserInfo, useFetchDocuments } from '~/hooks';
+import { useFetchTasks, useFetchComments, useFetchUsers, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -30,7 +30,7 @@ const AdminTaskDetail = ({ socket }) => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     const { id } = useParams();
     const navigate = useNavigate();
-    const allUsers = useFetchPublicUserInfo();
+    const allUsers = useFetchUsers().publicUsers;
     const allTasks = useFetchTasks({ isSave });
     const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
     const allDocuments = useFetchDocuments().inProgressDocs;

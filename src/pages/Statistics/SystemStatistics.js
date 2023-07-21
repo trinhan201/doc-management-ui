@@ -3,13 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
-import * as userServices from '~/services/userServices';
+// import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchDepartments, useFetchComments, useFetchDocuments } from '~/hooks';
+import { useFetchTasks, useFetchDepartments, useFetchComments, useFetchDocuments, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const SystemStatistics = ({ socket }) => {
@@ -18,7 +18,7 @@ const SystemStatistics = ({ socket }) => {
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     // List data function
-    const [allUsers, setAllUsers] = useState([]);
+    // const [allUsers, setAllUsers] = useState([]);
     const [allNotifications, setAllNotifications] = useState([]);
     const [filterData, setFilterData] = useState([]);
     // Filter statistic state
@@ -26,6 +26,7 @@ const SystemStatistics = ({ socket }) => {
     const [fTo, setFTo] = useState('');
 
     const allTasks = useFetchTasks({ isSave });
+    const allUsers = useFetchUsers().publicUsers;
     const allDepartments = useFetchDepartments({ isActived: undefined });
     const allComments = useFetchComments({ qtyCmt: true });
     const allDocumentIns = useFetchDocuments().allDocumentIns;
@@ -96,14 +97,14 @@ const SystemStatistics = ({ socket }) => {
         return () => clearTimeout(timer);
     }, [timer, loading]);
 
-    // Get all users from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            setAllUsers(res.allUsers);
-        };
-        fetchApi();
-    }, []);
+    // // Get all users from server
+    // useEffect(() => {
+    //     const fetchApi = async () => {
+    //         const res = await userServices.getAllUser(1, 1, '');
+    //         setAllUsers(res.allUsers);
+    //     };
+    //     fetchApi();
+    // }, []);
 
     // Get all notification from server
     useEffect(() => {

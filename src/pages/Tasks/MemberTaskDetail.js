@@ -10,7 +10,7 @@ import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchComments, useFetchPublicUserInfo, useFetchTasks, useFetchDocuments } from '~/hooks';
+import { useFetchComments, useFetchUsers, useFetchTasks, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -33,7 +33,7 @@ const MemberTaskDetail = ({ socket }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const allTasks = useFetchTasks({ isSave });
-    const allUsers = useFetchPublicUserInfo();
+    const allUsers = useFetchUsers().publicUsers;
     const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
     const allDocuments = useFetchDocuments().inProgressDocs;
     const ref = useRef();

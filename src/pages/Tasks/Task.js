@@ -21,7 +21,7 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 import { errorNotify } from '~/components/ToastMessage';
 import { formatVNDateTime } from '~/utils/formatDateTime';
-import { useFetchPublicUserInfo } from '~/hooks';
+import { useFetchUsers } from '~/hooks';
 
 const Task = ({ socket }) => {
     const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ const Task = ({ socket }) => {
     const [fLevel, setFLevel] = useState('');
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
-    const allUsers = useFetchPublicUserInfo();
+    const allUsers = useFetchUsers().publicUsers;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
     const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];

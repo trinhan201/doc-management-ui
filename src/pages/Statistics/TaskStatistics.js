@@ -4,14 +4,13 @@ import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import * as taskServices from '~/services/taskServices';
-import * as userServices from '~/services/userServices';
 import ExportExcelAll from '~/components/ExportFile/Task/All/ExportExcel';
 import ExportWordAll from '~/components/ExportFile/Task/All/ExportWord';
 import ExportExcelUser from '~/components/ExportFile/Task/User/ExportExcel';
 import ExportWordUser from '~/components/ExportFile/Task/User/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const TaskStatistics = ({ socket }) => {
@@ -21,7 +20,6 @@ const TaskStatistics = ({ socket }) => {
     const [preview, setPreview] = useState(false);
     const [isSave, setIsSave] = useState(false);
     const [statisticTasks, setStatisticTasks] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
     const [statisticUserTasks, setStatisticUserTasks] = useState([]);
     // Filter statistic state
     const [fType, setFType] = useState('');
@@ -32,6 +30,7 @@ const TaskStatistics = ({ socket }) => {
     const [fTo, setFTo] = useState('');
 
     const allTasks = useFetchTasks({ isSave });
+    const allUsers = useFetchUsers().privateUsers;
     // Filter statistic options
     const tabOptions = ['Tổng hợp', 'Thành viên'];
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
@@ -156,16 +155,6 @@ const TaskStatistics = ({ socket }) => {
     useEffect(() => {
         return () => clearTimeout(timer);
     }, [timer, loading]);
-
-    // Get all users with role Member from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
-            setAllUsers(filterArray);
-        };
-        fetchApi();
-    }, []);
 
     // Check tasks deadline function
     useEffect(() => {

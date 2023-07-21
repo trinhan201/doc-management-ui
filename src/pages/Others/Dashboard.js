@@ -5,7 +5,7 @@ import Select from 'react-select';
 import BarChart from '~/components/Chart/BarChart';
 import PieChart from '~/components/Chart/PieChart';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchPublicUserInfo, useFetchDocuments } from '~/hooks';
+import { useFetchTasks, useFetchUsers, useFetchDocuments } from '~/hooks';
 
 const Dashboard = ({ socket }) => {
     const [isSave, setIsSave] = useState(false);
@@ -20,7 +20,7 @@ const Dashboard = ({ socket }) => {
     });
 
     const allTasks = useFetchTasks({ isSave });
-    const allUsers = useFetchPublicUserInfo();
+    const allUsers = useFetchUsers().publicUsers;
     const allDocuments = useFetchDocuments().allDocuments;
     const allDocumentIns = useFetchDocuments().allDocumentIns;
     const allDocumentOuts = useFetchDocuments().allDocumentOuts;

@@ -8,19 +8,17 @@ import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import FileInput from '~/components/FileInput';
 import * as documentServices from '~/services/documentServices';
-import * as userServices from '~/services/userServices';
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 import { fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchDepartments, useFetchDocumentTypes } from '~/hooks';
+import { useFetchTasks, useFetchDepartments, useFetchDocumentTypes, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 import SwitchButton from '~/components/SwitchButton';
 import { disabledPastDate } from '~/utils/formValidation';
 
 const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
-    const [allUsers, setAllUsers] = useState([]);
     const [isAssigned, setAssigned] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
@@ -73,6 +71,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const allTasks = useFetchTasks({ isSave });
     const departments = useFetchDepartments({ isActived: false });
     const documentTypes = useFetchDocumentTypes();
+    const allUsers = useFetchUsers().privateUsers;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const taskTypeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
 
@@ -213,16 +212,6 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
             errorNotify(res);
         }
     };
-
-    // Get all users with role Member from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
-            setAllUsers(filterArray);
-        };
-        fetchApi();
-    }, []);
 
     // Get available document data when edit document
     useEffect(() => {

@@ -5,17 +5,15 @@ import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
-import * as departmentServices from '~/services/departmentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { fullNameValidator, emailValidator, dropListValidator } from '~/utils/formValidation';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
+import { useFetchTasks, useFetchDepartments } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const CreateUser = ({ title, socket }) => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
-    const [departments, setDepartments] = useState([]);
     // Input state
     const [fullName, setFullName] = useState('');
     const [date, setDate] = useState('');
@@ -32,6 +30,7 @@ const CreateUser = ({ title, socket }) => {
     const [isDepartmentErr, setIsDepartmentErr] = useState(false);
 
     const allTasks = useFetchTasks({ isSave });
+    const departments = useFetchDepartments({ isActived: false });
     const navigate = useNavigate();
     const { id } = useParams();
     const genderList = ['Nam', 'Nữ'];
@@ -82,18 +81,6 @@ const CreateUser = ({ title, socket }) => {
         };
         fetchApi();
     }, [id]);
-
-    // Get all active departments from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await departmentServices.getAllDepartment(1, 1, '');
-            const departmentArray = res.allDepartments
-                ?.filter((item) => item.status !== false)
-                .map((item) => item.departmentName);
-            setDepartments(departmentArray);
-        };
-        fetchApi();
-    }, []);
 
     // Check tasks deadline function
     useEffect(() => {

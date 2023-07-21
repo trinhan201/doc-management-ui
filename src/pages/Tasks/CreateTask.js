@@ -9,11 +9,10 @@ import InputField from '~/components/InputField';
 import FileInput from '~/components/FileInput';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
-import * as userServices from '~/services/userServices';
 import * as notificationServices from '~/services/notificationServices';
 import { disabledPastDate, fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchDocuments, useFetchTasks } from '~/hooks';
+import { useFetchDocuments, useFetchTasks, useFetchUsers } from '~/hooks';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
@@ -22,8 +21,6 @@ const CreateTask = ({ title, socket }) => {
     const [userId, setUserId] = useState('');
     const [isSave, setIsSave] = useState(false);
     const [prevAssignTo, setPrevAssignTo] = useState(JSON.parse(localStorage.getItem('prevAssignTo')) || []);
-    //List data state
-    const [allUsers, setAllUsers] = useState([]);
     // Input state
     const [fullName, setFullName] = useState('');
     const [deadline, setDeadline] = useState('');
@@ -48,6 +45,7 @@ const CreateTask = ({ title, socket }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const allTasks = useFetchTasks({ isSave });
+    const allUsers = useFetchUsers().privateUsers;
     const documents = useFetchDocuments().inProgressDocNames;
     const allDocuments = useFetchDocuments().inProgressDocs;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
@@ -184,16 +182,6 @@ const CreateTask = ({ title, socket }) => {
             errorNotify(res);
         }
     };
-
-    // Get all users with role Member from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await userServices.getAllUser(1, 1, '');
-            const filterArray = res?.allUsers?.filter((item) => item.role === 'Member');
-            setAllUsers(filterArray);
-        };
-        fetchApi();
-    }, []);
 
     // Get available task data when edit task
     useEffect(() => {
