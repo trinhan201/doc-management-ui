@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import FormData from 'form-data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk, faXmark, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
@@ -10,6 +10,7 @@ import FileInput from '~/components/FileInput';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
+import * as taskTypeServices from '~/services/taskTypeServices';
 import { fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
@@ -19,6 +20,8 @@ import SwitchButton from '~/components/SwitchButton';
 import { disabledPastDate } from '~/utils/formValidation';
 
 const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
+    const [allTaskTypes, setAllTaskTypes] = useState([]);
+    const [addType, setAddType] = useState(false);
     const [isAssigned, setAssigned] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
@@ -27,6 +30,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [number, setNumber] = useState('');
     const [sendDate, setSendDate] = useState('');
     const [type, setType] = useState('');
+    const [newType, setNewType] = useState('');
     const [code, setCode] = useState('');
     const [sender, setSender] = useState('');
     const [issuedDate, setIssuedDate] = useState('');
@@ -73,7 +77,22 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const documentTypes = useFetchDocumentTypes();
     const allUsers = useFetchUsers().privateUsers;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
-    const taskTypeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
+
+    // Handle add new type
+    const handleAddNewType = async () => {
+        const data = {
+            taskType: newType,
+        };
+        const res = await taskTypeServices.createTaskType(data);
+        if (res.code === 200) {
+            setNewType('');
+            setAddType(false);
+            setIsSave((isSave) => !isSave);
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
+    };
 
     // Just get id of assigned user
     const getAssignToIds = (assignTo) => {
@@ -212,6 +231,20 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
             errorNotify(res);
         }
     };
+
+    //Get all task type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskTypeServices.getAllTaskType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.taskType);
+                setAllTaskTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, [isSave]);
 
     // Get available document data when edit document
     useEffect(() => {
@@ -402,12 +435,40 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                                 </div>
                                 <div className="flex-1">
                                     <label className="font-bold">Loại:</label>
-                                    <DropList
-                                        selectedValue={taskType}
-                                        options={taskTypeOptions}
-                                        setValue={setTaskType}
-                                        setId={() => undefined}
-                                    />
+                                    <div className="flex items-center gap-x-3">
+                                        {!addType ? (
+                                            <div className="flex-1">
+                                                <DropList
+                                                    selectedValue={taskType}
+                                                    options={allTaskTypes}
+                                                    setValue={setTaskType}
+                                                    setId={() => undefined}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="flex-1">
+                                                <InputField
+                                                    id="type"
+                                                    className="default"
+                                                    placeholder="Loại công việc"
+                                                    value={newType}
+                                                    setValue={setNewType}
+                                                />
+                                            </div>
+                                        )}
+                                        {!newType ? (
+                                            <div
+                                                onClick={() => setAddType(!addType)}
+                                                className="text-[2rem] cursor-pointer"
+                                            >
+                                                <FontAwesomeIcon icon={addType ? faXmark : faPlusCircle} />
+                                            </div>
+                                        ) : (
+                                            <div onClick={handleAddNewType} className="text-[2rem] cursor-pointer">
+                                                <FontAwesomeIcon icon={faPlusCircle} />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex flex-col md:flex-row gap-6 mt-7">

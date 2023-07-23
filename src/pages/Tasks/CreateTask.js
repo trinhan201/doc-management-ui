@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faFloppyDisk, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import FormData from 'form-data';
 import Select from 'react-select';
 import DropList from '~/components/DropList';
@@ -10,6 +10,7 @@ import FileInput from '~/components/FileInput';
 import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
+import * as taskTypeServices from '~/services/taskTypeServices';
 import { disabledPastDate, fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchDocuments, useFetchTasks, useFetchUsers } from '~/hooks';
@@ -17,6 +18,8 @@ import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
 const CreateTask = ({ title, socket }) => {
+    const [allTaskTypes, setAllTaskTypes] = useState([]);
+    const [addType, setAddType] = useState(false);
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState('');
     const [isSave, setIsSave] = useState(false);
@@ -26,6 +29,7 @@ const CreateTask = ({ title, socket }) => {
     const [deadline, setDeadline] = useState('');
     const [level, setLevel] = useState('Bình thường');
     const [document, setDocument] = useState('');
+    const [newType, setNewType] = useState('');
     const [type, setType] = useState('');
     const [leader, setLeader] = useState();
     const [attachFiles, setAttachFiles] = useState([]);
@@ -49,7 +53,22 @@ const CreateTask = ({ title, socket }) => {
     const documents = useFetchDocuments().inProgressDocNames;
     const allDocuments = useFetchDocuments().inProgressDocs;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
-    const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
+
+    // Handle add new type
+    const handleAddNewType = async () => {
+        const data = {
+            taskType: newType,
+        };
+        const res = await taskTypeServices.createTaskType(data);
+        if (res.code === 200) {
+            setNewType('');
+            setAddType(false);
+            setIsSave((isSave) => !isSave);
+            successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
+    };
 
     // Just get id of assigned user
     const getAssignToIds = (assignTo) => {
@@ -183,6 +202,20 @@ const CreateTask = ({ title, socket }) => {
         }
     };
 
+    //Get all task type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskTypeServices.getAllTaskType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.taskType);
+                setAllTaskTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, [isSave]);
+
     // Get available task data when edit task
     useEffect(() => {
         if (!id) return;
@@ -288,12 +321,37 @@ const CreateTask = ({ title, socket }) => {
                         </div>
                         <div className="flex-1">
                             <label className="font-bold">Loại:</label>
-                            <DropList
-                                selectedValue={type}
-                                options={typeOptions}
-                                setValue={setType}
-                                setId={() => undefined}
-                            />
+                            <div className="flex items-center gap-x-3">
+                                {!addType ? (
+                                    <div className="flex-1">
+                                        <DropList
+                                            selectedValue={type}
+                                            options={allTaskTypes}
+                                            setValue={setType}
+                                            setId={() => undefined}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex-1">
+                                        <InputField
+                                            id="type"
+                                            className="default"
+                                            placeholder="Loại công việc"
+                                            value={newType}
+                                            setValue={setNewType}
+                                        />
+                                    </div>
+                                )}
+                                {!newType ? (
+                                    <div onClick={() => setAddType(!addType)} className="text-[2rem] cursor-pointer">
+                                        <FontAwesomeIcon icon={addType ? faXmark : faPlusCircle} />
+                                    </div>
+                                ) : (
+                                    <div onClick={handleAddNewType} className="text-[2rem] cursor-pointer">
+                                        <FontAwesomeIcon icon={faPlusCircle} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className="mt-7">
