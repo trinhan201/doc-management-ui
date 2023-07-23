@@ -85,7 +85,9 @@ const CreateDepartment = ({ title, socket }) => {
                 <h1 className="text-[2rem] font-bold">{title}</h1>
                 <form>
                     <div className="mt-8">
-                        <label className="font-bold">Tên phòng ban:</label>
+                        <label className="font-bold">
+                            Tên phòng ban: <span className="text-red-600">*</span>
+                        </label>
                         <InputField
                             className={isFullNameErr ? 'invalid' : 'default'}
                             placeholder="Tên phòng ban"

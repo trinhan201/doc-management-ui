@@ -263,7 +263,9 @@ const CreateTask = ({ title, socket }) => {
                 <h1 className="text-[2rem] font-bold">{title}</h1>
                 <form autoComplete="on">
                     <div className="mt-8">
-                        <label className="font-bold">Tên công việc:</label>
+                        <label className="font-bold">
+                            Tên công việc: <span className="text-red-600">*</span>
+                        </label>
                         <InputField
                             id="fullName"
                             className={isFullNameErr ? 'invalid' : 'default'}
@@ -276,7 +278,9 @@ const CreateTask = ({ title, socket }) => {
                     </div>
                     <div className="flex flex-col md:flex-row mt-7 gap-6">
                         <div className="flex-1">
-                            <label className="font-bold">Ngày đến hạn:</label>
+                            <label className="font-bold">
+                                Ngày đến hạn: <span className="text-red-600">*</span>
+                            </label>
                             <InputField
                                 name="datetime-local"
                                 className={isDeadlineErr ? 'invalid' : 'default'}
@@ -308,7 +312,9 @@ const CreateTask = ({ title, socket }) => {
                     </div>
                     <div className="flex flex-col md:flex-row mt-7 gap-6">
                         <div className="flex-1">
-                            <label className="font-bold">Nhóm trưởng:</label>
+                            <label className="font-bold">
+                                Nhóm trưởng: <span className="text-red-600">*</span>
+                            </label>
                             <Select
                                 className={isLeaderErr && 'droplistInvalid'}
                                 placeholder="--Vui lòng chọn--"
@@ -355,7 +361,9 @@ const CreateTask = ({ title, socket }) => {
                         </div>
                     </div>
                     <div className="mt-7">
-                        <label className="font-bold">Người thực hiện:</label>
+                        <label className="font-bold">
+                            Người thực hiện: <span className="text-red-600">*</span>
+                        </label>
                         <Select
                             isMulti
                             className={isAssignToErr && 'droplistInvalid'}

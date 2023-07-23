@@ -99,7 +99,9 @@ const CreateUser = ({ title, socket }) => {
                 <h1 className="text-[2rem] font-bold">{title}</h1>
                 <form autoComplete="on">
                     <div className="mt-8">
-                        <label className="font-bold">Họ và tên:</label>
+                        <label className="font-bold">
+                            Họ và tên: <span className="text-red-600">*</span>
+                        </label>
                         <InputField
                             id="fullName"
                             className={isFullNameErr ? 'invalid' : 'default'}
@@ -133,7 +135,9 @@ const CreateUser = ({ title, socket }) => {
                         <InputField name="date" className="default" value={date} setValue={setDate} />
                     </div>
                     <div className="mt-7">
-                        <label className="font-bold">Email:</label>
+                        <label className="font-bold">
+                            Email: <span className="text-red-600">*</span>
+                        </label>
                         <InputField
                             id="email"
                             name="email"
@@ -156,7 +160,9 @@ const CreateUser = ({ title, socket }) => {
                         />
                     </div>
                     <div className="mt-7">
-                        <label className="font-bold">Phòng ban:</label>
+                        <label className="font-bold">
+                            Phòng ban: <span className="text-red-600">*</span>
+                        </label>
                         <DropList
                             isErr={isDepartmentErr}
                             selectedValue={department}

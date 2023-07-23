@@ -17,6 +17,11 @@ const RequestChangeInfoCard = (props) => {
         setShowBtn(!showDelBtn);
     };
 
+    const highlightInfo = (oldVal, newVal) => {
+        if (oldVal === newVal) return;
+        return 'bg-[#f7bb07] font-bold';
+    };
+
     useEffect(() => {
         const fetchApi = async () => {
             const res = await userServices.getUserById(props.currentUserId);
@@ -55,7 +60,7 @@ const RequestChangeInfoCard = (props) => {
                     {props.status === 'rejected' && (
                         <h3 className="text-[1.4rem] font-bold text-red-600 p-3">Từ chối</h3>
                     )}
-                    {showDelBtn && (
+                    {showDelBtn && props.tab !== 'pending' && (
                         <FontAwesomeIcon
                             onClick={props.handleDelete}
                             className="text-[1.5rem] leading-none p-3 opacity-60 hover:opacity-100 cursor-pointer"
@@ -72,14 +77,16 @@ const RequestChangeInfoCard = (props) => {
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{props.newName}</span>
+                        <span className={highlightInfo(currentUserData?.fullName, props.newName)}>{props.newName}</span>
                     </p>
                     <p>
                         <span className="font-bold">Giới tính:</span> <span>{currentUserData?.gender}</span>{' '}
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{props.newGender}</span>
+                        <span className={highlightInfo(currentUserData?.gender, props.newGender)}>
+                            {props.newGender}
+                        </span>
                     </p>
                     <p>
                         <span className="font-bold">Ngày sinh:</span>{' '}
@@ -87,28 +94,39 @@ const RequestChangeInfoCard = (props) => {
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{formatVNDate(props.newBirthDate)}</span>
+                        <span
+                            className={highlightInfo(
+                                formatVNDate(currentUserData?.birthDate),
+                                formatVNDate(props.newBirthDate),
+                            )}
+                        >
+                            {formatVNDate(props.newBirthDate)}
+                        </span>
                     </p>
                     <p>
                         <span className="font-bold">Email:</span> <span>{currentUserData?.email}</span>{' '}
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{props.newEmail}</span>
+                        <span className={highlightInfo(currentUserData?.email, props.newEmail)}>{props.newEmail}</span>
                     </p>
                     <p>
                         <span className="font-bold">Số điện thoại:</span> <span>{currentUserData?.phoneNumber}</span>{' '}
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{props.newPhone}</span>
+                        <span className={highlightInfo(currentUserData?.phoneNumber, props.newPhone)}>
+                            {props.newPhone}
+                        </span>
                     </p>
                     <p>
                         <span className="font-bold">Phòng ban:</span> <span>{currentUserData?.department}</span>{' '}
                         <span>
                             <FontAwesomeIcon icon={faArrowRight} />
                         </span>{' '}
-                        <span>{props.newDepartment}</span>
+                        <span className={highlightInfo(currentUserData?.department, props.newDepartment)}>
+                            {props.newDepartment}
+                        </span>
                     </p>
                 </div>
             )}

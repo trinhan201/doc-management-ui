@@ -19,7 +19,7 @@ const DocumentStatistics = ({ socket }) => {
     const [preview, setPreview] = useState(false);
     const [allDocuments, setAllDocuments] = useState([]);
     // Filter statistic state
-    const [flag, setFlag] = useState();
+    const [flag, setFlag] = useState({ label: 'Tất cả', value: '' });
     const [fType, setFType] = useState('');
     const [fStatus, setFStatus] = useState('');
     const [fLevel, setFLevel] = useState('');
@@ -45,7 +45,7 @@ const DocumentStatistics = ({ socket }) => {
             const res = await documentServices.getAllDocument(
                 1,
                 1,
-                flag?.value || '',
+                flag?.value,
                 '',
                 '',
                 '',

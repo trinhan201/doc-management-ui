@@ -284,7 +284,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                 <form>
                     <input type="hidden" value={documentIn} />
                     <div className="mt-8">
-                        <label className="font-bold">Tên văn bản:</label>
+                        <label className="font-bold">
+                            Tên văn bản: <span className="text-red-600">*</span>
+                        </label>
                         <InputField
                             id="docName"
                             className={isFullNameErr ? 'invalid' : 'default'}
@@ -297,7 +299,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                     </div>
                     <div className="flex flex-col md:flex-row gap-6 mt-7">
                         <div className="flex-1">
-                            <label className="font-bold">Số {inputLabel}:</label>
+                            <label className="font-bold">
+                                Số {inputLabel}: <span className="text-red-600">*</span>
+                            </label>
                             <InputField
                                 id="number"
                                 className={isNumberErr ? 'invalid' : 'default'}
@@ -309,7 +313,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             <p className="text-red-600 text-[1.3rem]">{numberErrMsg.comeNumber}</p>
                         </div>
                         <div className="flex-1">
-                            <label className="font-bold">Ngày {inputLabel}:</label>
+                            <label className="font-bold">
+                                Ngày {inputLabel}: <span className="text-red-600">*</span>
+                            </label>
                             <InputField
                                 name="date"
                                 className={isSendDateErr ? 'invalid' : 'default'}
@@ -322,7 +328,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                     </div>
                     <div className="flex flex-col md:flex-row gap-6 mt-7">
                         <div className="flex-1">
-                            <label className="font-bold">Số ký hiệu:</label>
+                            <label className="font-bold">
+                                Số ký hiệu: <span className="text-red-600">*</span>
+                            </label>
                             <InputField
                                 id="docCode"
                                 className={isCodeErr ? 'invalid' : 'default'}
@@ -345,7 +353,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                     </div>
                     <div className="flex flex-col md:flex-row gap-6 mt-7">
                         <div className="flex-1">
-                            <label className="font-bold">Ngày ban hành:</label>
+                            <label className="font-bold">
+                                Ngày ban hành: <span className="text-red-600">*</span>
+                            </label>
                             <InputField
                                 name="date"
                                 className={isIssuedDateErr ? 'invalid' : 'default'}
@@ -356,7 +366,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             <p className="text-red-600 text-[1.3rem]">{issuedDateErrMsg.issuedDate}</p>
                         </div>
                         <div className="flex-1">
-                            <label className="font-bold">Nơi ban hành:</label>
+                            <label className="font-bold">
+                                Nơi ban hành: <span className="text-red-600">*</span>
+                            </label>
                             <InputField
                                 className={isSenderErr ? 'invalid' : 'default'}
                                 placeholder="Nơi ban hành"
@@ -378,7 +390,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             />
                         </div>
                         <div className="flex-1">
-                            <label className="font-bold">Ví trí hiện tại:</label>
+                            <label className="font-bold">
+                                Ví trí hiện tại: <span className="text-red-600">*</span>
+                            </label>
                             <DropList
                                 isErr={isCurrLocationErr}
                                 selectedValue={currentLocation}
@@ -409,7 +423,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                     {isAssigned && (
                         <div className="border-[2px] border-[#bbbbbb] border-dashed p-3 mt-7">
                             <div>
-                                <label className="font-bold">Tên công việc:</label>
+                                <label className="font-bold">
+                                    Tên công việc: <span className="text-red-600">*</span>
+                                </label>
                                 <InputField
                                     id="taskName"
                                     className={isTaskNameErr ? 'invalid' : 'default'}
@@ -422,7 +438,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             </div>
                             <div className="flex flex-col md:flex-row mt-7 gap-6">
                                 <div className="flex-1">
-                                    <label className="font-bold">Ngày đến hạn:</label>
+                                    <label className="font-bold">
+                                        Ngày đến hạn: <span className="text-red-600">*</span>
+                                    </label>
                                     <InputField
                                         name="datetime-local"
                                         className={isDeadlineErr ? 'invalid' : 'default'}
@@ -473,7 +491,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             </div>
                             <div className="flex flex-col md:flex-row gap-6 mt-7">
                                 <div className="flex-1">
-                                    <label className="font-bold">Nhóm trưởng:</label>
+                                    <label className="font-bold">
+                                        Nhóm trưởng: <span className="text-red-600">*</span>
+                                    </label>
                                     <Select
                                         className={isLeaderErr && 'droplistInvalid'}
                                         placeholder="--Vui lòng chọn--"
@@ -485,7 +505,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                                     <p className="text-red-600 text-[1.3rem]">{leaderErrMsg.leader}</p>
                                 </div>
                                 <div className="flex-1">
-                                    <label className="font-bold">Người thực hiện:</label>
+                                    <label className="font-bold">
+                                        Người thực hiện: <span className="text-red-600">*</span>
+                                    </label>
                                     <Select
                                         isMulti
                                         className={isAssignToErr && 'droplistInvalid'}

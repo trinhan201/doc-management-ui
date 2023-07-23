@@ -138,6 +138,7 @@ const RequestChange = ({ socket }) => {
                             <RequestChangeInfoCard
                                 key={index}
                                 index={index}
+                                tab={tab}
                                 currentUserId={item?.userId}
                                 newName={item?.dataToChange.fullName}
                                 newGender={item?.dataToChange.gender}
