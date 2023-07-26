@@ -7,7 +7,7 @@ import * as authServices from '~/services/authServices';
 import * as userServices from '~/services/userServices';
 import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { AvatarContext } from '~/App';
+import { UserInfoContext } from '~/App';
 import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { formatVNDate } from '~/utils/formatDateTime';
 
@@ -19,7 +19,7 @@ const Profile = ({ socket }) => {
     const [currUser, setCurrUser] = useState({});
     const [fileName, setFileName] = useState(JSON.parse(localStorage.getItem('imageName')));
     const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
-    const { isChangeAvatar, setIsChangeAvatar } = useContext(AvatarContext);
+    const { isChangeUserInfo, setIsChangeUserInfo } = useContext(UserInfoContext);
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
@@ -33,7 +33,7 @@ const Profile = ({ socket }) => {
         if (res.code === 200) {
             setFileName(res.fileName);
             successNotify(res.message);
-            setIsChangeAvatar(!isChangeAvatar);
+            setIsChangeUserInfo(!isChangeUserInfo);
             setIsRemove(false);
         } else {
             errorNotify(res);
@@ -48,7 +48,7 @@ const Profile = ({ socket }) => {
         const res = await userServices.removeAvatar(fileName);
         if (res.code === 200) {
             successNotify(res.message);
-            setIsChangeAvatar(!isChangeAvatar);
+            setIsChangeUserInfo(!isChangeUserInfo);
             setIsRemove(true);
         } else {
             errorNotify(res);
@@ -87,7 +87,7 @@ const Profile = ({ socket }) => {
             setIsReqChangeInfo(res.isReqChangeInfo);
         };
         fetchApi();
-    }, [isSave, isChangeAvatar]);
+    }, [isSave, isChangeUserInfo]);
 
     // Save image name in localstorage
     useEffect(() => {

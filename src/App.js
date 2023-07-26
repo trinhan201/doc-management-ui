@@ -13,14 +13,14 @@ import { Dashboard, Profile, Page404, BlockPage, ProtectedRoutes, PublicRoutes }
 import DefaultLayout from './layouts/DefaultLayout';
 import * as authServices from '~/services/authServices';
 
-export const AvatarContext = createContext();
+export const UserInfoContext = createContext();
 
 const App = () => {
     const [userRole, setUserRole] = useState(JSON.parse(localStorage.getItem('userRole')) || '');
     const [userId, setUserId] = useState(JSON.parse(localStorage.getItem('userId')) || '');
     const [activeFlag, setActiveFlag] = useState(JSON.parse(localStorage.getItem('activeFlag')) || true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isChangeAvatar, setIsChangeAvatar] = useState(false);
+    const [isChangeUserInfo, setIsChangeUserInfo] = useState(false);
 
     // Init socket.io server
     const socket = useRef();
@@ -91,7 +91,7 @@ const App = () => {
     }, [activeFlag, isLoggedIn]);
 
     return (
-        <AvatarContext.Provider value={{ isChangeAvatar, setIsChangeAvatar }}>
+        <UserInfoContext.Provider value={{ isChangeUserInfo, setIsChangeUserInfo }}>
             <Router>
                 <Routes>
                     <Route element={<PublicRoutes />}>
@@ -432,7 +432,7 @@ const App = () => {
                     <Route path="/" element={<Navigate to="/signin" />} />
                 </Routes>
             </Router>
-        </AvatarContext.Provider>
+        </UserInfoContext.Provider>
     );
 };
 

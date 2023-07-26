@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faFloppyDisk, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import InputField from '../InputField';
@@ -11,6 +11,7 @@ import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '../ToastMessage';
 import { fullNameValidator, emailValidator } from '~/utils/formValidation';
 import Loading from '../Loading';
+import { UserInfoContext } from '~/App';
 
 const ProfileForm = ({ formTitle, setShowForm, setIsSave, socket }) => {
     const [loading, setLoading] = useState(false);
@@ -28,6 +29,7 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave, socket }) => {
     const [emailErrMsg, setEmailErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
     const [isEmailErr, setIsEmailErr] = useState(false);
+    const { isChangeUserInfo, setIsChangeUserInfo } = useContext(UserInfoContext);
 
     const genderList = ['Nam', 'Nữ'];
     const userRole = JSON.parse(localStorage.getItem('userRole'));
@@ -52,6 +54,7 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave, socket }) => {
         if (res.code === 200) {
             setLoading(false);
             successNotify(res.message);
+            setIsChangeUserInfo(!isChangeUserInfo);
             setShowForm(false);
             setIsSave(true);
         } else {

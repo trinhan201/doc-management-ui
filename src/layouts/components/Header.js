@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faKey, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCaretDown, faKey, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ChangePasswordForm from '~/components/Form/ChangePasswordForm';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as authServices from '~/services/authServices';
 import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { AvatarContext } from '~/App';
+import { UserInfoContext } from '~/App';
 import NotificationCard from '~/components/Card/NotificationCard';
 import { handleDelete } from '~/utils/apiDelete';
 
@@ -19,8 +19,9 @@ const Header = ({ setToggle, socket }) => {
     const [toggleSidebar, setToggleSidebar] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [userAvatar, setUserAvatar] = useState('');
+    const [userName, setUserName] = useState('');
 
-    const { isChangeAvatar } = useContext(AvatarContext);
+    const { isChangeUserInfo } = useContext(UserInfoContext);
     const navigate = useNavigate();
 
     // Sign out function
@@ -61,9 +62,10 @@ const Header = ({ setToggle, socket }) => {
         const fetchApi = async () => {
             const res = await authServices.getCurrUser();
             setUserAvatar(res?.avatar);
+            setUserName(res?.fullName);
         };
         fetchApi();
-    }, [isChangeAvatar]);
+    }, [isChangeUserInfo]);
 
     // Get realtime notification function
     useEffect(() => {
@@ -187,19 +189,23 @@ const Header = ({ setToggle, socket }) => {
                             </ul>
                         </div>
                     </div>
-
                     <div className="relative group">
-                        <div className="w-[50px] h-[50px] rounded-full ml-8 cursor-pointer">
-                            <img
-                                className="w-full h-full object-cover rounded-full"
-                                src={
-                                    userAvatar
-                                        ? userAvatar
-                                        : 'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
-                                }
-                                alt="avatar"
-                            />
+                        <div className="flex items-center gap-x-3 cursor-pointer">
+                            <div className="w-[40px] h-[40px] rounded-full ml-8">
+                                <img
+                                    className="w-full h-full object-cover rounded-full"
+                                    src={
+                                        userAvatar
+                                            ? userAvatar
+                                            : 'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
+                                    }
+                                    alt="avatar"
+                                />
+                            </div>
+                            <h3 className="hidden md:block font-bold text-black max-w-[150px] truncate">{userName}</h3>
+                            <FontAwesomeIcon className="group-hover:text-black" icon={faCaretDown} />
                         </div>
+                        <div className="hidden absolute bottom-[-12px] right-0 bg-transparent w-[180px] h-[24px] group-hover:block"></div>
                         <div className="hidden absolute top-[50px] right-0 text-black bg-white shadow-4Way group-hover:block">
                             <ul className="w-[180px]">
                                 <li className="p-[12px] cursor-pointer hover:text-[#321fdb] hover:bg-[#eeeeee]">
