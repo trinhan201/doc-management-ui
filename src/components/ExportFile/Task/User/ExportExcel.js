@@ -87,21 +87,23 @@ const ExportExcel = (props) => {
             skipHeader: true,
         });
         let acc = 5;
-        const mergeArray = props.allDatas.map((item) => {
-            const merge = [
-                { s: { r: acc, c: 0 }, e: { r: item?.tasks?.length + acc - 1, c: 0 } },
-                { s: { r: acc, c: 1 }, e: { r: item?.tasks?.length + acc - 1, c: 1 } },
-                { s: { r: acc, c: 5 }, e: { r: item?.tasks?.length + acc - 1, c: 5 } },
-                { s: { r: acc, c: 6 }, e: { r: item?.tasks?.length + acc - 1, c: 6 } },
-                { s: { r: acc, c: 7 }, e: { r: item?.tasks?.length + acc - 1, c: 7 } },
-                { s: { r: acc, c: 8 }, e: { r: item?.tasks?.length + acc - 1, c: 8 } },
-                { s: { r: acc, c: 9 }, e: { r: item?.tasks?.length + acc - 1, c: 9 } },
-                { s: { r: acc, c: 10 }, e: { r: item?.tasks?.length + acc - 1, c: 10 } },
-                { s: { r: acc, c: 11 }, e: { r: item?.tasks?.length + acc - 1, c: 11 } },
-            ];
-            acc = acc + item?.tasks?.length;
-            return merge;
-        });
+        const mergeArray = props.allDatas
+            .filter((f) => f.tasks.length !== 0)
+            .map((item) => {
+                const merge = [
+                    { s: { r: acc, c: 0 }, e: { r: item?.tasks?.length + acc - 1, c: 0 } },
+                    { s: { r: acc, c: 1 }, e: { r: item?.tasks?.length + acc - 1, c: 1 } },
+                    { s: { r: acc, c: 5 }, e: { r: item?.tasks?.length + acc - 1, c: 5 } },
+                    { s: { r: acc, c: 6 }, e: { r: item?.tasks?.length + acc - 1, c: 6 } },
+                    { s: { r: acc, c: 7 }, e: { r: item?.tasks?.length + acc - 1, c: 7 } },
+                    { s: { r: acc, c: 8 }, e: { r: item?.tasks?.length + acc - 1, c: 8 } },
+                    { s: { r: acc, c: 9 }, e: { r: item?.tasks?.length + acc - 1, c: 9 } },
+                    { s: { r: acc, c: 10 }, e: { r: item?.tasks?.length + acc - 1, c: 10 } },
+                    { s: { r: acc, c: 11 }, e: { r: item?.tasks?.length + acc - 1, c: 11 } },
+                ];
+                acc = acc + item?.tasks?.length;
+                return merge;
+            });
 
         var flatArray = mergeArray.reduce(function (flatOutput, flatItem) {
             return flatOutput.concat(flatItem);

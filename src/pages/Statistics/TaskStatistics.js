@@ -86,47 +86,56 @@ const TaskStatistics = ({ socket }) => {
     // Statistic users function
     const handleStatisticUsers = () => {
         setLoading(true);
-        if (!(fFrom && fTo)) return errorNotify('Hãy chọn khoảng thời gian cần thốn kê');
+        if (!(fFrom && fTo)) {
+            setLoading(false);
+            return errorNotify('Hãy chọn khoảng thời gian cần thốn kê');
+        }
         const finalData = allUsers?.map((u) => {
-            const tasks = allTasks?.filter((t) => t?.assignTo?.find((item) => item.value === u._id));
+            const tasks = allTasks
+                ?.filter((t) => t?.assignTo?.find((item) => item.value === u._id))
+                ?.filter(
+                    (item) =>
+                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
+                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
+                );
             const unDueTask = tasks
                 ?.filter((pt) => pt?.status === 'Còn hạn')
-                .filter(
+                ?.filter(
                     (item) =>
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
                 ).length;
             const dueSoonTask = tasks
                 ?.filter((pt) => pt?.status === 'Sắp đến hạn')
-                .filter(
+                ?.filter(
                     (item) =>
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
                 ).length;
             const outOfDateTask = tasks
                 ?.filter((pt) => pt?.status === 'Quá hạn')
-                .filter(
+                ?.filter(
                     (item) =>
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
                 ).length;
             const inProgressTask = tasks
                 ?.filter((pt) => pt?.progress === 'Đang xử lý')
-                .filter(
+                ?.filter(
                     (item) =>
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
                 ).length;
             const pendingTask = tasks
                 ?.filter((pt) => pt?.status === 'Chờ duyệt')
-                .filter(
+                ?.filter(
                     (item) =>
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
                 ).length;
             const finishTask = tasks
                 ?.filter((pt) => pt?.status === 'Hoàn thành')
-                .filter(
+                ?.filter(
                     (item) =>
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
                         new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
@@ -143,7 +152,6 @@ const TaskStatistics = ({ socket }) => {
                 finishTask,
             };
         });
-        console.log(finalData);
         timer = setTimeout(() => {
             setLoading(false);
             setStatisticUserTasks(finalData);
@@ -154,7 +162,7 @@ const TaskStatistics = ({ socket }) => {
 
     useEffect(() => {
         return () => clearTimeout(timer);
-    }, [timer, loading]);
+    }, [timer]);
 
     // Check tasks deadline function
     useEffect(() => {

@@ -95,16 +95,7 @@ const SystemStatistics = ({ socket }) => {
 
     useEffect(() => {
         return () => clearTimeout(timer);
-    }, [timer, loading]);
-
-    // // Get all users from server
-    // useEffect(() => {
-    //     const fetchApi = async () => {
-    //         const res = await userServices.getAllUser(1, 1, '');
-    //         setAllUsers(res.allUsers);
-    //     };
-    //     fetchApi();
-    // }, []);
+    }, [timer]);
 
     // Get all notification from server
     useEffect(() => {

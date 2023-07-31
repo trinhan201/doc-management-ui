@@ -318,7 +318,7 @@ const CreateTask = ({ title, socket }) => {
                             <Select
                                 className={isLeaderErr && 'droplistInvalid'}
                                 placeholder="--Vui lòng chọn--"
-                                options={getUserOptions()}
+                                options={assignTo}
                                 onChange={setLeader}
                                 onBlur={() => dropListValidator(leader, setIsLeaderErr, setLeaderErrMsg)}
                                 value={leader}
