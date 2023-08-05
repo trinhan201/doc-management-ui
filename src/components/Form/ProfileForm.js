@@ -92,14 +92,14 @@ const ProfileForm = ({ formTitle, setShowForm, setIsSave, socket }) => {
             const newNotiId = await notificationServices.createNotification({
                 notification: `Yêu cầu đổi thông tin của ${fullName}`,
                 userId: allUsers?.find((item) => item.role === 'Admin')._id,
-                linkTask: `http://localhost:3000/users/request-change`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/users/request-change`,
             });
             socket.current?.emit('sendNotification', {
                 senderId: userId,
                 _id: [{ notiId: newNotiId.data._id, userId: newNotiId.data.userId }],
                 receiverId: [allUsers?.find((item) => item.role === 'Admin')._id],
                 text: `Yêu cầu đổi thông tin của ${fullName}`,
-                linkTask: `http://localhost:3000/users/request-change`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/users/request-change`,
                 isRead: false,
             });
         } else {

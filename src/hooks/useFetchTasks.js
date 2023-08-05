@@ -10,7 +10,7 @@ const useFetchTasks = ({ isSave }) => {
             if (res.code === 200) {
                 setAllTasks(res.allTasks);
             } else {
-                console.log(res.message);
+                console.log(res);
             }
         };
         fetchApi();

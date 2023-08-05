@@ -156,7 +156,7 @@ const CreateTask = ({ title, socket }) => {
                         const noti = await notificationServices.createNotification({
                             notification: 'Bạn có nhiệm vụ mới',
                             userId: userId,
-                            linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                            linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${res.data._id}`,
                         });
                         return { notiId: noti.data._id, userId: noti.data.userId };
                     }),
@@ -166,7 +166,7 @@ const CreateTask = ({ title, socket }) => {
                     _id: newNotiId,
                     receiverId: getAssignToIds(res.data.assignTo),
                     text: 'Bạn có nhiệm vụ mới',
-                    linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                    linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${res.data._id}`,
                     isRead: false,
                 });
             } else {
@@ -179,7 +179,7 @@ const CreateTask = ({ title, socket }) => {
                         const noti = await notificationServices.createNotification({
                             notification: 'Bạn có nhiệm vụ mới',
                             userId: userId,
-                            linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                            linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${res.data._id}`,
                         });
                         return noti.data._id;
                     }),
@@ -189,7 +189,7 @@ const CreateTask = ({ title, socket }) => {
                     _id: newNotiId[0],
                     receiverId: final,
                     text: 'Bạn có nhiệm vụ mới',
-                    linkTask: `http://localhost:3000/tasks/detail/${res.data._id}`,
+                    linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${res.data._id}`,
                     isRead: false,
                 });
             }

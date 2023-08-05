@@ -84,7 +84,7 @@ const MemberTaskDetail = ({ socket }) => {
     // Get link to reference document detail
     const getRefLink = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
-        return `http://localhost:3000/documents/detail/${refLink?._id}`;
+        return `${process.env.REACT_APP_BASE_URL}/documents/detail/${refLink?._id}`;
     };
 
     // Create comment
@@ -194,14 +194,14 @@ const MemberTaskDetail = ({ socket }) => {
             const newNotiId = await notificationServices.createNotification({
                 notification: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
                 userId: allUsers?.find((item) => item.role === 'Admin')._id,
-                linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
             });
             socket.current?.emit('sendNotification', {
                 senderId: userId,
                 _id: [{ notiId: newNotiId.data._id, userId: newNotiId.data.userId }],
                 receiverId: [allUsers?.find((item) => item.role === 'Admin')._id],
                 text: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
-                linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
                 isRead: false,
             });
         } else {

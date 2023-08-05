@@ -71,7 +71,7 @@ const DocumentStatistics = ({ socket }) => {
                 successNotify('Thống kê thành công');
             } else {
                 setLoading(false);
-                console.log(res.message);
+                console.log(res);
             }
         } else {
             setLoading(false);

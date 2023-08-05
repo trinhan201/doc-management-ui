@@ -27,8 +27,6 @@ const ExportWord = (props) => {
         'Trích yếu',
     ];
 
-    console.log(props.allDocuments);
-
     const handleExport = () => {
         let tbody;
         const doc = new Document({

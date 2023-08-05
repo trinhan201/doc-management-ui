@@ -26,7 +26,7 @@ export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
                         const noti = await notificationServices.createNotification({
                             notification: `Nhiệm vụ ${item.taskName} sắp đến hạn`,
                             userId: userId,
-                            linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                            linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${item._id}`,
                         });
                         return { notiId: noti.data._id, userId: noti.data.userId };
                     }),
@@ -36,7 +36,7 @@ export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
                     _id: newNotiId,
                     receiverId: getAssignToIds(item?.assignTo),
                     text: `Nhiệm vụ ${item?.taskName} sắp đến hạn`,
-                    linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                    linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${item._id}`,
                     isRead: false,
                 });
             } else {
@@ -53,7 +53,7 @@ export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
                     const noti = await notificationServices.createNotification({
                         notification: `Nhiệm vụ ${item.taskName} đã quá hạn`,
                         userId: userId,
-                        linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                        linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${item._id}`,
                     });
                     return { notiId: noti.data._id, userId: noti.data.userId };
                 }),
@@ -63,7 +63,7 @@ export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
                 _id: newNotiId,
                 receiverId: getAssignToIds(item?.assignTo),
                 text: `Nhiệm vụ ${item?.taskName} đã quá hạn`,
-                linkTask: `http://localhost:3000/tasks/detail/${item._id}`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${item._id}`,
                 isRead: false,
             });
         }

@@ -106,10 +106,10 @@ const Header = ({ setToggle, socket }) => {
 
     return (
         <>
-            <div className="flex items-center justify-between w-full h-[64px] bg-white text-[#9fa9ae] pl-[16px] pr-[24px] border-b-[1px] border-solid border-[#cccccc]">
+            <div className="flex items-center justify-between xl:justify-end w-full h-[64px] bg-white text-[#9fa9ae] pl-[16px] pr-[24px] border-b-[1px] border-solid border-[#cccccc]">
                 <div
                     onClick={() => setToggleSidebar(!toggleSidebar)}
-                    className="p-[8px] hover:text-black cursor-pointer"
+                    className="xl:hidden p-[8px] hover:text-black cursor-pointer"
                 >
                     <FontAwesomeIcon icon={faBars} />
                 </div>

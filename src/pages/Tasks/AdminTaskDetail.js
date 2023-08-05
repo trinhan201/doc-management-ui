@@ -43,7 +43,7 @@ const AdminTaskDetail = ({ socket }) => {
     // Get link to reference document detail
     const getRefLink = () => {
         const refLink = allDocuments.find((item) => item.documentName === task?.refLink);
-        return `http://localhost:3000/documents/detail/${refLink?._id}`;
+        return `${process.env.REACT_APP_BASE_URL}/documents/detail/${refLink?._id}`;
     };
 
     // Get assignment resources of leader
@@ -67,7 +67,7 @@ const AdminTaskDetail = ({ socket }) => {
                             value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp thuận'
                         }`,
                         userId: userId,
-                        linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                        linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
                     });
                     return { notiId: noti.data._id, userId: noti.data.userId };
                 }),
@@ -79,7 +79,7 @@ const AdminTaskDetail = ({ socket }) => {
                 text: `Nhiệm vụ ${task?.taskName} ${
                     value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp thuận'
                 }`,
-                linkTask: `http://localhost:3000/tasks/detail/${id}`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
                 isRead: false,
             });
             setLoading(false);
@@ -297,8 +297,10 @@ const AdminTaskDetail = ({ socket }) => {
                                         </div>
                                     </div>
                                     <div className="group-hover:block hidden absolute top-0 left-[120%] whitespace-nowrap z-10 px-3 py-2 text-[1.4rem] font-medium text-white bg-gray-900 rounded-lg shadow-sm">
-                                        {task?.assignTo?.map((item) => {
-                                            return <p className="m-auto">{`${item?.label} - ${item.flag}`}</p>;
+                                        {task?.assignTo?.map((item, index) => {
+                                            return (
+                                                <p key={index} className="m-auto">{`${item?.label} - ${item.flag}`}</p>
+                                            );
                                         })}
                                     </div>
                                 </div>

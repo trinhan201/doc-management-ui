@@ -22,14 +22,14 @@ const RequestChange = ({ socket }) => {
         const newNotiId = await notificationServices.createNotification({
             notification: `Yêu cầu đổi thông tin ${result}`,
             userId: userId,
-            linkTask: 'http://localhost:3000/profile',
+            linkTask: `${process.env.REACT_APP_BASE_URL}/profile`,
         });
         socket.current?.emit('sendNotification', {
             senderId: '',
             _id: [{ notiId: newNotiId.data._id, userId: newNotiId.data.userId }],
             receiverId: [userId],
             text: `Yêu cầu đổi thông tin ${result}`,
-            linkTask: `http://localhost:3000/profile`,
+            linkTask: `${process.env.REACT_APP_BASE_URL}/profile`,
             isRead: false,
         });
     };
@@ -52,7 +52,6 @@ const RequestChange = ({ socket }) => {
     };
 
     const handleReject = async (reqDataId, userId) => {
-        console.log(reqDataId);
         const res = await reqChangeInfoServices.changeReqChangeInfoStatus(reqDataId, { status: 'rejected' });
         if (res.code === 200) {
             await userServices.changeReqChangeInfoStatus(userId, { isReqChangeInfo: false });

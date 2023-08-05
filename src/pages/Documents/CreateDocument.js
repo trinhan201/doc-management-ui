@@ -209,7 +209,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             const noti = await notificationServices.createNotification({
                                 notification: 'Bạn có nhiệm vụ mới',
                                 userId: userId,
-                                linkTask: `http://localhost:3000/tasks/detail/${resTask.data._id}`,
+                                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${resTask.data._id}`,
                             });
                             return { notiId: noti.data._id, userId: noti.data.userId };
                         }),
@@ -219,7 +219,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                         _id: newNotiId,
                         receiverId: getAssignToIds(resTask.data.assignTo),
                         text: 'Bạn có nhiệm vụ mới',
-                        linkTask: `http://localhost:3000/tasks/detail/${resTask.data._id}`,
+                        linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${resTask.data._id}`,
                         isRead: false,
                     });
                 }

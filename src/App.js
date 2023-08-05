@@ -25,15 +25,15 @@ const App = () => {
     // Init socket.io server
     const socket = useRef();
     useEffect(() => {
-        socket.current = io('http://localhost:5000');
+        socket.current = io('http://localhost:8080');
     }, []);
 
     // Send info to socket.io server
     useEffect(() => {
         socket.current?.emit('addUser', userId);
-        socket.current?.on('getUsers', (users) => {
-            console.log(users);
-        });
+        // socket.current?.on('getUsers', (users) => {
+        //     console.log(users);
+        // });
     }, [userId]);
 
     // Get user temp role
