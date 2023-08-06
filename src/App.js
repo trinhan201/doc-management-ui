@@ -46,13 +46,17 @@ const App = () => {
 
     // Check exp of refresh to logout
     useEffect(() => {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken) return;
-        const decodedToken = jwt_decode(refreshToken);
-        let currentDate = new Date();
-        if (decodedToken.exp * 1000 < currentDate.getTime()) {
-            return localStorage.clear();
-        }
+        const checkRefreshExp = async () => {
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (!refreshToken) return;
+            const decodedToken = jwt_decode(refreshToken);
+            let currentDate = new Date();
+            if (decodedToken.exp * 1000 < currentDate.getTime()) {
+                await authServices.signOut({ token: refreshToken });
+                localStorage.clear();
+            }
+        };
+        checkRefreshExp();
     }, []);
 
     // Get userRole and userId from accessToken after sign in

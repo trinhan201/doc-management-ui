@@ -36,7 +36,7 @@ const SystemStatistics = ({ socket }) => {
 
     // Statistic function
     const handleStatistic = async () => {
-        if (!(fFrom && fTo)) return errorNotify('Hãy chọn khoảng thời gian cần thốn kê');
+        if (!(fFrom && fTo)) return errorNotify('Hãy chọn khoảng thời gian cần thống kê');
         setLoading(true);
         const finalData = allDepartments?.map((d) => {
             const user = allUsers

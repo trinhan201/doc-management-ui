@@ -9,6 +9,8 @@ const getAssignToIds = (arr) => {
 
 // Auto update status deadline
 export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
+    const userRole = JSON.parse(localStorage.getItem('userRole'));
+    if (userRole !== 'Admin') return;
     allTasks?.map(async (item) => {
         const currDate = new Date();
         const startDate = new Date(item?.createdAt);
@@ -17,7 +19,6 @@ export const autoUpdateDeadline = async (allTasks, socket, setIsSave) => {
         const datesWerePassed = currDate.getTime() - startDate.getTime();
         if (currDate.getTime() <= endDate.getTime()) {
             if (datesWerePassed >= (allDateToDo / 3) * 2) {
-                if (item?.status === 'Sắp đến hạn') return;
                 await taskServices.updateStatus(item?._id, { status: 'Sắp đến hạn' });
                 setIsSave((isSave) => !isSave);
 

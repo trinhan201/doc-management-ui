@@ -27,7 +27,7 @@ const useFetchComments = ({ id, allUsers, isSave, qtyCmt }) => {
             }
         };
         fetchApi();
-    }, [id, allUsers, isSave]);
+    }, [id, allUsers, isSave, qtyCmt]);
 
     return allComments;
 };
