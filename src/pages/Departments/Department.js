@@ -13,11 +13,10 @@ import SwitchButton from '~/components/SwitchButton';
 import DepartmentCard from '~/components/Card/DepartmentCard';
 import InputField from '~/components/InputField';
 import * as departmentServices from '~/services/departmentServices';
-import { useDebounce, useFetchTasks } from '~/hooks';
+import { useDebounce } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
 const Department = ({ socket }) => {
@@ -39,7 +38,6 @@ const Department = ({ socket }) => {
     const [checked, setChecked] = useState(JSON.parse(localStorage.getItem('departmentChecked')) || []);
     const [checkedAll, setCheckedAll] = useState(JSON.parse(localStorage.getItem('isCheckAllDepartment')) || false);
 
-    const allTasks = useFetchTasks({ isSave });
     const totalPage = Math.ceil(allDepartments?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
     const tableHeader = ['STT', 'Tên phòng ban', 'Trạng thái', 'Ghi chú', 'Thao tác'];
@@ -117,17 +115,6 @@ const Department = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDepartments, setChecked);
     }, [checkedAll, allDepartments, checked?.length]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faBookmark, faListCheck, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import BarChart from '~/components/Chart/BarChart';
 import PieChart from '~/components/Chart/PieChart';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks, useFetchUsers, useFetchDocuments } from '~/hooks';
 
 const Dashboard = ({ socket }) => {
-    const [isSave, setIsSave] = useState(false);
     // Chart option state
     const [barOption, setBarOption] = useState({
         label: 'Theo loại',
@@ -19,7 +17,7 @@ const Dashboard = ({ socket }) => {
         value: 'type',
     });
 
-    const allTasks = useFetchTasks({ isSave });
+    const allTasks = useFetchTasks();
     const allUsers = useFetchUsers().publicUsers;
     const allDocuments = useFetchDocuments().allDocuments;
     const allDocumentIns = useFetchDocuments().allDocumentIns;
@@ -66,17 +64,6 @@ const Dashboard = ({ socket }) => {
             value: 'level',
         },
     ];
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

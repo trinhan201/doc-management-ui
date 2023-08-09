@@ -7,13 +7,11 @@ import DropList from '~/components/DropList';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { fullNameValidator, emailValidator, dropListValidator } from '~/utils/formValidation';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchDepartments } from '~/hooks';
+import { useFetchDepartments } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const CreateUser = ({ title, socket }) => {
     const [loading, setLoading] = useState(false);
-    const [isSave, setIsSave] = useState(false);
     // Input state
     const [fullName, setFullName] = useState('');
     const [date, setDate] = useState('');
@@ -29,7 +27,6 @@ const CreateUser = ({ title, socket }) => {
     const [departmentErrMsg, setDepartmentErrMsg] = useState({});
     const [isDepartmentErr, setIsDepartmentErr] = useState(false);
 
-    const allTasks = useFetchTasks({ isSave });
     const departments = useFetchDepartments({ isActived: false });
     const navigate = useNavigate();
     const { id } = useParams();
@@ -81,17 +78,6 @@ const CreateUser = ({ title, socket }) => {
         };
         fetchApi();
     }, [id]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

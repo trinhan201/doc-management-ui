@@ -9,8 +9,7 @@ import * as notificationServices from '~/services/notificationServices';
 import * as commentServices from '~/services/commentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchComments, useFetchUsers, useFetchDocuments } from '~/hooks';
+import { useFetchComments, useFetchUsers, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -31,7 +30,6 @@ const AdminTaskDetail = ({ socket }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const allUsers = useFetchUsers().publicUsers;
-    const allTasks = useFetchTasks({ isSave });
     const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
     const allDocuments = useFetchDocuments().inProgressDocs;
 
@@ -196,17 +194,6 @@ const AdminTaskDetail = ({ socket }) => {
         };
         uploadFile();
     }, [attachFiles, id]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

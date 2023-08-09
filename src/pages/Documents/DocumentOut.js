@@ -16,11 +16,10 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchTasks, useFetchDepartments, useFetchDocumentTypes } from '~/hooks';
+import { useFetchDepartments, useFetchDocumentTypes } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
 const DocumentOut = ({ socket }) => {
@@ -65,7 +64,6 @@ const DocumentOut = ({ socket }) => {
         'Thao tác',
     ];
     const totalPage = Math.ceil(allDocuments?.length / limit);
-    const allTasks = useFetchTasks({ isSave });
     const departments = useFetchDepartments({ isActived: false });
     const documentTypes = useFetchDocumentTypes();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
@@ -220,17 +218,6 @@ const DocumentOut = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDocuments, setChecked);
     }, [checkedAll, allDocuments, checked?.length]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

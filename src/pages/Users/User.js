@@ -17,10 +17,9 @@ import InputField from '~/components/InputField';
 import SwitchButton from '~/components/SwitchButton';
 import * as userServices from '~/services/userServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useDebounce, useFetchTasks } from '~/hooks';
+import { useDebounce } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
 const User = ({ socket }) => {
@@ -60,7 +59,6 @@ const User = ({ socket }) => {
     const roleOptions = ['Moderator', 'Member'];
     const totalPage = Math.ceil(allUsers.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
-    const allTasks = useFetchTasks({ isSave });
 
     // Go to next page
     const handleNextPage = () => {
@@ -165,17 +163,6 @@ const User = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allUsers, setChecked);
     }, [checkedAll, allUsers, checked?.length]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

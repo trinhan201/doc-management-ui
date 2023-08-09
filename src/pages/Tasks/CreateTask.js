@@ -13,8 +13,7 @@ import * as notificationServices from '~/services/notificationServices';
 import * as taskTypeServices from '~/services/taskTypeServices';
 import { disabledPastDate, fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchDocuments, useFetchTasks, useFetchUsers } from '~/hooks';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
+import { useFetchDocuments, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const CreateTask = ({ title, socket }) => {
@@ -48,7 +47,6 @@ const CreateTask = ({ title, socket }) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
-    const allTasks = useFetchTasks({ isSave });
     const allUsers = useFetchUsers().privateUsers;
     const documents = useFetchDocuments().inProgressDocNames;
     const allDocuments = useFetchDocuments().inProgressDocs;
@@ -245,17 +243,6 @@ const CreateTask = ({ title, socket }) => {
         const uid = JSON.parse(localStorage.getItem('userId'));
         setUserId(uid);
     }, []);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

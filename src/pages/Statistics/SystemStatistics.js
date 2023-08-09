@@ -8,13 +8,11 @@ import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks, useFetchDepartments, useFetchComments, useFetchDocuments, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const SystemStatistics = ({ socket }) => {
     const [loading, setLoading] = useState(false);
-    const [isSave, setIsSave] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     // List data function
@@ -25,7 +23,7 @@ const SystemStatistics = ({ socket }) => {
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
 
-    const allTasks = useFetchTasks({ isSave });
+    const allTasks = useFetchTasks();
     const allUsers = useFetchUsers().publicUsers;
     const allDepartments = useFetchDepartments({ isActived: undefined });
     const allComments = useFetchComments({ qtyCmt: true });
@@ -105,17 +103,6 @@ const SystemStatistics = ({ socket }) => {
         };
         fetchApi();
     }, []);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

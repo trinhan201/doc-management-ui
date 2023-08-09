@@ -13,11 +13,10 @@ import SwitchButton from '~/components/SwitchButton';
 import DocumentTypeCard from '~/components/Card/DocumentTypeCard';
 import InputField from '~/components/InputField';
 import * as documentTypeServices from '~/services/documentTypeServices';
-import { useDebounce, useFetchTasks } from '~/hooks';
+import { useDebounce } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 
 const DocumentType = ({ socket }) => {
@@ -41,7 +40,6 @@ const DocumentType = ({ socket }) => {
 
     const totalPage = Math.ceil(allDocumentTypes?.length / limit);
     const debouncedValue = useDebounce(searchValue, 300);
-    const allTasks = useFetchTasks({ isSave });
     const tableHeader = ['STT', 'Loại văn bản', 'Trạng thái', 'Ghi chú', 'Thao tác'];
 
     // Go to next page
@@ -117,17 +115,6 @@ const DocumentType = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allDocumentTypes, setChecked);
     }, [checkedAll, allDocumentTypes, checked?.length]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

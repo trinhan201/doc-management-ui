@@ -9,7 +9,6 @@ import ExportWordAll from '~/components/ExportFile/Task/All/ExportWord';
 import ExportExcelUser from '~/components/ExportFile/Task/User/ExportExcel';
 import ExportWordUser from '~/components/ExportFile/Task/User/ExportWord';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { useFetchTasks, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
@@ -18,7 +17,6 @@ const TaskStatistics = ({ socket }) => {
     const [loading, setLoading] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
-    const [isSave, setIsSave] = useState(false);
     const [statisticTasks, setStatisticTasks] = useState([]);
     const [statisticUserTasks, setStatisticUserTasks] = useState([]);
     // Filter statistic state
@@ -29,7 +27,7 @@ const TaskStatistics = ({ socket }) => {
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
 
-    const allTasks = useFetchTasks({ isSave });
+    const allTasks = useFetchTasks();
     const allUsers = useFetchUsers().privateUsers;
     // Filter statistic options
     const tabOptions = ['Tổng hợp', 'Thành viên'];
@@ -163,17 +161,6 @@ const TaskStatistics = ({ socket }) => {
     useEffect(() => {
         return () => clearTimeout(timer);
     }, [timer]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

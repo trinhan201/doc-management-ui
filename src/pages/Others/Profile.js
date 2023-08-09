@@ -8,7 +8,6 @@ import * as userServices from '~/services/userServices';
 import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { UserInfoContext } from '~/App';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import { formatVNDate } from '~/utils/formatDateTime';
 
 const Profile = ({ socket }) => {
@@ -98,17 +97,6 @@ const Profile = ({ socket }) => {
     useEffect(() => {
         localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
     }, [isRemove]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

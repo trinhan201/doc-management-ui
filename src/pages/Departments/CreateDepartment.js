@@ -6,13 +6,10 @@ import InputField from '~/components/InputField';
 import * as departmentServices from '~/services/departmentServices';
 import { fullNameValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const CreateDepartment = ({ title, socket }) => {
     const [loading, setLoading] = useState(false);
-    const [isSave, setIsSave] = useState(false);
     // Input state
     const [fullName, setFullName] = useState('');
     const [note, setNote] = useState('');
@@ -21,7 +18,6 @@ const CreateDepartment = ({ title, socket }) => {
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
     const [isFullNameErr, setIsFullNameErr] = useState(false);
 
-    const allTasks = useFetchTasks({ isSave });
     const navigate = useNavigate();
     const { id } = useParams();
     const statusList = [
@@ -67,17 +63,6 @@ const CreateDepartment = ({ title, socket }) => {
         };
         fetchApi();
     }, [id]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

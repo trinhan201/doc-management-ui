@@ -17,7 +17,6 @@ import * as taskServices from '~/services/taskServices';
 import TaskCard from '~/components/Card/TaskCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 import Loading from '~/components/Loading';
 import { errorNotify } from '~/components/ToastMessage';
 import { formatVNDateTime } from '~/utils/formatDateTime';
@@ -209,17 +208,6 @@ const Task = ({ socket }) => {
     useEffect(() => {
         handleCheckAll(checkedAll, checked?.length, allTasks, setChecked);
     }, [checkedAll, allTasks, checked?.length]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

@@ -6,16 +6,12 @@ import * as reqChangeInfoServices from '~/services/reqChangeInfoServices';
 import * as notificationServices from '~/services/notificationServices';
 import Loading from '~/components/Loading';
 import { handleDelete } from '~/utils/apiDelete';
-import { useFetchTasks } from '~/hooks';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
 
 const RequestChange = ({ socket }) => {
     const [loading, setLoading] = useState(false);
     const [tab, setTab] = useState('pending');
     const [reqData, setReqData] = useState([]);
     const [isSave, setIsSave] = useState(false);
-
-    const allTasks = useFetchTasks({ isSave });
 
     // Update tab
     const onUpdateTab = (value) => {
@@ -87,17 +83,6 @@ const RequestChange = ({ socket }) => {
         };
         fetchApi();
     }, [tab, isSave]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as taskServices from '~/services/taskServices';
 
-const useFetchTasks = ({ isSave }) => {
+const useFetchTasks = () => {
     const [allTasks, setAllTasks] = useState([]);
 
     useEffect(() => {
@@ -14,7 +14,7 @@ const useFetchTasks = ({ isSave }) => {
             }
         };
         fetchApi();
-    }, [isSave]);
+    }, []);
     return allTasks;
 };
 

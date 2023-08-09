@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
@@ -8,13 +8,11 @@ import * as documentServices from '~/services/documentServices';
 import ExportExcel from '~/components/ExportFile/Document/ExportExcel';
 import ExportWord from '~/components/ExportFile/Document/ExportWord';
 import { errorNotify, successNotify } from '~/components/ToastMessage';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks, useFetchDocumentTypes } from '~/hooks';
+import { useFetchDocumentTypes } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const DocumentStatistics = ({ socket }) => {
     const [loading, setLoading] = useState(false);
-    const [isSave, setIsSave] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     const [allDocuments, setAllDocuments] = useState([]);
@@ -26,7 +24,6 @@ const DocumentStatistics = ({ socket }) => {
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
 
-    const allTasks = useFetchTasks({ isSave });
     const documentTypes = useFetchDocumentTypes();
     // Filter statistic options
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
@@ -78,17 +75,6 @@ const DocumentStatistics = ({ socket }) => {
             errorNotify('Hãy chọn ít nhất 1 trường');
         }
     };
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <>

@@ -5,8 +5,6 @@ import { faPlusCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import * as documentServices from '~/services/documentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
-import { autoUpdateDeadline } from '~/helpers/autoUpdateDeadline';
-import { useFetchTasks } from '~/hooks';
 import { formatVNDate } from '~/utils/formatDateTime';
 
 const DocumentDetail = ({ socket }) => {
@@ -16,7 +14,6 @@ const DocumentDetail = ({ socket }) => {
     const [attachFiles, setAttachFiles] = useState([]);
     const [isSave, setIsSave] = useState(false);
 
-    const allTasks = useFetchTasks({ isSave });
     const { id } = useParams();
     const navigate = useNavigate();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
@@ -88,17 +85,6 @@ const DocumentDetail = ({ socket }) => {
         };
         fetchApi();
     }, [id, isSave, navigate]);
-
-    // Check tasks deadline function
-    useEffect(() => {
-        if (allTasks?.length === 0) return;
-        const timer = setInterval(async () => {
-            autoUpdateDeadline(allTasks, socket, setIsSave);
-        }, 60000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, [allTasks, socket]);
 
     return (
         <div className="bg-white p-[16px] mb-5 shadow-4Way">
