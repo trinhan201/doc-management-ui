@@ -362,10 +362,12 @@ const CreateTask = ({ title, socket }) => {
                         />
                         <p className="text-red-600 text-[1.3rem]">{assignToErrMsg.assignTo}</p>
                     </div>
-                    <div className="mt-7">
-                        <label className="font-bold">File đính kèm:</label>
-                        <FileInput setAttachFiles={setAttachFiles} />
-                    </div>
+                    {!id && (
+                        <div className="mt-7">
+                            <label className="font-bold">File đính kèm:</label>
+                            <FileInput setAttachFiles={setAttachFiles} />
+                        </div>
+                    )}
                     <div className="mt-7">
                         <label className="font-bold">Mô tả công việc:</label>
                         <InputField

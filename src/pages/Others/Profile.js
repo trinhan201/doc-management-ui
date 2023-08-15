@@ -1,26 +1,26 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import FormData from 'form-data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import ProfileForm from '~/components/Form/ProfileForm';
 import * as authServices from '~/services/authServices';
 import * as userServices from '~/services/userServices';
-import * as taskServices from '~/services/taskServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { UserInfoContext } from '~/App';
+import { useFetchTasks } from '~/hooks';
 import { formatVNDate } from '~/utils/formatDateTime';
 
 const Profile = ({ socket }) => {
     const [isReqChangeInfo, setIsReqChangeInfo] = useState(true);
     const [isSave, setIsSave] = useState(false);
-    const [allTasks, setAllTasks] = useState([]);
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
-    const [fileName, setFileName] = useState(JSON.parse(localStorage.getItem('imageName')));
     const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
     const { isChangeUserInfo, setIsChangeUserInfo } = useContext(UserInfoContext);
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
+    const allTasks = useFetchTasks();
+    const ref = useRef();
 
     // Change avatar function
     const changeAvatar = async (e) => {
@@ -30,7 +30,6 @@ const Profile = ({ socket }) => {
         if (!file) return;
         const res = await userServices.changeAvatar(data);
         if (res.code === 200) {
-            setFileName(res.fileName);
             successNotify(res.message);
             setIsChangeUserInfo(!isChangeUserInfo);
             setIsRemove(false);
@@ -43,10 +42,10 @@ const Profile = ({ socket }) => {
     const handleRemoveAvatar = async () => {
         const confirmMsg = 'Bạn có chắc muốn xóa ảnh nền không?';
         if (!window.confirm(confirmMsg)) return;
-        if (!fileName) return;
-        const res = await userServices.removeAvatar(fileName);
+        const res = await userServices.removeAvatar(currUser?.avatar?.replace('http://localhost:8080/static/', ''));
         if (res.code === 200) {
             successNotify(res.message);
+            ref.current.value = '';
             setIsChangeUserInfo(!isChangeUserInfo);
             setIsRemove(true);
         } else {
@@ -65,19 +64,6 @@ const Profile = ({ socket }) => {
         return `${(getCompleteTaskQty().length / allTasks.length) * 100}%`;
     };
 
-    // Get all tasks from server
-    useEffect(() => {
-        const fetchApi = async () => {
-            const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '', '');
-            if (userRole === 'Admin' || userRole === 'Moderator') {
-                setAllTasks(res.allTasks);
-            } else {
-                setAllTasks(res.allMemberTasks);
-            }
-        };
-        fetchApi();
-    }, [isSave, userRole]);
-
     // Get current user data
     useEffect(() => {
         const fetchApi = async () => {
@@ -87,11 +73,6 @@ const Profile = ({ socket }) => {
         };
         fetchApi();
     }, [isSave, isChangeUserInfo]);
-
-    // Save image name in localstorage
-    useEffect(() => {
-        localStorage.setItem('imageName', JSON.stringify(fileName));
-    }, [isRemove, fileName]);
 
     // Save remove avtar boolean in localstorage
     useEffect(() => {
@@ -107,7 +88,8 @@ const Profile = ({ socket }) => {
                             <label className="label">
                                 <input
                                     className="hidden"
-                                    disabled={isRemove === false ? true : false}
+                                    ref={ref}
+                                    disabled={isRemove === false || isRemove === null ? true : false}
                                     type="file"
                                     name="myFile"
                                     onChange={(e) => changeAvatar(e)}
@@ -127,7 +109,9 @@ const Profile = ({ socket }) => {
                                     </figcaption>
                                     <div
                                         className={
-                                            isRemove === false ? 'group absolute top-0 w-[200px] h-[200px]' : 'hidden'
+                                            isRemove === false || isRemove === null
+                                                ? 'group absolute top-0 w-[200px] h-[200px]'
+                                                : 'hidden'
                                         }
                                     >
                                         <img

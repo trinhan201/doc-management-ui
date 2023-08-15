@@ -38,6 +38,13 @@ const TaskStatistics = ({ socket }) => {
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     let timer;
 
+    const checkFromTo = (createdAt, from, to) => {
+        return (
+            new Date(new Date(createdAt).toLocaleDateString()).getTime() <= new Date(to).getTime() &&
+            new Date(new Date(createdAt).toLocaleDateString()).getTime() >= new Date(from).getTime()
+        );
+    };
+
     // Statistic all function
     const handleStatisticAll = async () => {
         setLoading(true);
@@ -57,12 +64,7 @@ const TaskStatistics = ({ socket }) => {
                 let finalData;
                 if (fFrom && fTo) {
                     finalData = res?.allTasks?.filter((item) => {
-                        return (
-                            new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <=
-                                new Date(fTo).getTime() &&
-                            new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >=
-                                new Date(fFrom).getTime()
-                        );
+                        return checkFromTo(item.createdAt, fFrom, fTo);
                     });
                     setStatisticTasks(finalData);
                 } else {
@@ -91,53 +93,25 @@ const TaskStatistics = ({ socket }) => {
         const finalData = allUsers?.map((u) => {
             const tasks = allTasks
                 ?.filter((t) => t?.assignTo?.find((item) => item.value === u._id))
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                );
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo));
             const unDueTask = tasks
                 ?.filter((pt) => pt?.status === 'Còn hạn')
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const dueSoonTask = tasks
                 ?.filter((pt) => pt?.status === 'Sắp đến hạn')
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const outOfDateTask = tasks
                 ?.filter((pt) => pt?.status === 'Quá hạn')
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const inProgressTask = tasks
                 ?.filter((pt) => pt?.progress === 'Đang xử lý')
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const pendingTask = tasks
                 ?.filter((pt) => pt?.status === 'Chờ duyệt')
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const finishTask = tasks
                 ?.filter((pt) => pt?.status === 'Hoàn thành')
-                ?.filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                ?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
 
             return {
                 user: u.fullName,

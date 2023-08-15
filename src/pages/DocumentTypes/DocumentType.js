@@ -120,21 +120,19 @@ const DocumentType = ({ socket }) => {
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Tìm kiếm</h1>
-                <form>
-                    <div className="flex flex-col md:flex-row md:items-center gap-5">
-                        <div className="relative w-full">
-                            <InputField
-                                className="default icon"
-                                placeholder="Tên loại văn bản"
-                                value={searchValue}
-                                setValue={setSearchValue}
-                            />
-                            <div className="flex absolute top-[50%] translate-y-[-50%] left-0 w-[45px] h-[45px]">
-                                <FontAwesomeIcon className="text-[#a9a9a9] m-auto" icon={faSearch} />
-                            </div>
+                <div className="flex flex-col md:flex-row md:items-center gap-5">
+                    <div className="relative w-full">
+                        <InputField
+                            className="default icon"
+                            placeholder="Tên loại văn bản"
+                            value={searchValue}
+                            setValue={setSearchValue}
+                        />
+                        <div className="flex absolute top-[50%] translate-y-[-50%] left-0 w-[45px] h-[45px]">
+                            <FontAwesomeIcon className="text-[#a9a9a9] m-auto" icon={faSearch} />
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:justify-between bg-[#f7f7f7] p-[16px] border border-solid border-[#cccccc] mb-[12px] md:mb-0 shadow-4Way">
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Các loại văn bản</h1>

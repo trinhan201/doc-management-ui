@@ -6,9 +6,14 @@ const useFetchTasks = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
+            const userRole = JSON.parse(localStorage.getItem('userRole'));
             const res = await taskServices.getAllTask(1, 1, '', '', '', '', '', '', '');
             if (res.code === 200) {
-                setAllTasks(res.allTasks);
+                if (userRole === 'Admin' || userRole === 'Moderator') {
+                    setAllTasks(res.allTasks);
+                } else {
+                    setAllTasks(res.allMemberTasks);
+                }
             } else {
                 console.log(res);
             }

@@ -393,10 +393,12 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             <p className="text-red-600 text-[1.3rem]">{currLocationErrMsg.currLocation}</p>
                         </div>
                     </div>
-                    <div className="mt-7">
-                        <label className="font-bold">File đính kèm:</label>
-                        <FileInput setAttachFiles={setAttachFiles} />
-                    </div>
+                    {!id && (
+                        <div className="mt-7">
+                            <label className="font-bold">File đính kèm:</label>
+                            <FileInput setAttachFiles={setAttachFiles} />
+                        </div>
+                    )}
                     {(title === 'Thêm văn bản đến mới' || (title === 'Sửa văn bản đến' && isHaveTask === false)) && (
                         <div className="flex items-center gap-x-5 mt-7">
                             <label className="font-bold">Giao việc:</label>

@@ -32,6 +32,13 @@ const SystemStatistics = ({ socket }) => {
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     let timer;
 
+    const checkFromTo = (createdAt, from, to) => {
+        return (
+            new Date(new Date(createdAt).toLocaleDateString()).getTime() <= new Date(to).getTime() &&
+            new Date(new Date(createdAt).toLocaleDateString()).getTime() >= new Date(from).getTime()
+        );
+    };
+
     // Statistic function
     const handleStatistic = async () => {
         if (!(fFrom && fTo)) return errorNotify('Hãy chọn khoảng thời gian cần thống kê');
@@ -39,40 +46,16 @@ const SystemStatistics = ({ socket }) => {
         const finalData = allDepartments?.map((d) => {
             const user = allUsers
                 ?.filter((item) => item.department === d)
-                .filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                .filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const documentIn = allDocumentIns
                 ?.filter((item) => item.currentLocation === d)
-                .filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
+                .filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             const documentOut = allDocumentOuts
                 ?.filter((item) => item.currentLocation === d)
-                .filter(
-                    (item) =>
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                        new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-                ).length;
-            const tasks = allTasks?.filter(
-                (item) =>
-                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-            ).length;
-            const comments = allComments?.filter(
-                (item) =>
-                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-            ).length;
-            const notifications = allNotifications?.filter(
-                (item) =>
-                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() <= new Date(fTo).getTime() &&
-                    new Date(new Date(item.createdAt).toLocaleDateString()).getTime() >= new Date(fFrom).getTime(),
-            ).length;
+                .filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
+            const tasks = allTasks?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
+            const comments = allComments?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
+            const notifications = allNotifications?.filter((item) => checkFromTo(item.createdAt, fFrom, fTo)).length;
             return {
                 department: d,
                 allUsers: user,

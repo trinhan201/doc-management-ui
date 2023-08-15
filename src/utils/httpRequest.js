@@ -4,6 +4,7 @@ import { refresh } from '~/services/authServices';
 
 const httpRequest = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
+    headers: { 'Access-Control-Allow-Origin': '*' },
 });
 
 // Check exp of access token to genarate new refresh token

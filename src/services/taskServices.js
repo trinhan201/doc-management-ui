@@ -102,7 +102,7 @@ export const getTaskById = async (taskId) => {
 };
 
 // Submit assignment function
-export const submitResource = async (taskId, data) => {
+export const uploadResource = async (taskId, data) => {
     try {
         const res = await httpRequest.post(`/task/submit/${taskId}`, data);
         return res.data;
@@ -135,20 +135,9 @@ export const deleteSubmitFileUrl = async (taskId, data) => {
 };
 
 // Unsubmit assignment function
-export const unsubmitResource = async (taskId) => {
+export const changeSubmitStatus = async (taskId, data) => {
     try {
-        const res = await httpRequest.patch(`/task/unsubmit/${taskId}`);
-        return res.data;
-    } catch (error) {
-        console.log(error);
-        return error.response.data.message;
-    }
-};
-
-// Update deadline status function
-export const updateStatus = async (taskId, data) => {
-    try {
-        const res = await httpRequest.patch(`/task/update-deadline/${taskId}`, data);
+        const res = await httpRequest.patch(`/task/unsubmit/${taskId}`, data);
         return res.data;
     } catch (error) {
         console.log(error);

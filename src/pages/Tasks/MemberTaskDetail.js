@@ -26,7 +26,6 @@ const MemberTaskDetail = ({ socket }) => {
     const [task, setTask] = useState({});
     const [attachFiles, setAttachFiles] = useState([]);
     const [displayFile, setDisplayFile] = useState([]);
-    const [finalList, setFinalList] = useState([]);
     const [submitStatus, setSubmitStatus] = useState('');
 
     const navigate = useNavigate();
@@ -44,9 +43,9 @@ const MemberTaskDetail = ({ socket }) => {
 
     // Change status color
     const setStatusColor = (status) => {
-        if (status === 'Sắp đến hạn') {
+        if (status === 'Sắp đến hạn' || status === 'Chờ duyệt') {
             return 'w-fit ml-2 status warning';
-        } else if (status === 'Quá hạn') {
+        } else if (status === 'Quá hạn' || status === 'Đang xử lý') {
             return 'w-fit ml-2 status emergency';
         } else {
             return 'w-fit ml-2 status normal';
@@ -108,46 +107,36 @@ const MemberTaskDetail = ({ socket }) => {
         }
     };
 
-    // Submit assignment
-    const handleSubmit = async () => {
-        setLoading(true);
-        if (!attachFiles) return;
-        const data = new FormData();
-        for (let i = 0; i < attachFiles.length; i++) {
-            data.append('myFile', attachFiles[i]);
-        }
-        const res = await taskServices.submitResource(id, data);
-        if (res.code === 200) {
-            setAttachFiles([]);
-            ref.current.value = '';
-            setLoading(false);
-            successNotify(res.message);
-            setIsSave((isSave) => !isSave);
-            setIsSubmit(true);
-        } else {
-            setLoading(false);
-            errorNotify(res.message);
-        }
-    };
+    // Submit file function
+    useEffect(() => {
+        if (attachFiles.length === 0) return;
+        const uploadFile = async () => {
+            const data = new FormData();
+            for (let i = 0; i < attachFiles.length; i++) {
+                data.append('myFile', attachFiles[i]);
+            }
+            const res = await taskServices.uploadResource(id, data);
+            if (res.code === 200) {
+                setAttachFiles([]);
+                ref.current.value = '';
+                setIsSave((isSave) => !isSave);
+            } else {
+                console.log(res.message);
+            }
+        };
+        uploadFile();
+    }, [attachFiles, id]);
 
     // Delete each assignment file
     const handleDeleteSubmitFile = async (fileName) => {
-        const resources = task?.resources?.find((item) => item.userId === userId);
-        if (resources?.resources?.includes(`http://localhost:8080/static/${fileName}`)) {
-            const data = {
-                filename: `http://localhost:8080/static/${fileName}`,
-            };
-            const res = await taskServices.deleteSubmitFileUrl(id, data);
-            if (res.code === 200) {
-                successNotify(res.message);
-                setIsSave((isSave) => !isSave);
-            } else {
-                errorNotify(res.message);
-            }
+        const data = {
+            filename: `http://localhost:8080/static/${fileName}`,
+        };
+        const res = await taskServices.deleteSubmitFileUrl(id, data);
+        if (res.code === 200) {
+            setIsSave((isSave) => !isSave);
         } else {
-            const arr = Array.from(attachFiles)?.filter((item) => item.name !== fileName);
-            setAttachFiles(arr);
-            successNotify('Hủy nộp file thành công');
+            console.log(res.message);
         }
     };
 
@@ -168,9 +157,9 @@ const MemberTaskDetail = ({ socket }) => {
     };
 
     // Unsubmit assignment
-    const handleUnsubmit = async () => {
+    const handleChangeSubmitStatus = async (submitFlag) => {
         setLoading(true);
-        const res = await taskServices.unsubmitResource(id);
+        const res = await taskServices.changeSubmitStatus(id, { submitFlag });
         if (res.code === 200) {
             setLoading(false);
             setIsSave((isSave) => !isSave);
@@ -247,29 +236,11 @@ const MemberTaskDetail = ({ socket }) => {
             const finalResources = resources?.resources?.map((item) => {
                 return item.replace('http://localhost:8080/static/', '');
             });
-
+            setIsSubmit(resources?.isSubmit);
+            setSubmitStatus(resources?.status);
             setDisplayFile(finalResources);
         };
         getResources();
-    }, [task?.resources, userId]);
-
-    // Merge file in input with resource files from db and show in UI
-    useEffect(() => {
-        const getAttachFilesName = () => {
-            const arr = Array.from(attachFiles)?.map((item) => item.name);
-            setFinalList(displayFile?.concat(arr));
-        };
-        getAttachFilesName();
-    }, [displayFile, attachFiles]);
-
-    // Get submit status and isSubmit boolean
-    useEffect(() => {
-        const getCurrentResources = () => {
-            const resource = task?.resources?.find((item) => item.userId === userId);
-            setIsSubmit(resource?.isSubmit);
-            setSubmitStatus(resource?.status);
-        };
-        getCurrentResources();
     }, [task?.resources, userId]);
 
     return (
@@ -318,6 +289,7 @@ const MemberTaskDetail = ({ socket }) => {
                             <p className="text-[1.3rem]">
                                 <FontAwesomeIcon icon={faClock} /> Đến <span>{formatVNDateTime(task?.dueDate)}</span>
                                 <span className={setStatusColor(task?.status)}>{task?.status}</span>
+                                <span className={setStatusColor(taskProgress)}>{taskProgress}</span>
                             </p>
                             <hr className="my-7 border-[1.5px] border-black" />
                             <p className="text-[1.4rem]">{task?.desc}</p>
@@ -454,7 +426,7 @@ const MemberTaskDetail = ({ socket }) => {
                         <p className={setSubmitTextColor(submitStatus)}>{submitStatus}</p>
                     </div>
                     <div className="mt-7 w-full">
-                        {finalList?.map((item, index) => {
+                        {displayFile?.map((item, index) => {
                             return (
                                 <div key={index} className="flex items-center mb-5 w-full">
                                     <a
@@ -499,7 +471,7 @@ const MemberTaskDetail = ({ socket }) => {
                     </div>
                     {isSubmit ? (
                         <button
-                            onClick={handleUnsubmit}
+                            onClick={() => handleChangeSubmitStatus(false)}
                             className={
                                 taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
                                     ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] disabled'
@@ -510,7 +482,7 @@ const MemberTaskDetail = ({ socket }) => {
                         </button>
                     ) : (
                         <button
-                            onClick={handleSubmit}
+                            onClick={() => handleChangeSubmitStatus(true)}
                             className={
                                 taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
                                     ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'

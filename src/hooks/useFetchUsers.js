@@ -7,12 +7,14 @@ const useFetchUsers = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
+            const userRole = JSON.parse(localStorage.getItem('userRole'));
             const res1 = await userServices.getPublicInfo();
             if (res1.code === 200) {
                 setPublicUsers(res1.data);
             } else {
                 console.log(res1);
             }
+            if (userRole === 'Member') return;
             const res2 = await userServices.getAllUser(1, 1, '');
             if (res2.code === 200) {
                 const filterArray = res2?.allUsers?.filter((item) => item.role === 'Member');
