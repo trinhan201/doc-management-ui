@@ -12,7 +12,7 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchTasks, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
-const TaskStatistics = ({ socket }) => {
+const TaskStatistics = () => {
     const [tab, setTab] = useState('Tổng hợp');
     const [loading, setLoading] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');

@@ -111,7 +111,7 @@ const App = () => {
                                     element={
                                         getTempRole() === 'Moderator' || getTempRole() === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <Dashboard socket={socket} />
+                                                <Dashboard />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -123,7 +123,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <Department socket={socket} />
+                                                <Department />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -135,7 +135,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDepartment socket={socket} title={'Chỉnh sửa phòng ban'} />
+                                                <CreateDepartment title={'Chỉnh sửa phòng ban'} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -147,7 +147,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDepartment socket={socket} title={'Thêm phòng ban mới'} />
+                                                <CreateDepartment title={'Thêm phòng ban mới'} />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -160,7 +160,7 @@ const App = () => {
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <User socket={socket} />
+                                                <User />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -184,7 +184,7 @@ const App = () => {
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateUser socket={socket} title="Chỉnh sửa thành viên" />
+                                                <CreateUser title="Chỉnh sửa thành viên" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -196,7 +196,7 @@ const App = () => {
                                     element={
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateUser socket={socket} title="Thêm thành viên mới" />
+                                                <CreateUser title="Thêm thành viên mới" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -208,7 +208,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <DocumentType socket={socket} />
+                                                <DocumentType />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -220,7 +220,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDocumentType socket={socket} title="Chỉnh sửa loại văn bản" />
+                                                <CreateDocumentType title="Chỉnh sửa loại văn bản" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -232,7 +232,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <CreateDocumentType socket={socket} title="Thêm loại văn bản mới" />
+                                                <CreateDocumentType title="Thêm loại văn bản mới" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -244,7 +244,7 @@ const App = () => {
                                     path="/documents/detail/:id"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <DocumentDetail socket={socket} />
+                                            <DocumentDetail />
                                         </DefaultLayout>
                                     }
                                 />
@@ -252,7 +252,7 @@ const App = () => {
                                     path="/documents/documents-out"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <DocumentOut socket={socket} />
+                                            <DocumentOut />
                                         </DefaultLayout>
                                     }
                                 />
@@ -296,7 +296,7 @@ const App = () => {
                                     path="/documents/documents-in"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <DocumentIn socket={socket} />
+                                            <DocumentIn />
                                         </DefaultLayout>
                                     }
                                 />
@@ -348,7 +348,7 @@ const App = () => {
                                     path="/tasks"
                                     element={
                                         <DefaultLayout socket={socket}>
-                                            <Task socket={socket} />
+                                            <Task />
                                         </DefaultLayout>
                                     }
                                 />
@@ -396,7 +396,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <DocumentStatistics socket={socket} />
+                                                <DocumentStatistics />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -408,7 +408,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <TaskStatistics socket={socket} />
+                                                <TaskStatistics />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />
@@ -420,7 +420,7 @@ const App = () => {
                                     element={
                                         userRole === 'Moderator' || userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
-                                                <SystemStatistics socket={socket} />
+                                                <SystemStatistics />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />

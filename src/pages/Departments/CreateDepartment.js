@@ -8,7 +8,7 @@ import { fullNameValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import Loading from '~/components/Loading';
 
-const CreateDepartment = ({ title, socket }) => {
+const CreateDepartment = ({ title }) => {
     const [loading, setLoading] = useState(false);
     // Input state
     const [fullName, setFullName] = useState('');

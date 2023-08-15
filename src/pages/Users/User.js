@@ -22,7 +22,7 @@ import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import Loading from '~/components/Loading';
 
-const User = ({ socket }) => {
+const User = () => {
     const [loading, setLoading] = useState(false);
     const [showUserDetail, setShowUserDetail] = useState(false);
     const [searchValue, setSearchValue] = useState('');

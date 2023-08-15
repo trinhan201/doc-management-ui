@@ -11,7 +11,7 @@ import { errorNotify, successNotify } from '~/components/ToastMessage';
 import { useFetchDocumentTypes } from '~/hooks';
 import Loading from '~/components/Loading';
 
-const DocumentStatistics = ({ socket }) => {
+const DocumentStatistics = () => {
     const [loading, setLoading] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);

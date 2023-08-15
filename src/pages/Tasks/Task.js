@@ -22,7 +22,7 @@ import { errorNotify } from '~/components/ToastMessage';
 import { formatVNDateTime } from '~/utils/formatDateTime';
 import { useFetchUsers } from '~/hooks';
 
-const Task = ({ socket }) => {
+const Task = () => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state

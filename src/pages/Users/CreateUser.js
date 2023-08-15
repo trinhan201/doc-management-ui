@@ -10,7 +10,7 @@ import { fullNameValidator, emailValidator, dropListValidator } from '~/utils/fo
 import { useFetchDepartments } from '~/hooks';
 import Loading from '~/components/Loading';
 
-const CreateUser = ({ title, socket }) => {
+const CreateUser = ({ title }) => {
     const [loading, setLoading] = useState(false);
     // Input state
     const [fullName, setFullName] = useState('');

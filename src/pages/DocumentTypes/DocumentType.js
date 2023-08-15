@@ -19,7 +19,7 @@ import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import Loading from '~/components/Loading';
 
-const DocumentType = ({ socket }) => {
+const DocumentType = () => {
     const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [isSave, setIsSave] = useState(false);

@@ -7,7 +7,7 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { formatVNDate } from '~/utils/formatDateTime';
 
-const DocumentDetail = ({ socket }) => {
+const DocumentDetail = () => {
     const [document, setDocument] = useState({});
     const [percent, setPercent] = useState('');
     const [statusStyle, setStatusStyle] = useState('');

@@ -6,7 +6,7 @@ import BarChart from '~/components/Chart/BarChart';
 import PieChart from '~/components/Chart/PieChart';
 import { useFetchTasks, useFetchUsers, useFetchDocuments } from '~/hooks';
 
-const Dashboard = ({ socket }) => {
+const Dashboard = () => {
     // Chart option state
     const [barOption, setBarOption] = useState({
         label: 'Theo loại',

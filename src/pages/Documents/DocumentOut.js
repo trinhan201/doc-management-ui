@@ -22,7 +22,7 @@ import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
 import Loading from '~/components/Loading';
 
-const DocumentOut = ({ socket }) => {
+const DocumentOut = () => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
