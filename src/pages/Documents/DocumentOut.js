@@ -18,7 +18,6 @@ import * as documentServices from '~/services/documentServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchDepartments, useFetchDocumentTypes } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
-import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import { setLevelColor } from '~/utils/setMultiConditions';
 import Loading from '~/components/Loading';
 
@@ -131,6 +130,39 @@ const DocumentOut = () => {
             return true;
         } else {
             return false;
+        }
+    };
+
+    // Delete one row function
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn văn bản đi không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await documentServices.deleteDocumentById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    // Delete many rows function
+    const handleDeleteMany = async () => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn những văn bản này không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const data = {
+            arrayId: checked,
+        };
+        const res = await documentServices.deleteManyDocument(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
         }
     };
 
@@ -304,18 +336,7 @@ const DocumentOut = () => {
                     }
                 >
                     <button
-                        onClick={() =>
-                            handleDeleteMany(
-                                'văn bản đi',
-                                checked,
-                                documentServices.deleteManyDocument,
-                                setChecked,
-                                setPage,
-                                setRowStart,
-                                setRowEnd,
-                                setIsSave,
-                            )
-                        }
+                        onClick={handleDeleteMany}
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -462,13 +483,7 @@ const DocumentOut = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        'văn bản đi',
-                                                                        documentServices.deleteDocumentById(dcl?._id),
-                                                                        setIsSave,
-                                                                    )
-                                                                }
+                                                                onClick={() => handleDelete(dcl?._id)}
                                                                 className={
                                                                     userRole === 'Member'
                                                                         ? 'hidden'
@@ -576,9 +591,7 @@ const DocumentOut = () => {
                                 setLocationValue={setDocumentLocation}
                                 setLocationId={() => setLocationId(dcl?._id)}
                                 locationOptions={departments}
-                                handleDelete={() =>
-                                    handleDelete('văn bản đi', documentServices.deleteDocumentById(dcl?._id), setIsSave)
-                                }
+                                handleDelete={() => handleDelete(dcl?._id)}
                                 checkBox={checked?.includes(dcl?._id)}
                                 handleCheckBox={() =>
                                     handleCheck(checked, setChecked, setCheckedAll, dcl?._id, allDocuments)

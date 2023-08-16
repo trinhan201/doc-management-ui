@@ -9,7 +9,6 @@ import * as notificationServices from '~/services/notificationServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { UserInfoContext } from '~/App';
 import NotificationCard from '~/components/Card/NotificationCard';
-import { handleDelete } from '~/utils/apiDelete';
 
 const Header = ({ setToggle, socket }) => {
     const [isSave, setIsSave] = useState(false);
@@ -50,6 +49,19 @@ const Header = ({ setToggle, socket }) => {
     const notificationNotReadLength = (notifications) => {
         const length = notifications?.filter((item) => item.isRead === false).length;
         return length;
+    };
+
+    // Delete one comment
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn thông báo không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await notificationServices.deleteNotificationById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
     };
 
     // Toggle sidebar
@@ -170,13 +182,7 @@ const Header = ({ setToggle, socket }) => {
                                                         handleChangeNotificationStatus(notification?._id)
                                                     }
                                                     handleDelete={() => {
-                                                        handleDelete(
-                                                            'thông báo',
-                                                            notificationServices.deleteNotificationById(
-                                                                notification?._id,
-                                                            ),
-                                                            setIsSave,
-                                                        );
+                                                        handleDelete(notification?._id);
                                                     }}
                                                 />
                                             );

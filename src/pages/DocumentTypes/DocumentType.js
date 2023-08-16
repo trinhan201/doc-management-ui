@@ -16,7 +16,6 @@ import * as documentTypeServices from '~/services/documentTypeServices';
 import { useDebounce } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
-import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import Loading from '~/components/Loading';
 
 const DocumentType = () => {
@@ -54,6 +53,39 @@ const DocumentType = () => {
         setPage(page - 1);
         setRowStart(rowStart - +limit);
         setRowEnd(rowEnd - +limit);
+    };
+
+    // Delete one row function
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn loại văn bản không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await documentTypeServices.deleteDocumentTypeById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    // Delete many rows function
+    const handleDeleteMany = async () => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn những loại văn bản này không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const data = {
+            arrayId: checked,
+        };
+        const res = await documentTypeServices.deleteManyDocumentType(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
     };
 
     // Get document types from server
@@ -138,18 +170,7 @@ const DocumentType = () => {
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Các loại văn bản</h1>
                 <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
                     <button
-                        onClick={() =>
-                            handleDeleteMany(
-                                'loại văn bản',
-                                checked,
-                                documentTypeServices.deleteManyDocumentType,
-                                setChecked,
-                                setPage,
-                                setRowStart,
-                                setRowEnd,
-                                setIsSave,
-                            )
-                        }
+                        onClick={handleDeleteMany}
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -252,15 +273,7 @@ const DocumentType = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        'loại văn bản',
-                                                                        documentTypeServices.deleteDocumentTypeById(
-                                                                            dtl?._id,
-                                                                        ),
-                                                                        setIsSave,
-                                                                    )
-                                                                }
+                                                                onClick={() => handleDelete(dtl?._id)}
                                                                 className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
@@ -359,13 +372,7 @@ const DocumentType = () => {
                                 activeChecked={dtl?.status}
                                 setIsActived={() => setIsActived(!dtl?.status)}
                                 setActiveId={() => setActiveId(dtl?._id)}
-                                handleDelete={() =>
-                                    handleDelete(
-                                        'loại văn bản',
-                                        documentTypeServices.deleteDocumentTypeById(dtl?._id),
-                                        setIsSave,
-                                    )
-                                }
+                                handleDelete={() => handleDelete(dtl?._id)}
                                 checkBox={checked?.includes(dtl?._id)}
                                 handleCheckBox={() =>
                                     handleCheck(checked, setChecked, setCheckedAll, dtl?._id, allDocumentTypes)

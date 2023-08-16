@@ -16,9 +16,8 @@ import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
 import TaskCard from '~/components/Card/TaskCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
-import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import Loading from '~/components/Loading';
-import { errorNotify } from '~/components/ToastMessage';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { formatVNDateTime } from '~/utils/formatDateTime';
 import { useFetchUsers } from '~/hooks';
 
@@ -152,6 +151,39 @@ const Task = () => {
             return true;
         } else {
             return false;
+        }
+    };
+
+    // Delete one row function
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn công việc không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await taskServices.deleteTaskById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    // Delete many rows function
+    const handleDeleteMany = async () => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn những công việc này không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const data = {
+            arrayId: checked,
+        };
+        const res = await taskServices.deleteManyTask(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
         }
     };
 
@@ -294,18 +326,7 @@ const Task = () => {
                     }
                 >
                     <button
-                        onClick={() =>
-                            handleDeleteMany(
-                                'công việc',
-                                checked,
-                                taskServices.deleteManyTask,
-                                setChecked,
-                                setPage,
-                                setRowStart,
-                                setRowEnd,
-                                setIsSave,
-                            )
-                        }
+                        onClick={handleDeleteMany}
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -465,13 +486,7 @@ const Task = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        'công việc',
-                                                                        taskServices.deleteTaskById(tl?._id),
-                                                                        setIsSave,
-                                                                    )
-                                                                }
+                                                                onClick={() => handleDelete(tl?._id)}
                                                                 className={
                                                                     userRole === 'Member'
                                                                         ? 'hidden'
@@ -574,9 +589,7 @@ const Task = () => {
                                 progressClass={setProgressPercentage(tl?.progress)}
                                 assignTo={tl?.assignTo}
                                 allUsers={allUsers}
-                                handleDelete={() =>
-                                    handleDelete('công việc', taskServices.deleteTaskById(tl?._id), setIsSave)
-                                }
+                                handleDelete={() => handleDelete(tl?._id)}
                                 checkBox={checked?.includes(tl?._id)}
                                 handleCheckBox={() =>
                                     handleCheck(checked, setChecked, setCheckedAll, tl?._id, allTasks)

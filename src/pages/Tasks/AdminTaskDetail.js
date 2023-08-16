@@ -11,7 +11,6 @@ import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { useFetchComments, useFetchUsers, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
-import { handleDelete } from '~/utils/apiDelete';
 import { formatVNDateTime } from '~/utils/formatDateTime';
 
 const AdminTaskDetail = ({ socket }) => {
@@ -119,6 +118,19 @@ const AdminTaskDetail = ({ socket }) => {
             setCommentId('');
             setIsSave((isSave) => !isSave);
             successNotify(res.message);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    // Delete one comment
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn bình luận không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await commentServices.deleteCommentById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
         } else {
             errorNotify(res);
         }
@@ -443,13 +455,7 @@ const AdminTaskDetail = ({ socket }) => {
                                     content={cm?.content}
                                     cmtDate={cm?.date}
                                     handleEdit={() => setCommentId(cm?.commentId)}
-                                    handleDelete={() =>
-                                        handleDelete(
-                                            'bình luận',
-                                            commentServices.deleteCommentById(cm?.commentId),
-                                            setIsSave,
-                                        )
-                                    }
+                                    handleDelete={() => handleDelete(cm?.commentId)}
                                 />
                             );
                         })}

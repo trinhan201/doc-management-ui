@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import RequestChangeInfoCard from '~/components/Card/RequestChangeInfoCard';
-import { successNotify } from '~/components/ToastMessage';
+import { successNotify, errorNotify } from '~/components/ToastMessage';
 import * as userServices from '~/services/userServices';
 import * as reqChangeInfoServices from '~/services/reqChangeInfoServices';
 import * as notificationServices from '~/services/notificationServices';
 import Loading from '~/components/Loading';
-import { handleDelete } from '~/utils/apiDelete';
 
 const RequestChange = ({ socket }) => {
     const [loading, setLoading] = useState(false);
@@ -60,6 +59,19 @@ const RequestChange = ({ socket }) => {
             sendNotification(userId, 'bị từ chối');
         } else {
             console.log(res);
+        }
+    };
+
+    // Delete one row function
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn yêu cầu không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await reqChangeInfoServices.deleteReqChangeInfoById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
         }
     };
 
@@ -149,13 +161,7 @@ const RequestChange = ({ socket }) => {
                                 createdAt={item?.createdAt}
                                 handleApprove={() => handleApprove(item?._id, item?.userId, item?.dataToChange)}
                                 handleReject={() => handleReject(item?._id, item?.userId)}
-                                handleDelete={() =>
-                                    handleDelete(
-                                        'yêu cầu',
-                                        reqChangeInfoServices.deleteReqChangeInfoById(item?._id),
-                                        setIsSave,
-                                    )
-                                }
+                                handleDelete={() => handleDelete(item?._id)}
                             />
                         );
                     })

@@ -16,7 +16,6 @@ import * as departmentServices from '~/services/departmentServices';
 import { useDebounce } from '~/hooks';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
-import { handleDelete, handleDeleteMany } from '~/utils/apiDelete';
 import Loading from '~/components/Loading';
 
 const Department = () => {
@@ -54,6 +53,39 @@ const Department = () => {
         setPage(page - 1);
         setRowStart(rowStart - +limit);
         setRowEnd(rowEnd - +limit);
+    };
+
+    // Delete one row function
+    const handleDelete = async (id) => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn phòng ban không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const res = await departmentServices.deleteDepartmentById(id);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
+    };
+
+    // Delete many rows function
+    const handleDeleteMany = async () => {
+        const confirmMsg = `Bạn có chắc muốn xóa vĩnh viễn những phòng ban này không?`;
+        if (!window.confirm(confirmMsg)) return;
+        const data = {
+            arrayId: checked,
+        };
+        const res = await departmentServices.deleteManyDepartment(data);
+        if (res.code === 200) {
+            successNotify(res.message);
+            setChecked([]);
+            setPage(1);
+            setRowStart(1);
+            setRowEnd(0);
+            setIsSave((isSave) => !isSave);
+        } else {
+            errorNotify(res);
+        }
     };
 
     // Get department from server
@@ -138,18 +170,7 @@ const Department = () => {
                 <h1 className="text-[1.8rem] md:text-[2.4rem] font-bold">Danh sách phòng ban</h1>
                 <div className="flex md:flex-col lg:flex-row items-center gap-5 mt-3 md:mt-0">
                     <button
-                        onClick={() =>
-                            handleDeleteMany(
-                                'phòng ban',
-                                checked,
-                                departmentServices.deleteManyDepartment,
-                                setChecked,
-                                setPage,
-                                setRowStart,
-                                setRowEnd,
-                                setIsSave,
-                            )
-                        }
+                        onClick={handleDeleteMany}
                         className={
                             checked?.length > 1
                                 ? 'text-[1.3rem] w-full lg:w-fit md:text-[1.6rem] text-[white] bg-red-600 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s] whitespace-nowrap'
@@ -252,15 +273,7 @@ const Department = () => {
                                                                 </div>
                                                             </NavLink>
                                                             <div
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        'phòng ban',
-                                                                        departmentServices.deleteDepartmentById(
-                                                                            dl?._id,
-                                                                        ),
-                                                                        setIsSave,
-                                                                    )
-                                                                }
+                                                                onClick={() => handleDelete(dl?._id)}
                                                                 className="flex w-[30px] h-[30px] bg-red-600 p-2 ml-2 rounded-lg cursor-pointer hover:text-primary"
                                                             >
                                                                 <FontAwesomeIcon className="m-auto" icon={faTrashCan} />
@@ -359,13 +372,7 @@ const Department = () => {
                                 activeChecked={dl?.status}
                                 setIsActived={() => setIsActived(!dl?.status)}
                                 setActiveId={() => setActiveId(dl?._id)}
-                                handleDelete={() =>
-                                    handleDelete(
-                                        'phòng ban',
-                                        departmentServices.deleteDepartmentById(dl?._id),
-                                        setIsSave,
-                                    )
-                                }
+                                handleDelete={() => handleDelete(dl?._id)}
                                 checkBox={checked?.includes(dl?._id)}
                                 handleCheckBox={() =>
                                     handleCheck(checked, setChecked, setCheckedAll, dl?._id, allDepartments)
