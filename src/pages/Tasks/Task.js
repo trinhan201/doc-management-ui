@@ -14,6 +14,7 @@ import {
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as taskServices from '~/services/taskServices';
+import * as taskTypeServices from '~/services/taskTypeServices';
 import TaskCard from '~/components/Card/TaskCard';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import Loading from '~/components/Loading';
@@ -25,6 +26,7 @@ const Task = () => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
+    const [allTaskTypes, setAllTaskTypes] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const [taskLists, setTaskLists] = useState([]);
     // Pagination state
@@ -47,7 +49,6 @@ const Task = () => {
     const allUsers = useFetchUsers().publicUsers;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
-    const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
     const tableHeader = [
         'STT',
         'Tên công việc',
@@ -187,6 +188,20 @@ const Task = () => {
         }
     };
 
+    //Get all task type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskTypeServices.getAllTaskType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.taskType);
+                setAllTaskTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, []);
+
     // Get all tasks from server
     useEffect(() => {
         const fetchApi = async () => {
@@ -275,7 +290,7 @@ const Task = () => {
                         <label className="text-[1.4rem]">Loại:</label>
                         <DropList
                             selectedValue={fType}
-                            options={typeOptions}
+                            options={allTaskTypes}
                             setValue={setFType}
                             setId={() => undefined}
                         />

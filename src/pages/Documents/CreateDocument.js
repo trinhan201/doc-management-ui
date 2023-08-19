@@ -11,16 +11,17 @@ import * as documentServices from '~/services/documentServices';
 import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 import * as taskTypeServices from '~/services/taskTypeServices';
+import * as documentTypeServices from '~/services/documentTypeServices';
 import { fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchDepartments, useFetchDocumentTypes, useFetchUsers } from '~/hooks';
+import { useFetchDepartments, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 import SwitchButton from '~/components/SwitchButton';
 import { disabledPastDate } from '~/utils/formValidation';
 
 const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
-    const [allTaskTypes, setAllTaskTypes] = useState([]);
-    const [addType, setAddType] = useState(false);
+    const [addDocType, setAddDocType] = useState(false);
+    const [addTaskType, setAddTaskType] = useState(false);
     const [isAssigned, setAssigned] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
@@ -28,8 +29,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [fullName, setFullName] = useState('');
     const [number, setNumber] = useState('');
     const [sendDate, setSendDate] = useState('');
+    const [allDocTypes, setAllDocTypes] = useState([]);
     const [type, setType] = useState('');
-    const [newType, setNewType] = useState('');
+    const [newDocType, setNewDocType] = useState('');
     const [code, setCode] = useState('');
     const [sender, setSender] = useState('');
     const [issuedDate, setIssuedDate] = useState('');
@@ -43,7 +45,9 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const [assignTo, setAssignTo] = useState([]);
     const [deadline, setDeadline] = useState('');
     const [taskName, setTaskName] = useState('');
+    const [allTaskTypes, setAllTaskTypes] = useState([]);
     const [taskType, setTaskType] = useState('');
+    const [newTaskType, setNewTaskType] = useState('');
     const [taskDesc, setTaskDesc] = useState('');
     // Input validation state
     const [fullNameErrMsg, setFullNameErrMsg] = useState({});
@@ -72,7 +76,6 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const departments = useFetchDepartments({ isActived: false });
-    const documentTypes = useFetchDocumentTypes();
     const allUsers = useFetchUsers().privateUsers;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
 
@@ -132,15 +135,32 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         }),
     };
 
-    // Handle add new type
-    const handleAddNewType = async () => {
+    // Handle add new doc type
+    const handleAddNewDocType = async () => {
         const data = {
-            taskType: newType,
+            documentTypeName: newDocType,
+        };
+        const res = await documentTypeServices.createDocumentType(data);
+        if (res.code === 200) {
+            setNewDocType('');
+            setAddDocType(false);
+            setIsSave((isSave) => !isSave);
+            successNotify(res.message);
+        } else {
+            setLoading(false);
+            errorNotify(res);
+        }
+    };
+
+    // Handle add new task type
+    const handleAddNewTaskType = async () => {
+        const data = {
+            taskType: newTaskType,
         };
         const res = await taskTypeServices.createTaskType(data);
         if (res.code === 200) {
-            setNewType('');
-            setAddType(false);
+            setNewTaskType('');
+            setAddTaskType(false);
             setIsSave((isSave) => !isSave);
             successNotify(res.message);
         } else {
@@ -300,6 +320,20 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         fetchApi();
     }, [isSave]);
 
+    // Get all doc type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentTypeServices.getAllDocumentType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.documentTypeName);
+                setAllDocTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, [isSave]);
+
     // Get available document data when edit document
     useEffect(() => {
         if (!id) return;
@@ -386,12 +420,40 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                         </div>
                         <div className="flex-1">
                             <label className="font-bold">Loại văn bản:</label>
-                            <DropList
-                                selectedValue={type}
-                                options={documentTypes}
-                                setValue={setType}
-                                setId={() => undefined}
-                            />
+                            <div className="flex items-center gap-x-3">
+                                {!addDocType ? (
+                                    <div className="flex-1">
+                                        <DropList
+                                            selectedValue={type}
+                                            options={allDocTypes}
+                                            setValue={setType}
+                                            setId={() => undefined}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex-1">
+                                        <InputField
+                                            id="docType"
+                                            className="default"
+                                            placeholder="Loại văn bản"
+                                            value={newDocType}
+                                            setValue={setNewDocType}
+                                        />
+                                    </div>
+                                )}
+                                {!newDocType ? (
+                                    <div
+                                        onClick={() => setAddDocType(!addDocType)}
+                                        className="text-[2rem] cursor-pointer"
+                                    >
+                                        <FontAwesomeIcon icon={addDocType ? faXmark : faPlusCircle} />
+                                    </div>
+                                ) : (
+                                    <div onClick={handleAddNewDocType} className="text-[2rem] cursor-pointer">
+                                        <FontAwesomeIcon icon={faPlusCircle} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row gap-6 mt-7">
@@ -499,7 +561,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                                 <div className="flex-1">
                                     <label className="font-bold">Loại:</label>
                                     <div className="flex items-center gap-x-3">
-                                        {!addType ? (
+                                        {!addTaskType ? (
                                             <div className="flex-1">
                                                 <DropList
                                                     selectedValue={taskType}
@@ -514,20 +576,20 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                                                     id="type"
                                                     className="default"
                                                     placeholder="Loại công việc"
-                                                    value={newType}
-                                                    setValue={setNewType}
+                                                    value={newTaskType}
+                                                    setValue={setNewTaskType}
                                                 />
                                             </div>
                                         )}
-                                        {!newType ? (
+                                        {!newTaskType ? (
                                             <div
-                                                onClick={() => setAddType(!addType)}
+                                                onClick={() => setAddTaskType(!addTaskType)}
                                                 className="text-[2rem] cursor-pointer"
                                             >
-                                                <FontAwesomeIcon icon={addType ? faXmark : faPlusCircle} />
+                                                <FontAwesomeIcon icon={addTaskType ? faXmark : faPlusCircle} />
                                             </div>
                                         ) : (
-                                            <div onClick={handleAddNewType} className="text-[2rem] cursor-pointer">
+                                            <div onClick={handleAddNewTaskType} className="text-[2rem] cursor-pointer">
                                                 <FontAwesomeIcon icon={faPlusCircle} />
                                             </div>
                                         )}

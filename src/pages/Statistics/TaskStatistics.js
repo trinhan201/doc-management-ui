@@ -4,6 +4,7 @@ import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
 import * as taskServices from '~/services/taskServices';
+import * as taskTypeServices from '~/services/taskTypeServices';
 import ExportExcelAll from '~/components/ExportFile/Task/All/ExportExcel';
 import ExportWordAll from '~/components/ExportFile/Task/All/ExportWord';
 import ExportExcelUser from '~/components/ExportFile/Task/User/ExportExcel';
@@ -13,6 +14,7 @@ import { useFetchTasks, useFetchUsers } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const TaskStatistics = () => {
+    const [allTaskTypes, setAllTaskTypes] = useState([]);
     const [tab, setTab] = useState('Tổng hợp');
     const [loading, setLoading] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
@@ -34,7 +36,6 @@ const TaskStatistics = () => {
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const progressOptions = ['Đang xử lý', 'Chờ duyệt', 'Hoàn thành'];
     const statusOptions = ['Còn hạn', 'Sắp đến hạn', 'Quá hạn'];
-    const typeOptions = ['Báo cáo', 'Tham luận', 'Kế hoạch'];
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     let timer;
 
@@ -136,6 +137,20 @@ const TaskStatistics = () => {
         return () => clearTimeout(timer);
     }, [timer]);
 
+    //Get all task type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await taskTypeServices.getAllTaskType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.taskType);
+                setAllTaskTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, []);
+
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way border-t-[3px] border-blue-600">
@@ -194,7 +209,7 @@ const TaskStatistics = () => {
                                 <label className="text-[1.4rem]">Loại công việc:</label>
                                 <DropList
                                     selectedValue={fType}
-                                    options={typeOptions}
+                                    options={allTaskTypes}
                                     setValue={setFType}
                                     setId={() => undefined}
                                 />

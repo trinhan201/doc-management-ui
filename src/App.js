@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Signin, ForgotPassword, ResetPassword } from './pages/Authentications';
 import { Department, CreateDepartment } from './pages/Departments';
 import { DocumentIn, DocumentOut, DocumentDetail, CreateDocument } from './pages/Documents';
-import { DocumentType, CreateDocumentType } from './pages/DocumentTypes';
 import { Task, AdminTaskDetail, MemberTaskDetail, CreateTask } from './pages/Tasks';
 import { User, CreateUser, RequestChange } from './pages/Users';
 import { DocumentStatistics, SystemStatistics, TaskStatistics } from './pages/Statistics';
@@ -197,42 +196,6 @@ const App = () => {
                                         userRole === 'Admin' ? (
                                             <DefaultLayout socket={socket}>
                                                 <CreateUser title="Thêm thành viên mới" />
-                                            </DefaultLayout>
-                                        ) : (
-                                            <Page404 />
-                                        )
-                                    }
-                                />
-                                <Route
-                                    path="/document-types"
-                                    element={
-                                        userRole === 'Moderator' || userRole === 'Admin' ? (
-                                            <DefaultLayout socket={socket}>
-                                                <DocumentType />
-                                            </DefaultLayout>
-                                        ) : (
-                                            <Page404 />
-                                        )
-                                    }
-                                />
-                                <Route
-                                    path="/document-types/edit/:id"
-                                    element={
-                                        userRole === 'Moderator' || userRole === 'Admin' ? (
-                                            <DefaultLayout socket={socket}>
-                                                <CreateDocumentType title="Chỉnh sửa loại văn bản" />
-                                            </DefaultLayout>
-                                        ) : (
-                                            <Page404 />
-                                        )
-                                    }
-                                />
-                                <Route
-                                    path="/document-types/create"
-                                    element={
-                                        userRole === 'Moderator' || userRole === 'Admin' ? (
-                                            <DefaultLayout socket={socket}>
-                                                <CreateDocumentType title="Thêm loại văn bản mới" />
                                             </DefaultLayout>
                                         ) : (
                                             <Page404 />

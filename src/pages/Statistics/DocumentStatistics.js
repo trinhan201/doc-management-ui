@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
+import * as documentTypeServices from '~/services/documentTypeServices';
 import ExportExcel from '~/components/ExportFile/Document/ExportExcel';
 import ExportWord from '~/components/ExportFile/Document/ExportWord';
 import { errorNotify, successNotify } from '~/components/ToastMessage';
-import { useFetchDocumentTypes } from '~/hooks';
 import Loading from '~/components/Loading';
 
 const DocumentStatistics = () => {
+    const [allDocTypes, setAllDocTypes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
@@ -24,7 +25,6 @@ const DocumentStatistics = () => {
     const [fFrom, setFFrom] = useState('');
     const [fTo, setFTo] = useState('');
 
-    const documentTypes = useFetchDocumentTypes();
     // Filter statistic options
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
@@ -132,6 +132,20 @@ const DocumentStatistics = () => {
         }
     };
 
+    // Get all doc type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentTypeServices.getAllDocumentType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.documentTypeName);
+                setAllDocTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, []);
+
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way border-t-[3px] border-blue-600">
@@ -181,7 +195,7 @@ const DocumentStatistics = () => {
                         <label className="text-[1.4rem]">Loại văn bản:</label>
                         <DropList
                             selectedValue={fType}
-                            options={documentTypes}
+                            options={allDocTypes}
                             setValue={setFType}
                             setId={() => undefined}
                         />

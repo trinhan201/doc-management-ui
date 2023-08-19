@@ -15,8 +15,9 @@ import DocumentCard from '~/components/Card/DocumentCard';
 import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
+import * as documentTypeServices from '~/services/documentTypeServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
-import { useFetchDepartments, useFetchDocumentTypes } from '~/hooks';
+import { useFetchDepartments } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
 import { setLevelColor } from '~/utils/setMultiConditions';
 import Loading from '~/components/Loading';
@@ -25,6 +26,7 @@ const DocumentIn = () => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
+    const [allDocTypes, setAllDocTypes] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentLists, setDocumentLists] = useState([]);
     // Change status state
@@ -64,7 +66,6 @@ const DocumentIn = () => {
     ];
     const totalPage = Math.ceil(allDocuments?.length / limit);
     const departments = useFetchDepartments({ isActived: false });
-    const documentTypes = useFetchDocumentTypes();
     const userRole = JSON.parse(localStorage.getItem('userRole'));
 
     // Go to the next page
@@ -165,6 +166,20 @@ const DocumentIn = () => {
             errorNotify(res);
         }
     };
+
+    // Get all doc type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentTypeServices.getAllDocumentType();
+            if (res.code === 200) {
+                const typeName = res?.data?.map((item) => item?.documentTypeName);
+                setAllDocTypes(typeName);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, []);
 
     // Get all documents from server
     useEffect(() => {
@@ -286,7 +301,7 @@ const DocumentIn = () => {
                         <label className="text-[1.4rem]">Loại văn bản:</label>
                         <DropList
                             selectedValue={fType}
-                            options={documentTypes}
+                            options={allDocTypes}
                             setValue={setFType}
                             setId={() => undefined}
                         />

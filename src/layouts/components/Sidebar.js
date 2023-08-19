@@ -8,7 +8,6 @@ import {
     faChartColumn,
     faFile,
     faFileLines,
-    faFontAwesome,
     faGauge,
     faGear,
     faLayerGroup,
@@ -45,9 +44,6 @@ const Sidebar = () => {
             <ul>
                 <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
                     <SidebarItem path="/dashboard" icon={faGauge} title="Bảng điều khiển" />
-                </div>
-                <div className={userRole === 'Moderator' || userRole === 'Admin' ? '' : 'hidden'}>
-                    <SidebarItem path="/document-types" icon={faFontAwesome} title="Loại văn bản" />
                 </div>
                 <SidebarItem
                     onClick={() => setToggleSubMenu(!toggleSubMenu)}
