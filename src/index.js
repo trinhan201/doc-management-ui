@@ -13,7 +13,7 @@ TimeAgo.addDefaultLocale(vi);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <ToastContainer />
+        <ToastContainer style={{ padding: '0 20px' }} />
         <App />
     </React.StrictMode>,
 );

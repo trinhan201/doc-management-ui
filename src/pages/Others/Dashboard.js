@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faBookmark, faListCheck, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
 import BarChart from '~/components/Chart/BarChart';
 import PieChart from '~/components/Chart/PieChart';
 import { useFetchTasks, useFetchUsers, useFetchDocuments } from '~/hooks';
+import * as documentServices from '~/services/documentServices';
 
 const Dashboard = () => {
+    const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     // Chart option state
     const [barOption, setBarOption] = useState({
         label: 'Theo loại',
@@ -19,9 +21,9 @@ const Dashboard = () => {
 
     const allTasks = useFetchTasks();
     const allUsers = useFetchUsers().publicUsers;
-    const allDocuments = useFetchDocuments().allDocuments;
+    // const allDocuments = useFetchDocuments().allDocuments;
     const allDocumentIns = useFetchDocuments().allDocumentIns;
-    const allDocumentOuts = useFetchDocuments().allDocumentOuts;
+    // const allDocumentOuts = useFetchDocuments().allDocumentOuts;
     // Filter options in bar chart
     const barOptions = [
         {
@@ -121,6 +123,18 @@ const Dashboard = () => {
         }),
     };
 
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, false, '', '', '', '', '', '', '');
+            if (res.code === 200) {
+                setAllDocumentOuts(res.allDocumentOut);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, []);
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -175,7 +189,7 @@ const Dashboard = () => {
                 </div>
                 <BarChart
                     typeOption={barOption}
-                    allDocuments={allDocuments}
+                    allDocuments={[...allDocumentIns, ...allDocumentOuts]}
                     allDocumentIns={allDocumentIns}
                     allDocumentOuts={allDocumentOuts}
                 />

@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { formatVNTimeAgo } from '~/utils/formatDateTime';
@@ -8,12 +9,12 @@ const NotificationCard = (props) => {
             onClick={props.handleChangeNotificationStatus}
             className="group/item-list relative w-full p-[12px] text-[1.3rem] cursor-pointer hover:bg-[#eeeeee] transition-all duration-[0.5s]"
         >
-            <a className="w-full" href={props.linkTask}>
+            <NavLink className="w-full" to={props.linkTask.replace('http://localhost:3000', '')}>
                 <p title={props.notification} className="w-[90%] truncate">
                     {props.notification}
                 </p>
                 <p className="text-[1rem]">{formatVNTimeAgo(props.createdAt)}</p>
-            </a>
+            </NavLink>
             {!props.isRead && (
                 <div className="absolute top-[50%] translate-y-[-50%] right-[16px] text-blue-500">
                     <FontAwesomeIcon icon={faCircle} />

@@ -24,7 +24,7 @@ const App = () => {
     // Init socket.io server
     const socket = useRef();
     useEffect(() => {
-        socket.current = io('http://localhost:8080');
+        socket.current = io('http://localhost:8080', { transports: ['websocket'] });
     }, []);
 
     // Send info to socket.io server

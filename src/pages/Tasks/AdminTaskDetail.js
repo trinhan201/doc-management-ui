@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faPlusCircle, faCheckCircle, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
@@ -31,6 +31,7 @@ const AdminTaskDetail = ({ socket }) => {
     const allUsers = useFetchUsers().publicUsers;
     const allComments = useFetchComments({ id, allUsers, isSave, qtyCmt: false });
     const allDocuments = useFetchDocuments().inProgressDocs;
+    const ref = useRef();
 
     // Update tab
     const onUpdateTab = (value) => {
@@ -197,9 +198,10 @@ const AdminTaskDetail = ({ socket }) => {
             }
             const res = await taskServices.uploadFile(id, data);
             if (res.code === 200) {
+                setAttachFiles([]);
+                ref.current.value = '';
                 successNotify(res.message);
                 setIsSave((isSave) => !isSave);
-                setAttachFiles([]);
             } else {
                 errorNotify(res.message);
             }
@@ -344,20 +346,19 @@ const AdminTaskDetail = ({ socket }) => {
                                             name="myFile"
                                             onChange={(e) => setAttachFiles(e.target.files)}
                                             multiple
+                                            ref={ref}
                                         />
                                     </li>
                                 </ul>
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">Liên kết liên quan:</h3>
-                                <a
+                                <NavLink
                                     className="text-[1.4rem]"
-                                    href={getRefLink()}
-                                    target="_blank"
-                                    rel="noreferrer noopener"
+                                    to={getRefLink().replace('http://localhost:3000', '')}
                                 >
                                     {task?.refLink}
-                                </a>
+                                </NavLink>
                             </div>
                         </div>
                         <div className="block md:flex items-center gap-5 mt-12">

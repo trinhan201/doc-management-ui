@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import CommentItem from '~/components/CommentItem';
@@ -327,14 +327,12 @@ const MemberTaskDetail = ({ socket }) => {
                             </div>
                             <div className="mt-12">
                                 <h3 className="text-[1.8rem] font-bold">Liên kết liên quan:</h3>
-                                <a
+                                <NavLink
                                     className="text-[1.4rem]"
-                                    href={getRefLink()}
-                                    target="_blank"
-                                    rel="noreferrer noopener"
+                                    to={getRefLink().replace('http://localhost:3000', '')}
                                 >
                                     {task?.refLink}
-                                </a>
+                                </NavLink>
                             </div>
                         </div>
                     </div>

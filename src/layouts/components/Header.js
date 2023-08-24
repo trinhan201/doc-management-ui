@@ -43,6 +43,7 @@ const Header = ({ setToggle, socket }) => {
     // isRead notification function
     const handleChangeNotificationStatus = async (id) => {
         await notificationServices.changeNotificationStatus(id);
+        setIsSave((isSave) => !isSave);
     };
 
     // unRead notification length function
@@ -138,7 +139,7 @@ const Header = ({ setToggle, socket }) => {
                             {notificationNotReadLength(notifications)}
                         </p>
                         <div className="hidden absolute bottom-[-12px] right-0 bg-transparent w-[100px] h-[24px] group-hover:block"></div>
-                        <div className="hidden absolute top-[50px] right-[-50px] md:right-0 text-black bg-white shadow-4Way group-hover:block z-50">
+                        <div className="hidden absolute top-[50px] right-[-80px] md:right-0 text-black bg-white shadow-4Way group-hover:block z-50">
                             <div className="p-[12px] cursor-default">
                                 <h3 className="text-[2.4rem] font-bold">Thông báo</h3>
                                 <div className="flex items-center gap-x-3 text-[1.5rem]">
