@@ -231,6 +231,7 @@ const Task = () => {
             }
         };
         fetchApi();
+        // eslint-disable-next-line
     }, [isSave, userRole, page, limit]);
 
     // Set pagination state to default when have filter

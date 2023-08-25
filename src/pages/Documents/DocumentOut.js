@@ -206,6 +206,7 @@ const DocumentOut = () => {
             }
         };
         fetchApi();
+        // eslint-disable-next-line
     }, [isSave, page, limit]);
 
     useEffect(() => {
