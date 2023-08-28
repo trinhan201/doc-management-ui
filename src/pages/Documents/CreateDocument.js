@@ -76,7 +76,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const departments = useFetchDepartments({ isActived: false });
-    const allUsers = useFetchUsers().privateUsers;
+    const allUsers = useFetchUsers().publicUsers.filter((item) => item?.role === 'Member');
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
 
     // React-select style

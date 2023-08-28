@@ -47,7 +47,7 @@ const CreateTask = ({ title, socket }) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
-    const allUsers = useFetchUsers().privateUsers;
+    const allUsers = useFetchUsers().publicUsers.filter((item) => item?.role === 'Member');
     const documents = useFetchDocuments().inProgressDocNames;
     const allDocuments = useFetchDocuments().inProgressDocs;
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
