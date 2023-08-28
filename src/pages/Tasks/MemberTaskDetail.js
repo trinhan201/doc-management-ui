@@ -190,15 +190,24 @@ const MemberTaskDetail = ({ socket }) => {
             setLoading(false);
             successNotify('Nhiệm vụ đang chờ duyệt');
             setIsSave((isSave) => !isSave);
-            const newNotiId = await notificationServices.createNotification({
-                notification: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
-                userId: allUsers?.find((item) => item.role === 'Admin')._id,
-                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
-            });
+            const newNotiId = await Promise.all(
+                allUsers
+                    ?.filter((item) => item.role === 'Admin' || item.role === 'Moderator')
+                    ?.map(async (item) => {
+                        const noti = await notificationServices.createNotification({
+                            notification: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
+                            userId: item?._id,
+                            linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
+                        });
+                        return { notiId: noti.data._id, userId: noti.data.userId };
+                    }),
+            );
             socket.current?.emit('sendNotification', {
                 senderId: userId,
-                _id: [{ notiId: newNotiId.data._id, userId: newNotiId.data.userId }],
-                receiverId: [allUsers?.find((item) => item.role === 'Admin')._id],
+                _id: newNotiId,
+                receiverId: allUsers
+                    ?.filter((item) => item.role === 'Admin' || item.role === 'Moderator')
+                    .map((item) => item._id),
                 text: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
                 linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
                 isRead: false,
