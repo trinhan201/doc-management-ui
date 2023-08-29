@@ -12,6 +12,7 @@ import * as taskServices from '~/services/taskServices';
 import * as notificationServices from '~/services/notificationServices';
 import * as taskTypeServices from '~/services/taskTypeServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
+import * as senderServices from '~/services/senderServices';
 import { fullNameValidator, dateValidator, dropListValidator } from '~/utils/formValidation';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchDepartments, useFetchUsers } from '~/hooks';
@@ -20,6 +21,10 @@ import SwitchButton from '~/components/SwitchButton';
 import { disabledPastDate } from '~/utils/formValidation';
 
 const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
+    const [addSender, setAddSender] = useState(false);
+    const [allSenders, setAllSenders] = useState([]);
+    const [newSender, setNewSender] = useState('');
+
     const [addDocType, setAddDocType] = useState(false);
     const [addTaskType, setAddTaskType] = useState(false);
     const [isAssigned, setAssigned] = useState(false);
@@ -144,6 +149,23 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         if (res.code === 200) {
             setNewDocType('');
             setAddDocType(false);
+            setIsSave((isSave) => !isSave);
+            successNotify(res.message);
+        } else {
+            setLoading(false);
+            errorNotify(res);
+        }
+    };
+
+    // Handle add new sender
+    const handleAddNewSender = async () => {
+        const data = {
+            sender: newSender,
+        };
+        const res = await senderServices.createSender(data);
+        if (res.code === 200) {
+            setNewSender('');
+            setAddSender(false);
             setIsSave((isSave) => !isSave);
             successNotify(res.message);
         } else {
@@ -320,6 +342,20 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         fetchApi();
     }, [isSave]);
 
+    //Get all task type
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await senderServices.getAllSenders();
+            if (res.code === 200) {
+                const sender = res?.data?.map((item) => item?.sender);
+                setAllSenders(sender);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, [isSave]);
+
     // Get all doc type
     useEffect(() => {
         const fetchApi = async () => {
@@ -474,13 +510,42 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
                             <label className="font-bold">
                                 Nơi ban hành: <span className="text-red-600">*</span>
                             </label>
-                            <InputField
-                                className={isSenderErr ? 'invalid' : 'default'}
-                                placeholder="Nơi ban hành"
-                                value={sender}
-                                setValue={setSender}
-                                onBlur={() => fullNameValidator(sender, setIsSenderErr, setSenderErrMsg)}
-                            />
+                            <div className="flex items-center gap-x-3">
+                                {!addSender ? (
+                                    <div className="flex-1">
+                                        <DropList
+                                            isErr={isSenderErr}
+                                            selectedValue={sender}
+                                            options={allSenders}
+                                            setValue={setSender}
+                                            setId={() => undefined}
+                                            onBlur={() => dropListValidator(sender, setIsSenderErr, setSenderErrMsg)}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex-1">
+                                        <InputField
+                                            id="sender"
+                                            className={isSenderErr ? 'invalid' : 'default'}
+                                            placeholder="Nơi ban hành"
+                                            value={newSender}
+                                            setValue={setNewSender}
+                                        />
+                                    </div>
+                                )}
+                                {!newSender ? (
+                                    <div
+                                        onClick={() => setAddSender(!addSender)}
+                                        className="text-[2rem] cursor-pointer"
+                                    >
+                                        <FontAwesomeIcon icon={addSender ? faXmark : faPlusCircle} />
+                                    </div>
+                                ) : (
+                                    <div onClick={handleAddNewSender} className="text-[2rem] cursor-pointer">
+                                        <FontAwesomeIcon icon={faPlusCircle} />
+                                    </div>
+                                )}
+                            </div>
                             <p className="text-red-600 text-[1.3rem]">{senderErrMsg.sender}</p>
                         </div>
                     </div>

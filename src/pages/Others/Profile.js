@@ -15,7 +15,6 @@ const Profile = ({ socket }) => {
     const [isSave, setIsSave] = useState(false);
     const [showProfileForm, setShowProfileForm] = useState(false);
     const [currUser, setCurrUser] = useState({});
-    const [isRemove, setIsRemove] = useState(JSON.parse(localStorage.getItem('isRemoveAvatar')));
     const { isChangeUserInfo, setIsChangeUserInfo } = useContext(UserInfoContext);
 
     const userRole = JSON.parse(localStorage.getItem('userRole'));
@@ -32,7 +31,6 @@ const Profile = ({ socket }) => {
         if (res.code === 200) {
             successNotify(res.message);
             setIsChangeUserInfo(!isChangeUserInfo);
-            setIsRemove(false);
         } else {
             errorNotify(res);
         }
@@ -47,7 +45,6 @@ const Profile = ({ socket }) => {
             successNotify(res.message);
             ref.current.value = '';
             setIsChangeUserInfo(!isChangeUserInfo);
-            setIsRemove(true);
         } else {
             errorNotify(res);
         }
@@ -74,11 +71,6 @@ const Profile = ({ socket }) => {
         fetchApi();
     }, [isSave, isChangeUserInfo]);
 
-    // Save remove avtar boolean in localstorage
-    useEffect(() => {
-        localStorage.setItem('isRemoveAvatar', JSON.stringify(isRemove));
-    }, [isRemove]);
-
     return (
         <>
             <div className="flex flex-col xl:flex-row h-full gap-8">
@@ -89,7 +81,7 @@ const Profile = ({ socket }) => {
                                 <input
                                     className="hidden"
                                     ref={ref}
-                                    disabled={isRemove === false || isRemove === null ? true : false}
+                                    disabled={currUser?.avatar === '' ? false : true}
                                     type="file"
                                     name="myFile"
                                     onChange={(e) => changeAvatar(e)}
@@ -109,7 +101,7 @@ const Profile = ({ socket }) => {
                                     </figcaption>
                                     <div
                                         className={
-                                            isRemove === false || isRemove === null
+                                            currUser?.avatar !== ''
                                                 ? 'group absolute top-0 w-[200px] h-[200px]'
                                                 : 'hidden'
                                         }

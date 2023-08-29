@@ -97,6 +97,7 @@ export const dropListValidator = (value, setIsDropListErr, setDropListErrMsg) =>
         msg.currLocation = 'Vị trí hiện tại không được để trống';
         msg.leader = 'Nhóm trưởng không được để trống';
         msg.assignTo = 'Người thực hiện không được để trống';
+        msg.sender = 'Nơi ban hành không được để trống';
         setIsDropListErr(true);
     } else {
         setIsDropListErr(false);
