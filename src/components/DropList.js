@@ -16,13 +16,19 @@ const DropList = ({ selectedValue, options, setValue, setId, onBlur, isErr }) =>
             <option disabled hidden value="">
                 --Vui lòng chọn--
             </option>
-            {options?.map((option, index) => {
-                return (
-                    <option key={index} title={option} value={option}>
-                        {option}
-                    </option>
-                );
-            })}
+            {options?.length === 0 ? (
+                <option className="text-center text-[#bbbbbb]" value="" disabled>
+                    No options
+                </option>
+            ) : (
+                options?.map((option, index) => {
+                    return (
+                        <option key={index} title={option} value={option}>
+                            {option}
+                        </option>
+                    );
+                })
+            )}
         </select>
     );
 };
