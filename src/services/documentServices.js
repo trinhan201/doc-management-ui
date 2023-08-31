@@ -89,10 +89,22 @@ export const deleteManyDocument = async (data = {}) => {
 };
 
 // Get all documents function
-export const getAllDocument = async (page, limit, flag, fName, fNote, fCode, fType, fStatus, fLevel, fIssuedDate) => {
+export const getAllDocument = async (
+    page,
+    limit,
+    flag,
+    fName,
+    fNote,
+    fCode,
+    fType,
+    fStatus,
+    fLevel,
+    fIssuedDate,
+    fSender,
+) => {
     try {
         const res = await httpRequest.get(
-            `/document/get-all?page=${page}&limit=${limit}&documentIn=${flag}&documentName=${fName}&note=${fNote}&code=${fCode}&type=${fType}&status=${fStatus}&level=${fLevel}&issuedDate=${fIssuedDate}`,
+            `/document/get-all?page=${page}&limit=${limit}&documentIn=${flag}&documentName=${fName}&note=${fNote}&code=${fCode}&type=${fType}&status=${fStatus}&level=${fLevel}&issuedDate=${fIssuedDate}&sender=${fSender}`,
         );
         return res.data;
     } catch (error) {

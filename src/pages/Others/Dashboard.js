@@ -125,7 +125,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, false, '', '', '', '', '', '', '');
+            const res = await documentServices.getAllDocument(1, 1, false, '', '', '', '', '', '', '', '');
             if (res.code === 200) {
                 setAllDocumentOuts(res.allDocumentOut);
             } else {

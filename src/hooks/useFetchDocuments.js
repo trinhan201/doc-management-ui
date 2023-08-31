@@ -10,16 +10,14 @@ const useFetchDocuments = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '');
+            const res = await documentServices.getAllDocument(1, 1, true, '', '', '', '', '', '', '', '');
             if (res.code === 200) {
-                const documentArray = res.allDocumentIn?.filter((item) => item.status === 'Đang xử lý');
+                const documentArray = res.allDocumentIn;
                 setInProgressDocs(documentArray);
                 setAllDocumentIns(res.allDocumentIn);
                 setAllDocumentOuts(res.allDocumentOut);
                 setAllDocuments(res.allDocuments);
-                const documentNameArray = res.allDocumentIn
-                    ?.filter((item) => item.status === 'Đang xử lý')
-                    .map((item) => item.documentName);
+                const documentNameArray = res.allDocumentIn?.map((item) => item.documentName);
                 setInProgressDocNames(documentNameArray);
             } else {
                 console.log(res);

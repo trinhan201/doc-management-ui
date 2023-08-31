@@ -16,6 +16,7 @@ import DropList from '~/components/DropList';
 import InputField from '~/components/InputField';
 import * as documentServices from '~/services/documentServices';
 import * as documentTypeServices from '~/services/documentTypeServices';
+import * as senderServices from '~/services/senderServices';
 import { successNotify, errorNotify } from '~/components/ToastMessage';
 import { useFetchDepartments } from '~/hooks';
 import { handleCheck, handleCheckAll } from '~/utils/handleCheckbox';
@@ -26,6 +27,7 @@ const DocumentIn = () => {
     const [loading, setLoading] = useState(false);
     const [isSave, setIsSave] = useState(false);
     // List data state
+    const [allSenders, setAllSenders] = useState([]);
     const [allDocTypes, setAllDocTypes] = useState([]);
     const [allDocuments, setAllDocuments] = useState([]);
     const [documentLists, setDocumentLists] = useState([]);
@@ -51,6 +53,7 @@ const DocumentIn = () => {
     const [fStatus, setFStatus] = useState('');
     const [fLevel, setFLevel] = useState('');
     const [fIssuedDate, setFIssuedDate] = useState('');
+    const [fSender, setFSender] = useState('');
 
     const levelOptions = ['Bình thường', 'Ưu tiên', 'Khẩn cấp'];
     const statusOptions = ['Khởi tạo', 'Đang xử lý', 'Hoàn thành'];
@@ -91,12 +94,13 @@ const DocumentIn = () => {
         setFStatus('');
         setFLevel('');
         setFIssuedDate('');
+        setFSender('');
         setIsSave((isSave) => !isSave);
     };
 
     // Handle filter
     const filter = async () => {
-        if (fName || fNote || fCode || fType || fStatus || fLevel || fIssuedDate) {
+        if (fName || fNote || fCode || fType || fStatus || fLevel || fIssuedDate || fSender) {
             setLoading(true);
             const res = await documentServices.getAllDocument(
                 page,
@@ -109,6 +113,7 @@ const DocumentIn = () => {
                 fStatus,
                 fLevel,
                 fIssuedDate,
+                fSender,
             );
             if (res.code === 200) {
                 setLoading(false);
@@ -127,7 +132,7 @@ const DocumentIn = () => {
 
     // isFilter boolean
     const isFilters = () => {
-        if (fName || fNote || fCode || fType || fStatus || fLevel || fIssuedDate) {
+        if (fName || fNote || fCode || fType || fStatus || fLevel || fIssuedDate || fSender) {
             return true;
         } else {
             return false;
@@ -196,6 +201,7 @@ const DocumentIn = () => {
                 fStatus,
                 fLevel,
                 fIssuedDate,
+                fSender,
             );
             if (res.code === 200) {
                 setLoading(false);
@@ -267,6 +273,20 @@ const DocumentIn = () => {
         handleCheckAll(checkedAll, checked?.length, allDocuments, setChecked);
     }, [checkedAll, allDocuments, checked?.length]);
 
+    //Get all sender
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await senderServices.getAllSenders();
+            if (res.code === 200) {
+                const sender = res?.data?.map((item) => item?.sender);
+                setAllSenders(sender);
+            } else {
+                console.log(res);
+            }
+        };
+        fetchApi();
+    }, []);
+
     return (
         <>
             <div className="bg-white p-[16px] mb-5 shadow-4Way">
@@ -294,6 +314,15 @@ const DocumentIn = () => {
                             className="default leading-[1.3]"
                             value={fIssuedDate}
                             setValue={setFIssuedDate}
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <label className="text-[1.4rem]">Nơi ban hành:</label>
+                        <DropList
+                            selectedValue={fSender}
+                            options={allSenders}
+                            setValue={setFSender}
+                            setId={() => undefined}
                         />
                     </div>
                 </div>

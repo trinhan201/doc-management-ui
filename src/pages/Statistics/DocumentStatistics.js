@@ -106,6 +106,7 @@ const DocumentStatistics = () => {
                 fStatus || '',
                 fLevel || '',
                 '',
+                '',
             );
             if (res.code === 200) {
                 if (fFrom && fTo) {

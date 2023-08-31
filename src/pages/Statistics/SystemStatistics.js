@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import DropList from '~/components/DropList';
-// import * as userServices from '~/services/userServices';
+import * as documentServices from '~/services/documentServices';
 import * as notificationServices from '~/services/notificationServices';
 import ExportExcel from '~/components/ExportFile/System/ExportExcel';
 import ExportWord from '~/components/ExportFile/System/ExportWord';
@@ -16,7 +16,7 @@ const SystemStatistics = () => {
     const [exportType, setExportType] = useState('Excel(.xlsx)');
     const [preview, setPreview] = useState(false);
     // List data function
-    // const [allUsers, setAllUsers] = useState([]);
+    const [allDocumentOuts, setAllDocumentOuts] = useState([]);
     const [allNotifications, setAllNotifications] = useState([]);
     const [filterData, setFilterData] = useState([]);
     // Filter statistic state
@@ -28,7 +28,7 @@ const SystemStatistics = () => {
     const allDepartments = useFetchDepartments({ isActived: undefined });
     const allComments = useFetchComments({ qtyCmt: true });
     const allDocumentIns = useFetchDocuments().allDocumentIns;
-    const allDocumentOuts = useFetchDocuments().allDocumentOuts;
+    // const allDocumentOuts = useFetchDocuments().allDocumentOuts;
     const exportOptions = ['Excel(.xlsx)', 'Word(.docx)'];
     let timer;
 
@@ -83,6 +83,18 @@ const SystemStatistics = () => {
         const fetchApi = async () => {
             const res = await notificationServices.getAllNotification();
             setAllNotifications(res.all);
+        };
+        fetchApi();
+    }, []);
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            const res = await documentServices.getAllDocument(1, 1, false, '', '', '', '', '', '', '', '');
+            if (res.code === 200) {
+                setAllDocumentOuts(res.allDocumentOut);
+            } else {
+                console.log(res);
+            }
         };
         fetchApi();
     }, []);

@@ -342,7 +342,7 @@ const CreateDocument = ({ title, inputLabel, documentIn, path, socket }) => {
         fetchApi();
     }, [isSave]);
 
-    //Get all task type
+    //Get all sender
     useEffect(() => {
         const fetchApi = async () => {
             const res = await senderServices.getAllSenders();
