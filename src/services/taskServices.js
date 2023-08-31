@@ -55,6 +55,17 @@ export const updateProgress = async (taskId, data = {}) => {
     }
 };
 
+// Change task progress function
+export const undoTask = async (taskId, data = {}) => {
+    try {
+        const res = await httpRequest.patch(`/task/undo/${taskId}`, data);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return error.response.data.message;
+    }
+};
+
 // Delete task function
 export const deleteTaskById = async (taskId) => {
     try {

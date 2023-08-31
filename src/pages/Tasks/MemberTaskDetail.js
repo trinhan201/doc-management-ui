@@ -15,6 +15,7 @@ import { formatVNDateTime } from '~/utils/formatDateTime';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 
 const MemberTaskDetail = ({ socket }) => {
+    const [msgReport, setMsgReport] = useState('');
     const [taskProgress, setTaskProgress] = useState('Chờ duyệt');
     const [comment, setComment] = useState('');
     const [commentId, setCommentId] = useState('');
@@ -139,6 +140,45 @@ const MemberTaskDetail = ({ socket }) => {
         uploadFile();
     }, [attachFiles, id]);
 
+    // Handle report
+    const handleReport = async () => {
+        setLoading(true);
+        const data = {
+            flag: true,
+            msg: msgReport,
+        };
+        const res = await taskServices.undoTask(id, data);
+        if (res.code === 200) {
+            setLoading(false);
+            setMsgReport('');
+            successNotify('Yêu cầu hoàn tác thành công');
+            setIsSave((isSave) => !isSave);
+            const newNotiId = await Promise.all(
+                allUsers
+                    ?.filter((item) => item.role !== 'Member')
+                    ?.map(async (item) => {
+                        const noti = await notificationServices.createNotification({
+                            notification: `Nhiệm vụ ${task?.taskName} được yêu cầu hoàn tác`,
+                            userId: item?._id,
+                            linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
+                        });
+                        return { notiId: noti.data._id, userId: noti.data.userId };
+                    }),
+            );
+            socket.current?.emit('sendNotification', {
+                senderId: userId,
+                _id: newNotiId,
+                receiverId: allUsers?.filter((item) => item.role !== 'Member').map((item) => item._id),
+                text: `Nhiệm vụ ${task?.taskName} được yêu cầu hoàn tác`,
+                linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
+                isRead: false,
+            });
+        } else {
+            setLoading(false);
+            errorNotify(res);
+        }
+    };
+
     // Delete each assignment file
     const handleDeleteSubmitFile = async (fileName) => {
         const data = {
@@ -192,7 +232,7 @@ const MemberTaskDetail = ({ socket }) => {
             setIsSave((isSave) => !isSave);
             const newNotiId = await Promise.all(
                 allUsers
-                    ?.filter((item) => item.role === 'Admin' || item.role === 'Moderator')
+                    ?.filter((item) => item.role !== 'Member')
                     ?.map(async (item) => {
                         const noti = await notificationServices.createNotification({
                             notification: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
@@ -205,9 +245,7 @@ const MemberTaskDetail = ({ socket }) => {
             socket.current?.emit('sendNotification', {
                 senderId: userId,
                 _id: newNotiId,
-                receiverId: allUsers
-                    ?.filter((item) => item.role === 'Admin' || item.role === 'Moderator')
-                    .map((item) => item._id),
+                receiverId: allUsers?.filter((item) => item.role !== 'Member').map((item) => item._id),
                 text: `Nhiệm vụ ${task?.taskName} đang chờ duyệt`,
                 linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
                 isRead: false,
@@ -424,99 +462,133 @@ const MemberTaskDetail = ({ socket }) => {
                         </ul>
                     </div>
                 </div>
-                <div className="bg-white p-[16px] mb-5 shadow-4Way flex-[2]">
-                    <div className="flex items-center justify-between font-semibold">
-                        <h3 className="text-[2rem]">
-                            Việc của bạn{' '}
-                            <span className={getLeader() ? '' : 'hidden'}>
-                                (
-                                <span className="inline-block align-middle w-fit text-white text-[1.3rem] font-semibold text-center px-1 rounded-lg bg-yellow-600">
-                                    Leader
-                                </span>
-                                )
-                            </span>
-                        </h3>
-                        <p className={setSubmitTextColor(submitStatus)}>{submitStatus}</p>
-                    </div>
-                    <div className="mt-7 w-full">
-                        {displayFile?.map((item, index) => {
-                            return (
-                                <div key={index} className="flex items-center mb-5 w-full">
-                                    <a
-                                        target="_blank"
-                                        rel="noreferrer noopener"
-                                        href={`http://localhost:8080/static/${item}`}
-                                        className="w-full flex flex-col text-[1.4rem] px-[16px] py-[6px] rounded-md border"
-                                    >
-                                        <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">
-                                            {item}
-                                        </span>
-                                        <span>{getTypeFile(item)}</span>
-                                    </a>
-                                    <span
-                                        onClick={() => handleDeleteSubmitFile(item)}
-                                        className={
-                                            isSubmit ? 'hidden' : 'text-[1.7rem] text-red-600 ml-3 cursor-pointer'
-                                        }
-                                    >
-                                        <FontAwesomeIcon icon={faXmark} />
+                <div className="flex-[2]">
+                    <div className="bg-white p-[16px] mb-5 shadow-4Way">
+                        <div className="flex items-center justify-between font-semibold">
+                            <h3 className="text-[2rem]">
+                                Việc của bạn{' '}
+                                <span className={getLeader() ? '' : 'hidden'}>
+                                    (
+                                    <span className="inline-block align-middle w-fit text-white text-[1.3rem] font-semibold text-center px-1 rounded-lg bg-yellow-600">
+                                        Leader
                                     </span>
-                                </div>
-                            );
-                        })}
-                        <div className={isSubmit ? 'hidden' : 'w-full'}>
-                            <label
-                                className="block w-full text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl border border-dashed border-blue-700 cursor-pointer"
-                                htmlFor="upload"
-                            >
-                                <FontAwesomeIcon icon={faPlus} />
-                            </label>
-                            <input
-                                id="upload"
-                                className="absolute opacity-0 z-[-1] rounded-3xl"
-                                type="file"
-                                name="myFile"
-                                onChange={(e) => setAttachFiles(e.target.files)}
-                                multiple
-                                ref={ref}
-                            />
+                                    )
+                                </span>
+                            </h3>
+                            <p className={setSubmitTextColor(submitStatus)}>{submitStatus}</p>
                         </div>
+                        <div className="mt-7 w-full">
+                            {displayFile?.map((item, index) => {
+                                return (
+                                    <div key={index} className="flex items-center mb-5 w-full">
+                                        <a
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                            href={`http://localhost:8080/static/${item}`}
+                                            className="w-full flex flex-col text-[1.4rem] px-[16px] py-[6px] rounded-md border"
+                                        >
+                                            <span className="w-full lg:w-[200px] xl:w-[250px] truncate font-semibold">
+                                                {item}
+                                            </span>
+                                            <span>{getTypeFile(item)}</span>
+                                        </a>
+                                        <span
+                                            onClick={() => handleDeleteSubmitFile(item)}
+                                            className={
+                                                isSubmit ? 'hidden' : 'text-[1.7rem] text-red-600 ml-3 cursor-pointer'
+                                            }
+                                        >
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                            <div
+                                className={
+                                    taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt' ? 'hidden' : 'w-full'
+                                }
+                            >
+                                <div className={isSubmit ? 'hidden' : 'w-full'}>
+                                    <label
+                                        className="block w-full text-center text-[1.4rem] leading-[1] font-bold text-blue-700 bg-transparent py-[6px] rounded-3xl border border-dashed border-blue-700 cursor-pointer"
+                                        htmlFor="upload"
+                                    >
+                                        <FontAwesomeIcon icon={faPlus} />
+                                    </label>
+                                    <input
+                                        id="upload"
+                                        className="absolute opacity-0 z-[-1] rounded-3xl"
+                                        type="file"
+                                        name="myFile"
+                                        onChange={(e) => setAttachFiles(e.target.files)}
+                                        multiple
+                                        ref={ref}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        {isSubmit ? (
+                            <button
+                                onClick={() => handleChangeSubmitStatus(false)}
+                                className={
+                                    taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
+                                        ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] disabled'
+                                        : 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc]'
+                                }
+                            >
+                                Hủy nộp
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => handleChangeSubmitStatus(true)}
+                                className={
+                                    taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
+                                        ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'
+                                        : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
+                                }
+                            >
+                                Nộp
+                            </button>
+                        )}
+                        <button
+                            onClick={handleChangeProgress}
+                            className={
+                                getLeader()
+                                    ? taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt' || !isSubmit
+                                        ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'
+                                        : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
+                                    : 'hidden'
+                            }
+                        >
+                            Đánh dấu hoàn tất
+                        </button>
                     </div>
-                    {isSubmit ? (
-                        <button
-                            onClick={() => handleChangeSubmitStatus(false)}
-                            className={
-                                taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
-                                    ? 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc] disabled'
-                                    : 'w-full text-[1.4rem] text-blue-600 bg-white mt-7 px-[16px] py-[6px] rounded-md border border-[#cccccc] hover:bg-[#d2e3fc]'
-                            }
-                        >
-                            Hủy nộp
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => handleChangeSubmitStatus(true)}
-                            className={
-                                taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
-                                    ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'
-                                    : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-7 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
-                            }
-                        >
-                            Nộp
-                        </button>
-                    )}
-                    <button
-                        onClick={handleChangeProgress}
+                    <div
                         className={
                             getLeader()
-                                ? taskProgress === 'Hoàn thành' || taskProgress === 'Chờ duyệt'
-                                    ? 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b] disabled'
-                                    : 'w-full text-[1.4rem] text-[white] bg-blue-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
+                                ? taskProgress === 'Hoàn thành'
+                                    ? 'bg-white p-[16px] mb-5 shadow-4Way'
+                                    : 'bg-white p-[16px] mb-5 shadow-4Way hidden'
                                 : 'hidden'
                         }
                     >
-                        Đánh dấu hoàn tất
-                    </button>
+                        <div className="w-full">
+                            <InputField
+                                className="default"
+                                placeholder="Lời nhắn"
+                                value={msgReport}
+                                setValue={setMsgReport}
+                            />
+                        </div>
+                        <button
+                            onClick={handleReport}
+                            className={
+                                'w-full text-[1.4rem] text-[white] bg-red-600 mt-5 px-[16px] py-[6px] rounded-md hover:bg-[#1b2e4b]'
+                            }
+                        >
+                            Báo lỗi
+                        </button>
+                    </div>
                 </div>
             </div>
             {loading && (

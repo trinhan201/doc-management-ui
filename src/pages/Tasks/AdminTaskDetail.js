@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faPlusCircle, faCheckCircle, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+    faXmark,
+    faPlusCircle,
+    faCheckCircle,
+    faCircleXmark,
+    faArrowRotateLeft,
+    faCircleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 import InputField from '~/components/InputField';
 import CommentItem from '~/components/CommentItem';
 import * as taskServices from '~/services/taskServices';
@@ -12,6 +19,7 @@ import { setLevelColor, setFileIcon } from '~/utils/setMultiConditions';
 import { useFetchComments, useFetchUsers, useFetchDocuments } from '~/hooks';
 import Loading from '~/components/Loading';
 import { formatVNDateTime } from '~/utils/formatDateTime';
+import { faMessage } from '@fortawesome/free-regular-svg-icons';
 
 const AdminTaskDetail = ({ socket }) => {
     const [commentId, setCommentId] = useState('');
@@ -58,11 +66,17 @@ const AdminTaskDetail = ({ socket }) => {
             successNotify(value === 'Hoàn thành' ? 'Nhiệm vụ đã hoàn thành' : 'Nhiệm vụ chưa hoàn thành');
             setIsSave((isSave) => !isSave);
 
+            const data1 = {
+                flag: false,
+                msg: '',
+            };
+            await taskServices.undoTask(id, data1);
+
             const newNotiId = await Promise.all(
                 getAssignToIds(task?.assignTo)?.map(async (userId) => {
                     const noti = await notificationServices.createNotification({
                         notification: `Nhiệm vụ ${task?.taskName} ${
-                            value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp thuận'
+                            value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp nhận'
                         }`,
                         userId: userId,
                         linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
@@ -74,9 +88,7 @@ const AdminTaskDetail = ({ socket }) => {
                 senderId: userId,
                 _id: newNotiId,
                 receiverId: getAssignToIds(task?.assignTo),
-                text: `Nhiệm vụ ${task?.taskName} ${
-                    value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp thuận'
-                }`,
+                text: `Nhiệm vụ ${task?.taskName} ${value === 'Hoàn thành' ? 'đã hoàn thành' : 'không được chấp nhận'}`,
                 linkTask: `${process.env.REACT_APP_BASE_URL}/tasks/detail/${id}`,
                 isRead: false,
             });
@@ -370,7 +382,7 @@ const AdminTaskDetail = ({ socket }) => {
                                         : 'hidden'
                                 }
                             >
-                                <FontAwesomeIcon icon={faCheckCircle} /> Hoàn thành
+                                <FontAwesomeIcon icon={faCheckCircle} /> Chấp nhận
                             </button>
                             <button
                                 onClick={() => handleChangeProgress('Đang xử lý')}
@@ -380,7 +392,17 @@ const AdminTaskDetail = ({ socket }) => {
                                         : 'hidden'
                                 }
                             >
-                                <FontAwesomeIcon icon={faCircleXmark} /> Chưa hoàn thành
+                                <FontAwesomeIcon icon={faCircleXmark} /> Không chấp nhận
+                            </button>
+                            <button
+                                onClick={() => handleChangeProgress('Đang xử lý')}
+                                className={
+                                    task?.progress === 'Hoàn thành'
+                                        ? 'w-full md:w-fit text-center text-[white] bg-red-600 mt-4 md:mt-0 px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]'
+                                        : 'hidden'
+                                }
+                            >
+                                <FontAwesomeIcon icon={faArrowRotateLeft} /> Hoàn tác
                             </button>
                             <div
                                 onClick={() => navigate(-1)}
@@ -422,45 +444,57 @@ const AdminTaskDetail = ({ socket }) => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-[16px] mb-5 shadow-lg flex-[2]">
-                    <h3>Bình luận</h3>
-                    <form>
-                        <InputField
-                            textarea
-                            className="default textarea"
-                            rows="3"
-                            cols="50"
-                            placeholder="Viết gì đó..."
-                            value={comment}
-                            setValue={setComment}
-                        />
-                        <button
-                            onClick={handleSubmitComment}
-                            className="w-full md:w-fit text-[1.4rem] text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
-                        >
-                            Gửi
-                        </button>
-                    </form>
-                    <ul className="max-h-[500px] mt-5 p-2 overflow-y-auto">
-                        {allComments?.map((cm, index) => {
-                            return (
-                                <CommentItem
-                                    key={index}
-                                    currUserId={userId}
-                                    userCommentId={cm?.userId}
-                                    img={
-                                        cm?.avatar ||
-                                        'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
-                                    }
-                                    username={cm?.userName}
-                                    content={cm?.content}
-                                    cmtDate={cm?.date}
-                                    handleEdit={() => setCommentId(cm?.commentId)}
-                                    handleDelete={() => handleDelete(cm?.commentId)}
-                                />
-                            );
-                        })}
-                    </ul>
+                <div className="flex-[2]">
+                    <div className="bg-white p-[16px] shadow-lg">
+                        <h3>Bình luận</h3>
+                        <form>
+                            <InputField
+                                textarea
+                                className="default textarea"
+                                rows="3"
+                                cols="50"
+                                placeholder="Viết gì đó..."
+                                value={comment}
+                                setValue={setComment}
+                            />
+                            <button
+                                onClick={handleSubmitComment}
+                                className="w-full md:w-fit text-[1.4rem] text-center text-[white] bg-[#321fdb] px-[16px] py-[8px] rounded-md hover:bg-[#1b2e4b] transition-all duration-[1s]"
+                            >
+                                Gửi
+                            </button>
+                        </form>
+                        <ul className="max-h-[500px] mt-5 p-2 overflow-y-auto">
+                            {allComments?.map((cm, index) => {
+                                return (
+                                    <CommentItem
+                                        key={index}
+                                        currUserId={userId}
+                                        userCommentId={cm?.userId}
+                                        img={
+                                            cm?.avatar ||
+                                            'https://thumbs.dreamstime.com/b/default-avatar-profile-trendy-style-social-media-user-icon-187599373.jpg'
+                                        }
+                                        username={cm?.userName}
+                                        content={cm?.content}
+                                        cmtDate={cm?.date}
+                                        handleEdit={() => setCommentId(cm?.commentId)}
+                                        handleDelete={() => handleDelete(cm?.commentId)}
+                                    />
+                                );
+                            })}
+                        </ul>
+                    </div>
+                    <div className={task?.isUndo?.flag === true ? 'bg-white p-[16px] shadow-lg mt-5' : 'hidden'}>
+                        <p className="flex items-center gap-x-3">
+                            <FontAwesomeIcon icon={faCircleExclamation} className="text-red-600 text-[2rem]" />
+                            <span className="text-[1.5rem]">Yêu cầu hoàn tác từ người dùng</span>
+                        </p>
+                        <p className="flex items-center gap-x-3 mt-2">
+                            <FontAwesomeIcon icon={faMessage} className="text-red-600 text-[2rem]" />
+                            <span className="text-[1.5rem]">{task?.isUndo?.msg}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
             {loading && (
